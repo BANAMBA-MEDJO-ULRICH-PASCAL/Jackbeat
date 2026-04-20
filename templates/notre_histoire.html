@@ -1,0 +1,782 @@
+{% extends "base.html" %}
+{% block title %}Notre Histoire{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ══════════════════════════════════════════
+   Notre Histoire — styles spécifiques
+══════════════════════════════════════════ */
+
+/* Hero cinématique */
+.nh-hero {
+  position: relative;
+  padding: 7rem 0 5rem;
+  overflow: hidden;
+  background: var(--bg);
+}
+.nh-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 50%, rgba(0,122,94,0.13) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 85% 20%, rgba(252,209,22,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 50% at 70% 90%, rgba(206,17,38,0.06) 0%, transparent 55%);
+  pointer-events: none;
+}
+/* Grosse note musicale décorative */
+.nh-hero::after {
+  content: '♬';
+  position: absolute;
+  right: -1rem; top: 50%;
+  transform: translateY(-55%);
+  font-size: 22rem;
+  color: rgba(252,209,22,0.04);
+  line-height: 1;
+  pointer-events: none;
+  font-family: serif;
+}
+
+.nh-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--green-l);
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.nh-eyebrow::before {
+  content: '';
+  display: inline-block; width: 28px; height: 1px;
+  background: var(--green-l);
+}
+
+.nh-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin-bottom: 2rem;
+}
+.nh-hero-title .word-jack {
+  color: var(--gold);
+  position: relative;
+  display: inline-block;
+}
+.nh-hero-title .word-jack::after {
+  content: '';
+  position: absolute; bottom: 4px; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--green));
+  border-radius: 2px;
+  transform-origin: left;
+  animation: underlineGrow 1s 0.8s ease both;
+}
+@keyframes underlineGrow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.nh-hero-lead {
+  font-size: 1.15rem;
+  color: var(--text-mid);
+  max-width: 560px;
+  line-height: 1.85;
+  margin-bottom: 3rem;
+}
+
+/* Ligne tricolore animée */
+.tricolor-hero {
+  display: flex; gap: 6px; margin-bottom: 0;
+}
+.tricolor-hero span {
+  height: 5px; border-radius: 3px; flex: 1;
+  animation: barGrow 0.7s ease both;
+}
+.tricolor-hero span:nth-child(1) { background: var(--green);  animation-delay: 0.2s; }
+.tricolor-hero span:nth-child(2) { background: var(--red);    animation-delay: 0.35s; }
+.tricolor-hero span:nth-child(3) { background: var(--gold);   animation-delay: 0.5s; }
+@keyframes barGrow {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* ── Sections prose ── */
+.nh-section {
+  padding: 5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.nh-section:last-child { border-bottom: none; }
+
+.nh-section-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green-l);
+  margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.nh-section-label::before {
+  content: ''; width: 20px; height: 1px; background: var(--green-l);
+}
+
+.nh-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 2rem;
+}
+
+.nh-prose p {
+  color: var(--text-mid);
+  font-size: 1.02rem;
+  line-height: 1.95;
+  margin-bottom: 1.4rem;
+  max-width: 680px;
+}
+.nh-prose p strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.nh-prose p em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+/* Citation mise en valeur */
+.nh-quote {
+  position: relative;
+  padding: 1.75rem 2rem 1.75rem 2.5rem;
+  margin: 2.5rem 0;
+  background: rgba(252,209,22,0.05);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+}
+.nh-quote::before {
+  content: '"';
+  position: absolute;
+  top: -1rem; left: 1.5rem;
+  font-family: var(--font-display);
+  font-size: 5rem;
+  color: rgba(252,209,22,0.15);
+  line-height: 1;
+  font-style: italic;
+}
+.nh-quote p {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.7;
+  margin: 0;
+}
+.nh-quote cite {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+
+/* ── Carte Jack ── */
+.jack-tribute {
+  background: linear-gradient(135deg,
+    rgba(0,122,94,0.12) 0%,
+    rgba(252,209,22,0.07) 50%,
+    rgba(206,17,38,0.06) 100%);
+  border: 1px solid rgba(252,209,22,0.22);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.jack-tribute::before {
+  content: '🎧';
+  position: absolute;
+  right: 2rem; bottom: 1.5rem;
+  font-size: 5rem;
+  opacity: 0.08;
+  line-height: 1;
+}
+.jack-avatar-lg {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green) 0%, var(--gold) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.6rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 0 4px rgba(252,209,22,0.15), 0 8px 24px rgba(0,0,0,0.3);
+}
+.jack-tribute h3 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+}
+.jack-tribute .subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green-l);
+  margin-bottom: 1.5rem;
+}
+.jack-tribute p {
+  color: var(--text-mid);
+  font-size: 1rem;
+  line-height: 1.9;
+  max-width: 520px;
+  margin-bottom: 1rem;
+}
+.jack-tribute .dedication {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--text);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+/* ── Chronologie ── */
+.timeline {
+  position: relative;
+  padding-left: 2.5rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute; left: 7px; top: 12px; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold), var(--green), transparent);
+  border-radius: 2px;
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 2.5rem;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.1rem; top: 6px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 3px rgba(252,209,22,0.2);
+}
+.timeline-date {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--green-l);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.timeline-item h4 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.timeline-item p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Valeurs ── */
+.valeur-card {
+  background: var(--card);
+  border: 1px solid var(--bdr);
+  border-radius: 14px;
+  padding: 1.75rem 1.5rem;
+  height: 100%;
+  transition: border-color 0.3s, transform 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.valeur-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 0 0 14px 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.valeur-card:hover { border-color: rgba(252,209,22,0.3); transform: translateY(-4px); }
+.valeur-card:hover::after { opacity: 1; }
+.valeur-card.c-green::after { background: var(--green); }
+.valeur-card.c-gold::after  { background: var(--gold); }
+.valeur-card.c-red::after   { background: var(--red); }
+
+.valeur-icon {
+  width: 52px; height: 52px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; margin-bottom: 1.1rem;
+}
+.valeur-card h4 {
+  font-family: var(--font-display);
+  font-size: 1.15rem; font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.valeur-card p {
+  color: var(--text-dim); font-size: 0.88rem; line-height: 1.7; margin: 0;
+}
+
+/* ── Genres musicaux grid ── */
+.genre-pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--bg-3);
+  border: 1px solid var(--bdr);
+  border-radius: 50px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.85rem;
+  color: var(--text-mid);
+  transition: all 0.25s;
+  margin: 0.3rem;
+}
+.genre-pill:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(252,209,22,0.06);
+}
+.genre-pill .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+/* ── CTA final ── */
+.nh-cta {
+  background: linear-gradient(135deg,
+    rgba(0,122,94,0.12),
+    rgba(252,209,22,0.07),
+    rgba(206,17,38,0.07));
+  border: 1px solid rgba(252,209,22,0.2);
+  border-radius: 20px;
+  padding: 4rem 3rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.nh-cta::before {
+  content: '🇨🇲';
+  position: absolute; right: 2.5rem; bottom: 2rem;
+  font-size: 5rem; opacity: 0.08; line-height: 1;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="nh-hero">
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="nh-eyebrow fade-up">L'histoire derrière le projet</div>
+        <h1 class="nh-hero-title fade-up fade-up-1">
+          Né d'une<br>
+          série télé,<br>
+          d'un frère &<br>
+          d'une idée <span class="word-jack">folle.</span>
+        </h1>
+        <p class="nh-hero-lead fade-up fade-up-2">
+          Jackbeat est plus qu'un travail pratique universitaire.
+          C'est une réponse à une question simple :
+          <em>« Et si on préservait la musique camerounaise avant qu'elle disparaisse ? »</em>
+        </p>
+        <div class="tricolor-hero" style="max-width:220px;">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     L'ÉTINCELLE — SCORPION & JACK
+══════════════════════════════════════════ -->
+<section class="nh-section">
+  <div class="container">
+    <div class="row g-5 align-items-start">
+
+      <!-- Texte -->
+      <div class="col-lg-7 fade-up">
+        <div class="nh-section-label">01 — L'étincelle</div>
+        <h2>Un épisode de <span style="color:var(--gold);">Scorpion</span>,<br>un frère, une idée.</h2>
+
+        <div class="nh-prose">
+          <p>
+            Tout commence un soir ordinaire. Mon petit frère <strong>Jack</strong> me fait écouter
+            un passage de la <strong>première saison de la série américaine Scorpion</strong> —
+            une série inspirée de l'histoire vraie de Walter O'Brien, ce génie irlandais
+            qui a monté une équipe de surdoués pour résoudre les problèmes les plus complexes
+            du monde en utilisant la technologie.
+          </p>
+          <p>
+            Dans cet épisode, l'idée centrale est simple mais puissante :
+            <em>utiliser l'intelligence et la technologie pour sauver ce qui risque de se perdre.</em>
+            Jack, passionné et curieux comme toujours, me demande après l'écoute :
+          </p>
+        </div>
+
+        <div class="nh-quote">
+          <p>« Et si on faisait la même chose, mais pour la musique camerounaise ?
+          Qui est en train de garder une trace de tout ça ? »</p>
+          <cite>— Jack, l'étincelle de Jackbeat</cite>
+        </div>
+
+        <div class="nh-prose">
+          <p>
+            Cette question a tout changé. Elle était à la fois simple et vertigineuse.
+            Le Makossa de Manu Dibango, le Bikutsi des Têtes Brûlées, la voix d'Anne-Marie Nzié,
+            le Jazz de Richard Bona… tout ce patrimoine existe, mais <strong>où est-il
+            vraiment documenté, structuré, analysé ?</strong>
+          </p>
+          <p>
+            C'est ce soir-là que Jackbeat est né. Pas dans un laboratoire,
+            pas dans une réunion de projet — mais dans une conversation entre deux frères,
+            autour d'une série télévisée et d'une musique qui nous appartient.
+          </p>
+        </div>
+      </div>
+
+      <!-- Carte Jack + Timeline -->
+      <div class="col-lg-5 fade-up fade-up-2">
+
+        <!-- Hommage Jack -->
+        <div class="jack-tribute mb-4">
+          <div class="jack-avatar-lg">🎧</div>
+          <h3>Pour Jack</h3>
+          <div class="subtitle">L'inspirateur · Le catalyseur · Le frère</div>
+          <p>
+            Ce projet porte ton prénom parce que sans toi, il n'existerait tout simplement pas.
+            Ta curiosité, ton regard sur les choses, et cet épisode de Scorpion que tu m'as
+            partagé ont allumé une étincelle qui est devenue Jackbeat.
+          </p>
+          <p>
+            Tu m'as rappelé que les meilleures idées naissent souvent dans les conversations
+            les plus simples. Merci, petit frère.
+          </p>
+          <div class="dedication">
+            « Jackbeat vous est dédié, Jack. Chaque rythme archivé porte un peu de toi. » 🎵
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     LE CONSTAT — POURQUOI ÇA COMPTE
+══════════════════════════════════════════ -->
+<section class="nh-section" style="background:var(--bg-3);">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-5 fade-up">
+        <div class="nh-section-label">02 — Le constat</div>
+        <h2>Un patrimoine<br>immense,<br><span style="color:var(--red);">fragilisé.</span></h2>
+
+        <!-- Genres pills -->
+        <div class="mt-4">
+          <p style="font-size:0.8rem;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;">
+            Genres à préserver
+          </p>
+          {% for genre, color in [
+            ('Makossa',    '#007A5E'),
+            ('Bikutsi',    '#FCD116'),
+            ('Bend-Skin',  '#CE1126'),
+            ('Assiko',     '#00a87f'),
+            ('Mangambeu',  '#c9a800'),
+            ('Ambasse Bey','#a30d1e'),
+            ('Gospel',     '#2d8a5e'),
+            ('Afrobeat',   '#e8b000'),
+            ('Hip-hop CM', '#4ecdc4'),
+            ('Jazz',       '#ff6b35'),
+            ('Rumba',      '#ffd700'),
+            ('Traditionnel','#888'),
+          ] %}
+            <span class="genre-pill">
+              <span class="dot" style="background:{{ color }};"></span>{{ genre }}
+            </span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-lg-7 fade-up fade-up-1">
+        <div class="nh-prose">
+          <p>
+            Le Cameroun est souvent appelé <strong>« l'Afrique en miniature »</strong> — dix régions,
+            plus de 250 langues, et une richesse musicale qui reflète toute cette diversité.
+            Des sons nés dans les forêts de l'Est jusqu'aux rythmes marins du Littoral,
+            en passant par les griots du Grand Nord.
+          </p>
+          <p>
+            Pourtant, combien d'artistes des années 60, 70, 80 sont-ils en train de tomber
+            dans l'oubli ? Combien de chansons iconiques n'ont aucune fiche documentée,
+            aucun contexte préservé, aucune analyse accessible ?
+          </p>
+          <p>
+            Il ne s'agit pas seulement de nostalgie. Il s'agit de <em>mémoire collective</em>,
+            d'identité culturelle, et de la responsabilité que nous avons envers les générations
+            qui viendront après nous et qui voudront savoir d'où elles viennent musicalement.
+          </p>
+          <p>
+            <strong>Jackbeat est notre réponse à ce constat.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CHRONOLOGIE DU PROJET
+══════════════════════════════════════════ -->
+<section class="nh-section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-5 fade-up">
+        <div class="nh-section-label">03 — Chronologie</div>
+        <h2>Comment le projet<br>a <span style="color:var(--gold);">pris forme.</span></h2>
+        <p style="color:var(--text-dim);font-size:0.95rem;line-height:1.8;margin-top:1rem;max-width:380px;">
+          De l'idée brute née d'une conversation à une application déployée en ligne —
+          voici les grandes étapes du projet.
+        </p>
+      </div>
+
+      <div class="col-lg-7 fade-up fade-up-1">
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-date">Étape 0 — L'idée</div>
+            <h4>🎧 La conversation avec Jack</h4>
+            <p>
+              Un épisode de Scorpion, une question posée par un petit frère curieux,
+              et une idée qui commence à germer : créer une archive numérique
+              de la musique camerounaise.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">Étape 1 — Structure</div>
+            <h4>🏗️ Architecture de l'application</h4>
+            <p>
+              Mise en place du projet Flask, conception de la base de données
+              (artistes, œuvres, admin), structure MVC avec blueprints,
+              configuration multi-environnements.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">Étape 2 — Interface</div>
+            <h4>🎨 Design & formulaires de collecte</h4>
+            <p>
+              Création du design éditorial aux couleurs camerounaises 🟢🔴🟡,
+              formulaires publics de soumission d'artistes et d'œuvres,
+              système de modération admin.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">Étape 3 — Analyse</div>
+            <h4>📊 Dashboard d'analyse descriptive</h4>
+            <p>
+              8 graphiques Plotly interactifs, filtres dynamiques par genre / région /
+              langue / décennie, indicateurs clés, heatmap et tableau de données triable.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">Étape 4 — Histoire</div>
+            <h4>📖 Cette page — Notre Histoire</h4>
+            <p>
+              La mémoire du projet elle-même : pourquoi Jackbeat existe,
+              qui l'a inspiré, quelle mission il porte au-delà du cadre académique.
+            </p>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">Étape 5 → 7 — Déploiement</div>
+            <h4>🚀 Ouverture au public</h4>
+            <p>
+              Interface admin de modération, déploiement sur serveur en ligne,
+              ouverture des contributions publiques pour que Jackbeat vive
+              vraiment au-delà du TP.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     MISSION & VALEURS
+══════════════════════════════════════════ -->
+<section class="nh-section" style="background:var(--bg-3);">
+  <div class="container">
+    <div class="text-center mb-5 fade-up">
+      <div class="nh-section-label justify-content-center">04 — Mission & Valeurs</div>
+      <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;margin:0;">
+        Ce que Jackbeat veut <span style="color:var(--gold);">accomplir.</span>
+      </h2>
+    </div>
+
+    <div class="row g-3">
+
+      <div class="col-md-6 col-lg-3 fade-up fade-up-1">
+        <div class="valeur-card c-green">
+          <div class="valeur-icon" style="background:rgba(0,122,94,0.15);">🎵</div>
+          <h4 style="color:var(--green-l);">Recenser</h4>
+          <p>
+            Constituer une base de données structurée de tous les artistes et
+            œuvres musicales camerounais depuis l'indépendance de 1960.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 fade-up fade-up-2">
+        <div class="valeur-card c-gold">
+          <div class="valeur-icon" style="background:rgba(252,209,22,0.1);">📊</div>
+          <h4 style="color:var(--gold);">Analyser</h4>
+          <p>
+            Produire des analyses descriptives rigoureuses : évolutions temporelles,
+            répartitions géographiques, diversité linguistique, rayonnement international.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 fade-up fade-up-3">
+        <div class="valeur-card c-green">
+          <div class="valeur-icon" style="background:rgba(0,168,127,0.12);">🌍</div>
+          <h4 style="color:var(--green-l);">Partager</h4>
+          <p>
+            Rendre ce patrimoine librement accessible — chercheurs, étudiants,
+            journalistes, passionnés de culture, et diaspora camerounaise du monde entier.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 fade-up fade-up-4">
+        <div class="valeur-card c-red">
+          <div class="valeur-icon" style="background:rgba(206,17,38,0.1);">🔒</div>
+          <h4 style="color:#ff8a98;">Préserver</h4>
+          <p>
+            Créer une archive numérique vivante et pérenne qui résiste au temps,
+            nourrie par la communauté, pour les générations futures.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CONTEXTE ACADÉMIQUE
+══════════════════════════════════════════ -->
+<section class="nh-section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <div class="col-lg-6 fade-up">
+        <div class="nh-section-label">05 — Contexte académique</div>
+        <h2>Un TP qui<br>dépasse le <span style="color:var(--green-l);">cadre.</span></h2>
+        <div class="nh-prose">
+          <p>
+            Jackbeat a été développé dans le cadre du <strong>TP INF 232 EC2</strong>
+            (Analyse de données) à l'université, un travail pratique portant sur
+            le développement d'une application de collecte et d'analyse descriptive
+            des données, intégrant des notions de régression, classification
+            et réduction de dimensionnalité.
+          </p>
+          <p>
+            Mais dès le départ, l'ambition était de ne pas s'arrêter à la note.
+            <em>Pourquoi développer quelque chose d'utile seulement pour un professeur,
+            quand on peut le développer pour tout le monde ?</em>
+          </p>
+          <p>
+            Jackbeat est donc conçu pour rester en ligne, pour accepter des contributions
+            du public, et pour grandir au fil du temps — bien après la remise du TP.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-6 fade-up fade-up-1">
+        <div class="jb-card" style="border-color:rgba(0,122,94,0.3);">
+          <div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.18em;
+                      text-transform:uppercase;color:var(--green-l);margin-bottom:1.5rem;">
+            Fiche technique du projet
+          </div>
+          {% for label, val in [
+            ('Cours',          'INF 232 EC2 — Analyse de données'),
+            ('Type',           'Application web de collecte & analyse'),
+            ('Backend',        'Python · Flask · SQLAlchemy'),
+            ('Visualisation',  'Plotly · Pandas · NumPy'),
+            ('Frontend',       'Bootstrap 5 · CSS3 · JavaScript'),
+            ('Base de données','SQLite (dev) · PostgreSQL (prod)'),
+            ('Déploiement',    'Render.com (serveur cloud gratuit)'),
+          ] %}
+            <div class="d-flex align-items-baseline gap-2 mb-2"
+                 style="border-bottom:1px solid rgba(255,255,255,0.04);padding-bottom:.6rem;">
+              <span style="font-size:0.75rem;color:var(--text-dim);
+                           min-width:120px;letter-spacing:0.04em;">{{ label }}</span>
+              <span style="font-size:0.88rem;color:var(--text);font-weight:500;">{{ val }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CTA FINAL
+══════════════════════════════════════════ -->
+<section class="py-5">
+  <div class="container">
+    <div class="nh-cta fade-up">
+      <h2 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);
+                 font-weight:900;margin-bottom:1rem;">
+        L'archive vous appartient.
+      </h2>
+      <p style="color:var(--text-mid);max-width:560px;margin:0 auto 2.5rem;
+                font-size:1.05rem;line-height:1.85;">
+        Jackbeat grandit avec chaque contribution. Si vous connaissez un artiste,
+        une chanson, un album camerounais — partagez-le.
+        Ensemble, nous bâtissons la mémoire musicale de notre pays.
+      </p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="{{ url_for('collecte_bp.soumettre_artiste') }}" class="btn btn-jb-gold">
+          <i class="bi bi-person-plus me-2"></i>Ajouter un artiste
+        </a>
+        <a href="{{ url_for('collecte_bp.soumettre_oeuvre') }}" class="btn btn-jb-green">
+          <i class="bi bi-music-note-beamed me-2"></i>Ajouter une œuvre
+        </a>
+        <a href="{{ url_for('dashboard_bp.index') }}" class="btn btn-jb-outline">
+          <i class="bi bi-bar-chart-line me-2"></i>Explorer l'archive
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
