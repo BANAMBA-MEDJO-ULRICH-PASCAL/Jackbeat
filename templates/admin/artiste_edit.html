@@ -1,0 +1,74 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Modifier — {{ artiste.nom }}{% endblock %}
+{% block breadcrumb %}
+  <span class="sep">/</span><a href="{{ url_for('admin_bp.artistes') }}">Artistes</a>
+  <span class="sep">/</span>
+  <a href="{{ url_for('admin_bp.artiste_detail', id=artiste.id) }}">{{ artiste.nom }}</a>
+  <span class="sep">/</span><span class="current">Modifier</span>
+{% endblock %}
+{% set pending_artistes_count = 0 %}{% set pending_oeuvres_count = 0 %}
+
+{% block admin_content %}
+<div class="adm-section-header">
+  <h1>Modifier l'artiste</h1>
+</div>
+
+<div style="max-width:640px;">
+  <form method="POST">
+
+    <div class="adm-form-card">
+
+      <div class="adm-form-section">Informations principales</div>
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Nom d'artiste *</label>
+          <input type="text" name="nom" value="{{ artiste.nom }}" class="form-control" required>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Nom réel</label>
+          <input type="text" name="nom_reel" value="{{ artiste.nom_reel or '' }}" class="form-control">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Région d'origine *</label>
+          <select name="region_origine" class="form-select" required>
+            {% for val, lbl in regions %}
+              <option value="{{ val }}" {% if artiste.region_origine == val %}selected{% endif %}>{{ lbl }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Type *</label>
+          <select name="type_artiste" class="form-select" required>
+            {% for val, lbl in [('Soliste_H','Solo Homme'),('Soliste_F','Solo Femme'),('Groupe','Groupe')] %}
+              <option value="{{ val }}" {% if artiste.type_artiste == val %}selected{% endif %}>{{ lbl }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Année de début</label>
+          <input type="number" name="annee_debut" value="{{ artiste.annee_debut or '' }}"
+                 class="form-control" min="1900" max="2030">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Année de fin</label>
+          <input type="number" name="annee_fin" value="{{ artiste.annee_fin or '' }}"
+                 class="form-control" min="1900" max="2030" placeholder="Vide = encore actif">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Biographie</label>
+          <textarea name="biographie" class="form-control" rows="4">{{ artiste.biographie or '' }}</textarea>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-jb-gold">
+          <i class="bi bi-check-lg me-1"></i>Enregistrer
+        </button>
+        <a href="{{ url_for('admin_bp.artiste_detail', id=artiste.id) }}" class="btn btn-jb-outline">
+          Annuler
+        </a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

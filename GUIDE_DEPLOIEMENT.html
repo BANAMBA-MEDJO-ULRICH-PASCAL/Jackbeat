@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jackbeat — Guide de Déploiement Render.com</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --green:#007A5E;--green-l:#00b882;--gold:#FCD116;--red:#CE1126;
+    --bg:#080b0d;--bg-2:#0e1215;--bg-3:#141a1f;--card:#111820;
+    --text:#ede8df;--text-mid:#a89f92;--text-dim:#5c554d;
+    --bdr:rgba(252,209,22,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
+       font-size:15px;line-height:1.75;padding:0 1rem 4rem;}
+  .container{max-width:860px;margin:0 auto}
+  h1,h2,h3{font-family:'Playfair Display',serif}
+
+  /* Header */
+  .guide-header{
+    background:linear-gradient(135deg,var(--bg-3),var(--bg));
+    border-bottom:3px solid transparent;
+    border-image:linear-gradient(90deg,var(--green),var(--gold),var(--red)) 1;
+    padding:3.5rem 0 2.5rem;text-align:center;margin:0 -1rem 3rem;
+  }
+  .guide-header h1{font-size:2.8rem;font-weight:900;
+    background:linear-gradient(135deg,var(--gold),var(--green-l));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .guide-header p{color:var(--text-mid);margin-top:.5rem;font-size:1rem;}
+
+  /* Steps */
+  .step{
+    background:var(--card);border:1px solid var(--bdr);
+    border-radius:14px;padding:2rem 2rem 2rem 5rem;
+    margin-bottom:1.5rem;position:relative;
+  }
+  .step-num{
+    position:absolute;left:1.5rem;top:1.75rem;
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--green));
+    color:#0a0c0d;font-family:'Space Mono',monospace;
+    font-weight:700;font-size:.85rem;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .step h2{font-size:1.25rem;font-weight:700;margin-bottom:.85rem;color:var(--text);}
+  .step h3{font-size:1rem;font-weight:600;color:var(--gold);margin:1.25rem 0 .5rem;}
+  .step p{color:var(--text-mid);margin-bottom:.75rem;font-size:.92rem;}
+  .step ul{color:var(--text-mid);padding-left:1.25rem;font-size:.92rem;}
+  .step ul li{margin-bottom:.4rem;}
+
+  /* Code blocks */
+  pre{
+    background:var(--bg-3);border:1px solid rgba(255,255,255,.07);
+    border-radius:8px;padding:1rem 1.25rem;
+    font-family:'Space Mono',monospace;font-size:.78rem;
+    color:#b5afa6;overflow-x:auto;margin:.75rem 0;
+    line-height:1.6;
+  }
+  code{font-family:'Space Mono',monospace;font-size:.8rem;
+       background:rgba(255,255,255,.06);padding:.1rem .35rem;border-radius:4px;
+       color:var(--green-l);}
+
+  /* Badges */
+  .badge{
+    display:inline-flex;align-items:center;gap:.35rem;
+    font-size:.7rem;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;padding:.2rem .65rem;border-radius:50px;
+    margin:.15rem;
+  }
+  .badge.green{background:rgba(0,122,94,.18);color:var(--green-l);border:1px solid rgba(0,184,130,.25);}
+  .badge.gold {background:rgba(252,209,22,.1);color:var(--gold);border:1px solid rgba(252,209,22,.2);}
+  .badge.red  {background:rgba(206,17,38,.1);color:#ff8a98;border:1px solid rgba(206,17,38,.2);}
+
+  /* Info / Warning boxes */
+  .info-box{
+    padding:.9rem 1.1rem;border-radius:8px;
+    font-size:.88rem;margin:.75rem 0;
+    display:flex;gap:.65rem;align-items:flex-start;
+  }
+  .info-box.tip {background:rgba(0,122,94,.1);border:1px solid rgba(0,184,130,.2);color:var(--green-l);}
+  .info-box.warn{background:rgba(252,209,22,.08);border:1px solid rgba(252,209,22,.2);color:var(--gold);}
+  .info-box.note{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--text-mid);}
+  .info-box .icon{flex-shrink:0;font-size:1.1rem;}
+
+  /* Env table */
+  .env-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem;}
+  .env-table th{background:var(--bg-3);padding:.6rem .85rem;text-align:left;
+    font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);
+    border-bottom:1px solid var(--bdr);}
+  .env-table td{padding:.6rem .85rem;border-bottom:1px solid rgba(255,255,255,.04);
+    vertical-align:top;}
+  .env-table tr:last-child td{border-bottom:none;}
+  .env-table .key{font-family:'Space Mono',monospace;font-size:.78rem;color:var(--green-l);}
+  .env-table .val{color:var(--text-mid);font-size:.82rem;}
+  .env-table .req{color:var(--red);font-size:.7rem;font-weight:700;}
+
+  /* Summary box */
+  .summary{
+    background:linear-gradient(135deg,rgba(0,122,94,.12),rgba(252,209,22,.06));
+    border:1px solid rgba(252,209,22,.2);border-radius:14px;
+    padding:2rem;margin-bottom:2rem;
+  }
+  .summary h2{font-size:1.4rem;margin-bottom:1rem;color:var(--gold);}
+
+  /* Section divider */
+  .divider{
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--gold),var(--green),transparent);
+    opacity:.2;margin:2.5rem 0;
+  }
+
+  a{color:var(--gold);}
+  strong{color:var(--text);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="guide-header">
+  <h1>🚀 Déploiement Jackbeat</h1>
+  <p>Guide complet — Mise en ligne sur Render.com · Étape 7</p>
+</div>
+
+<!-- RÉSUMÉ -->
+<div class="summary">
+  <h2>📋 Vue d'ensemble</h2>
+  <p>Le déploiement se fait en <strong>4 grandes phases</strong> :</p>
+  <ol style="padding-left:1.2rem;color:var(--text-mid);font-size:.92rem;line-height:2;">
+    <li>Mettre le code sur <strong>GitHub</strong> (dépôt gratuit)</li>
+    <li>Créer une base de données <strong>PostgreSQL</strong> sur Render</li>
+    <li>Créer le <strong>service web</strong> Flask sur Render</li>
+    <li>Configurer les <strong>variables d'environnement</strong></li>
+  </ol>
+  <p style="margin-top:1rem;">Durée estimée : <strong>20–30 minutes</strong> · Coût : <strong>Gratuit</strong></p>
+</div>
+
+<div class="divider"></div>
+
+<!-- ÉTAPE 1 — GITHUB -->
+<div class="step">
+  <div class="step-num">1</div>
+  <h2>Créer un dépôt GitHub</h2>
+
+  <div class="info-box note">
+    <span class="icon">ℹ️</span>
+    GitHub est une plateforme qui héberge ton code. Render va lire ton code depuis GitHub pour le déployer.
+  </div>
+
+  <h3>1.1 — Créer un compte GitHub (si tu n'en as pas)</h3>
+  <p>Aller sur <strong>github.com</strong> → Sign up → Créer un compte gratuit.</p>
+
+  <h3>1.2 — Créer un nouveau dépôt</h3>
+  <ul>
+    <li>Cliquer sur le <strong>+</strong> en haut à droite → <strong>New repository</strong></li>
+    <li>Nom du dépôt : <code>jackbeat</code></li>
+    <li>Visibilité : <strong>Public</strong> (obligatoire pour le plan gratuit Render)</li>
+    <li>Ne pas cocher "Add README" (on a déjà les fichiers)</li>
+    <li>Cliquer sur <strong>Create repository</strong></li>
+  </ul>
+
+  <h3>1.3 — Envoyer le code sur GitHub</h3>
+  <p>Ouvre un terminal dans le dossier <code>jackbeat/</code> et exécute :</p>
+  <pre>
+# Initialiser Git
+git init
+git add .
+git commit -m "Initial commit — Jackbeat v1.0"
+
+# Connecter au dépôt GitHub (remplace TON_USERNAME par ton nom GitHub)
+git remote add origin https://github.com/TON_USERNAME/jackbeat.git
+
+# Envoyer le code
+git branch -M main
+git push -u origin main</pre>
+
+  <div class="info-box tip">
+    <span class="icon">✅</span>
+    Si Git te demande un mot de passe, utilise un <strong>Personal Access Token</strong> GitHub
+    (Settings → Developer settings → Personal access tokens → Generate new token).
+  </div>
+</div>
+
+<!-- ÉTAPE 2 — RENDER COMPTE -->
+<div class="step">
+  <div class="step-num">2</div>
+  <h2>Créer un compte Render</h2>
+
+  <p>Aller sur <a href="https://render.com" target="_blank"><strong>render.com</strong></a> → Sign Up</p>
+
+  <div class="info-box tip">
+    <span class="icon">💡</span>
+    <span>Choisir <strong>Sign up with GitHub</strong> — cela connecte automatiquement
+    Render à ton dépôt GitHub sans configuration supplémentaire.</span>
+  </div>
+
+  <ul>
+    <li>Cliquer sur <strong>Sign up with GitHub</strong></li>
+    <li>Autoriser Render à accéder à GitHub</li>
+    <li>Sélectionner le plan <strong>Free</strong></li>
+  </ul>
+</div>
+
+<!-- ÉTAPE 3 — BASE DE DONNÉES -->
+<div class="step">
+  <div class="step-num">3</div>
+  <h2>Créer la base de données PostgreSQL</h2>
+
+  <div class="info-box note">
+    <span class="icon">ℹ️</span>
+    En développement, on utilise SQLite (un fichier local). En production sur Render,
+    on utilise PostgreSQL (un vrai serveur de base de données).
+  </div>
+
+  <h3>3.1 — Créer la base</h3>
+  <ul>
+    <li>Dans le dashboard Render → cliquer sur <strong>New +</strong></li>
+    <li>Choisir <strong>PostgreSQL</strong></li>
+    <li>Remplir :
+      <ul>
+        <li>Name : <code>jackbeat-db</code></li>
+        <li>Database : <code>jackbeat</code></li>
+        <li>User : <code>jackbeat_user</code></li>
+        <li>Region : <strong>Frankfurt (EU Central)</strong> (le plus proche d'Afrique)</li>
+        <li>Plan : <strong>Free</strong></li>
+      </ul>
+    </li>
+    <li>Cliquer sur <strong>Create Database</strong></li>
+  </ul>
+
+  <h3>3.2 — Copier l'URL de connexion</h3>
+  <p>Une fois la base créée, dans la page de la base de données :</p>
+  <ul>
+    <li>Aller dans l'onglet <strong>Info</strong></li>
+    <li>Copier la valeur <strong>External Database URL</strong> (commence par <code>postgresql://</code>)</li>
+    <li>La garder de côté — on en a besoin à l'étape 4</li>
+  </ul>
+
+  <div class="info-box warn">
+    <span class="icon">⚠️</span>
+    <span>Le plan Free de PostgreSQL sur Render <strong>expire après 90 jours</strong>.
+    Pour un projet long terme, prévoir de migrer vers un plan payant (~$7/mois)
+    ou utiliser <strong>Supabase</strong> (PostgreSQL gratuit permanent).</span>
+  </div>
+</div>
+
+<!-- ÉTAPE 4 — SERVICE WEB -->
+<div class="step">
+  <div class="step-num">4</div>
+  <h2>Créer le service Web (l'application)</h2>
+
+  <h3>4.1 — Créer le service</h3>
+  <ul>
+    <li>Dans le dashboard Render → <strong>New +</strong> → <strong>Web Service</strong></li>
+    <li>Choisir <strong>Build and deploy from a Git repository</strong></li>
+    <li>Sélectionner ton dépôt <code>jackbeat</code></li>
+    <li>Cliquer sur <strong>Connect</strong></li>
+  </ul>
+
+  <h3>4.2 — Configurer le service</h3>
+  <p>Remplir les champs suivants :</p>
+  <table class="env-table">
+    <tr><th>Champ Render</th><th>Valeur à entrer</th></tr>
+    <tr>
+      <td class="key">Name</td>
+      <td class="val"><code>jackbeat</code></td>
+    </tr>
+    <tr>
+      <td class="key">Region</td>
+      <td class="val">Frankfurt (EU Central)</td>
+    </tr>
+    <tr>
+      <td class="key">Branch</td>
+      <td class="val"><code>main</code></td>
+    </tr>
+    <tr>
+      <td class="key">Runtime</td>
+      <td class="val">Python 3</td>
+    </tr>
+    <tr>
+      <td class="key">Build Command</td>
+      <td class="val"><code>./build.sh</code></td>
+    </tr>
+    <tr>
+      <td class="key">Start Command</td>
+      <td class="val"><code>gunicorn app:app --workers 2 --threads 2 --timeout 60</code></td>
+    </tr>
+    <tr>
+      <td class="key">Plan</td>
+      <td class="val">Free</td>
+    </tr>
+  </table>
+
+  <div class="info-box warn">
+    <span class="icon">⚠️</span>
+    <span>Ne pas encore cliquer sur <strong>Create Web Service</strong> — d'abord ajouter
+    les variables d'environnement ci-dessous.</span>
+  </div>
+
+  <h3>4.3 — Variables d'environnement</h3>
+  <p>Dans la section <strong>Environment Variables</strong>, ajouter ces variables :</p>
+
+  <table class="env-table">
+    <tr><th>Clé</th><th>Valeur</th><th>Note</th></tr>
+    <tr>
+      <td class="key">FLASK_ENV</td>
+      <td class="val"><code>production</code></td>
+      <td><span class="req">REQUIS</span></td>
+    </tr>
+    <tr>
+      <td class="key">SECRET_KEY</td>
+      <td class="val">Cliquer sur <strong>Generate</strong> dans Render</td>
+      <td><span class="req">REQUIS</span></td>
+    </tr>
+    <tr>
+      <td class="key">DATABASE_URL</td>
+      <td class="val">L'URL copiée à l'étape 3.2</td>
+      <td><span class="req">REQUIS</span></td>
+    </tr>
+    <tr>
+      <td class="key">ADMIN_USERNAME</td>
+      <td class="val"><code>admin</code> (ou ton choix)</td>
+      <td>Modifiable</td>
+    </tr>
+    <tr>
+      <td class="key">ADMIN_PASSWORD</td>
+      <td class="val">Un mot de passe fort de ton choix</td>
+      <td><span class="req">IMPORTANT</span></td>
+    </tr>
+  </table>
+
+  <div class="info-box warn">
+    <span class="icon">🔒</span>
+    <span>Change <strong>ADMIN_PASSWORD</strong> ! N'utilise pas <code>jackbeat2024</code>
+    en production. Choisis quelque chose de fort : ex. <code>JB@Cam2024!</code></span>
+  </div>
+
+  <h3>4.4 — Créer le service</h3>
+  <p>Cliquer sur <strong>Create Web Service</strong>. Le déploiement démarre automatiquement.</p>
+</div>
+
+<!-- ÉTAPE 5 — SUIVRE LE DÉPLOIEMENT -->
+<div class="step">
+  <div class="step-num">5</div>
+  <h2>Suivre le déploiement</h2>
+
+  <p>Render affiche les logs en temps réel. Tu dois voir :</p>
+  <pre>
+📦 Installation des dépendances Python...
+✅ Dépendances installées
+
+🗄️  Initialisation de la base de données...
+✅ Tables créées / vérifiées
+
+🌱 Vérification des données initiales...
+✅ Données de démonstration injectées
+
+✅ Build Jackbeat terminé avec succès !
+
+==> Starting service with 'gunicorn app:app ...'
+[INFO] Starting gunicorn 22.0.0
+[INFO] Listening at: http://0.0.0.0:10000</pre>
+
+  <div class="info-box tip">
+    <span class="icon">✅</span>
+    <span>Si tu vois <strong>"Live"</strong> en vert dans le dashboard Render, l'application est en ligne !</span>
+  </div>
+
+  <h3>Ton URL publique</h3>
+  <p>Render te donne une URL de la forme :</p>
+  <pre>https://jackbeat.onrender.com</pre>
+  <p>C'est <strong>cette URL</strong> que tu envoies à ton professeur ! 🎓</p>
+</div>
+
+<!-- ÉTAPE 6 — VÉRIFICATIONS -->
+<div class="step">
+  <div class="step-num">6</div>
+  <h2>Vérifications post-déploiement</h2>
+
+  <p>Une fois le site en ligne, tester dans cet ordre :</p>
+
+  <table class="env-table">
+    <tr><th>Page</th><th>URL</th><th>Ce qu'on vérifie</th></tr>
+    <tr>
+      <td>Accueil</td>
+      <td><code>/</code></td>
+      <td>Design affiché, compteurs à 10+ (données test)</td>
+    </tr>
+    <tr>
+      <td>Dashboard</td>
+      <td><code>/dashboard/</code></td>
+      <td>Graphiques Plotly affichés</td>
+    </tr>
+    <tr>
+      <td>Collecte</td>
+      <td><code>/collecte/artiste</code></td>
+      <td>Formulaire fonctionnel</td>
+    </tr>
+    <tr>
+      <td>Notre Histoire</td>
+      <td><code>/notre-histoire</code></td>
+      <td>Page complète avec hommage à Jack</td>
+    </tr>
+    <tr>
+      <td>Admin</td>
+      <td><code>/admin/login</code></td>
+      <td>Connexion avec tes identifiants</td>
+    </tr>
+  </table>
+
+  <h3>Tester une soumission publique</h3>
+  <ul>
+    <li>Aller sur <code>/collecte/oeuvre</code></li>
+    <li>Soumettre une œuvre de test</li>
+    <li>Aller dans <code>/admin/oeuvres</code></li>
+    <li>Approuver l'œuvre</li>
+    <li>Vérifier qu'elle apparaît dans <code>/dashboard/</code></li>
+  </ul>
+</div>
+
+<!-- ÉTAPE 7 — EMAIL PROF -->
+<div class="step">
+  <div class="step-num">7</div>
+  <h2>Envoyer le lien au professeur</h2>
+
+  <p>Le professeur demande uniquement le <strong>lien de l'application exécutable</strong>.
+  Voici un modèle d'email :</p>
+
+  <pre style="white-space:pre-wrap;">
+Objet : TP INF 232 EC2 — Application Jackbeat
+
+Bonjour,
+
+Veuillez trouver ci-dessous le lien de mon application
+développée dans le cadre du TP INF 232 EC2 :
+
+🔗 https://jackbeat.onrender.com
+
+Application : Jackbeat — Patrimoine Musical Camerounais
+Description : Application de collecte et d'analyse
+descriptive des données sur la musique camerounaise.
+
+Fonctionnalités :
+- Collecte de données (artistes + œuvres)
+- Analyse descriptive (8 graphiques Plotly interactifs)
+- Filtres dynamiques par genre, région, langue, décennie
+- Interface d'administration avec modération
+- Page "Notre Histoire" — contexte du projet
+
+Cordialement,
+[Votre nom]</pre>
+
+  <div class="info-box warn">
+    <span class="icon">⚠️</span>
+    <span>Sur le plan <strong>Free de Render</strong>, le serveur se met en veille après
+    15 minutes d'inactivité. Le premier chargement peut prendre <strong>30–60 secondes</strong>.
+    Visiter le site une fois avant d'envoyer le lien au prof pour le "réveiller".</span>
+  </div>
+</div>
+
+<!-- RÉSOLUTION DE PROBLÈMES -->
+<div class="step">
+  <div class="step-num">★</div>
+  <h2>Résolution des problèmes fréquents</h2>
+
+  <h3>❌ "Build failed" dans les logs</h3>
+  <pre>
+# Vérifier que build.sh a les permissions d'exécution
+git update-index --chmod=+x build.sh
+git commit -m "Fix: chmod build.sh"
+git push</pre>
+
+  <h3>❌ "Application error" au chargement</h3>
+  <ul>
+    <li>Vérifier les logs Render (onglet <strong>Logs</strong>)</li>
+    <li>Vérifier que <code>DATABASE_URL</code> est bien définie</li>
+    <li>Vérifier que <code>SECRET_KEY</code> est bien définie</li>
+  </ul>
+
+  <h3>❌ Base de données vide (pas de graphiques)</h3>
+  <p>Dans Render, aller dans <strong>Shell</strong> et exécuter :</p>
+  <pre>python seed_data.py</pre>
+
+  <h3>❌ Mise à jour du code</h3>
+  <p>Render redéploie automatiquement à chaque <code>git push</code> :</p>
+  <pre>
+git add .
+git commit -m "Mise à jour : description des changements"
+git push</pre>
+
+  <h3>❌ Changer le mot de passe admin</h3>
+  <p>Dans Render → Environment Variables → modifier <code>ADMIN_PASSWORD</code>
+  → le service redémarre automatiquement avec le nouveau mot de passe.</p>
+</div>
+
+<div class="divider"></div>
+
+<div style="text-align:center;padding:2rem 0;color:var(--text-dim);font-size:.85rem;">
+  <div style="font-family:'Playfair Display',serif;font-size:1.4rem;
+    background:linear-gradient(135deg,var(--gold),var(--green-l));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;margin-bottom:.5rem;">
+    Jackbeat — Patrimoine Musical Camerounais 🇨🇲
+  </div>
+  Guide de déploiement · TP INF 232 EC2
+</div>
+
+</div>
+</body>
+</html>

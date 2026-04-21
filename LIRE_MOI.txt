@@ -1,0 +1,66 @@
+╔══════════════════════════════════════════════════════════╗
+║          JACKBEAT — Patrimoine Musical Camerounais       ║
+╚══════════════════════════════════════════════════════════╝
+
+⚠️  IMPORTANT : Ce projet est une APPLICATION WEB Flask.
+   Les fichiers .html NE PEUVENT PAS être ouverts directement
+   dans un navigateur — ils contiennent du code Jinja2 qui
+   nécessite le serveur Python pour être interprété.
+
+
+▶  DÉMARRAGE RAPIDE (méthode simple)
+────────────────────────────────────────
+  1. Ouvre un terminal dans ce dossier
+  2. Lance :   python lancer_jackbeat.py
+  3. Ouvre :   http://localhost:5000
+
+
+▶  DÉMARRAGE MANUEL (méthode standard)
+────────────────────────────────────────
+  1. Crée un environnement virtuel :
+       python -m venv venv
+
+  2. Active l'environnement :
+       Windows : venv\Scripts\activate
+       Mac/Linux : source venv/bin/activate
+
+  3. Installe les dépendances :
+       pip install -r requirements.txt
+
+  4. (Optionnel) Injecte les données de test :
+       python seed_data.py
+
+  5. Lance l'application :
+       python app.py
+
+  6. Ouvre dans ton navigateur :
+       http://localhost:5000
+
+
+▶  ACCÈS ADMIN
+────────────────────────────────────────
+  URL      : http://localhost:5000/admin
+  Login    : admin
+  Mot de passe : jackbeat2024
+
+
+▶  PAGES DISPONIBLES
+────────────────────────────────────────
+  /                  → Accueil
+  /notre-histoire    → Histoire du projet
+  /collecte/         → Contribuer
+  /dashboard/        → Analyse & graphiques
+  /admin/            → Espace administration
+
+
+▶  STRUCTURE DU PROJET
+────────────────────────────────────────
+  app.py             → Point d'entrée Flask
+  models.py          → Base de données
+  routes/            → Logique des pages
+  templates/         → Pages HTML (Jinja2)
+  static/css/        → Design CSS
+  static/js/         → JavaScript
+  seed_data.py       → Données de test
+
+

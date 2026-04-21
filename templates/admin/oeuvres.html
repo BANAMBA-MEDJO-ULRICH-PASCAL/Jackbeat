@@ -1,0 +1,144 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Œuvres{% endblock %}
+{% block breadcrumb %}
+  <span class="sep">/</span>
+  <a href="{{ url_for('admin_bp.oeuvres') }}">Œuvres</a>
+  <span class="sep">/</span>
+  <span class="current">{{ statut.replace('_',' ').title() }}</span>
+{% endblock %}
+
+{% set pending_artistes_count = 0 %}
+{% set pending_oeuvres_count  = counts.en_attente %}
+
+{% block admin_content %}
+
+<div class="adm-section-header">
+  <h1>Œuvres</h1>
+  <form method="GET" style="display:contents;">
+    <input type="hidden" name="statut" value="{{ statut }}">
+    <input type="text" name="q" value="{{ search }}"
+           class="adm-search" placeholder="🔍 Titre, genre...">
+  </form>
+</div>
+
+<div class="adm-tabs mb-3">
+  {% for val, lbl in [('en_attente','En attente'),('approuve','Approuvées'),('rejete','Rejetées')] %}
+    <a href="{{ url_for('admin_bp.oeuvres', statut=val) }}"
+       class="adm-tab {% if statut == val %}active{% endif %}">
+      {{ lbl }} <span class="count">{{ counts[val] }}</span>
+    </a>
+  {% endfor %}
+</div>
+
+{% if oeuvres %}
+
+<form method="POST" action="{{ url_for('admin_bp.bulk_action') }}" id="bulkForm">
+  <input type="hidden" name="model" value="oeuvre">
+
+  <div class="bulk-bar" id="bulkBar">
+    <span class="count-label"><span id="bulkCount">0</span> sélectionnée(s)</span>
+    <span class="sep">|</span>
+    <button type="submit" name="action" value="approuver" class="adm-btn approve">
+      <i class="bi bi-check2-all"></i> Approuver
+    </button>
+    <button type="submit" name="action" value="rejeter" class="adm-btn reject">
+      <i class="bi bi-x-lg"></i> Rejeter
+    </button>
+    <button type="submit" name="action" value="supprimer" class="adm-btn delete"
+            onclick="return confirm('Supprimer les œuvres sélectionnées ?')">
+      <i class="bi bi-trash"></i> Supprimer
+    </button>
+  </div>
+
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" class="adm-cb select-all"></th>
+          <th>Titre</th>
+          <th>Artiste</th>
+          <th>Genre</th>
+          <th>Langue</th>
+          <th>Année</th>
+          <th>Popularité</th>
+          <th>Soumis</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in oeuvres %}
+        <tr>
+          <td><input type="checkbox" name="ids" value="{{ o.id }}" class="adm-cb row-cb"></td>
+          <td>
+            <a href="{{ url_for('admin_bp.oeuvre_detail', id=o.id) }}"
+               style="color:var(--text);font-weight:600;text-decoration:none;">{{ o.titre }}</a>
+            {% if o.distinction %}
+              <div style="font-size:.73rem;color:var(--gold);">🏆 {{ o.distinction }}</div>
+            {% endif %}
+            {% if o.lien_youtube %}
+              <a href="{{ o.lien_youtube }}" target="_blank"
+                 style="font-size:.72rem;color:var(--red);">
+                <i class="bi bi-youtube"></i> Vidéo
+              </a>
+            {% endif %}
+          </td>
+          <td style="color:var(--gold);font-size:.83rem;white-space:nowrap;">
+            {{ o.artiste.nom if o.artiste else '?' }}
+          </td>
+          <td><span class="card-genre-badge" style="font-size:.68rem;">{{ o.genre_musical }}</span></td>
+          <td style="color:var(--text-dim);font-size:.82rem;">{{ o.langue }}</td>
+          <td style="font-family:var(--font-mono);font-size:.8rem;color:var(--text-mid);">
+            {{ o.annee_sortie }}
+          </td>
+          <td style="color:var(--text-dim);font-size:.78rem;">{{ o.popularite or '—' }}</td>
+          <td style="color:var(--text-dim);font-size:.76rem;white-space:nowrap;">
+            {{ o.soumis_par or '—' }}<br>
+            <span style="font-size:.7rem;">{{ o.created_at.strftime('%d/%m/%y') }}</span>
+          </td>
+          <td>
+            <div class="d-flex gap-1 flex-wrap">
+              <a href="{{ url_for('admin_bp.oeuvre_detail', id=o.id) }}" class="adm-btn view">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{{ url_for('admin_bp.oeuvre_edit', id=o.id) }}" class="adm-btn edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              {% if o.statut != 'approuve' %}
+                <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='approuver') }}"
+                   class="adm-btn approve"><i class="bi bi-check-lg"></i></a>
+              {% endif %}
+              {% if o.statut != 'rejete' %}
+                <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='rejeter') }}"
+                   class="adm-btn reject"><i class="bi bi-x-lg"></i></a>
+              {% endif %}
+              <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='supprimer') }}"
+                 class="adm-btn delete"
+                 onclick="return confirm('Supprimer « {{ o.titre }} » définitivement ?')">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+
+<div style="font-size:.75rem;color:var(--text-dim);margin-top:.6rem;text-align:right;">
+  {{ oeuvres|length }} œuvre(s) affichée(s) ·
+  <a href="{{ url_for('admin_bp.export_csv') }}" style="color:var(--green-l);">
+    <i class="bi bi-download me-1"></i>Exporter CSV
+  </a>
+</div>
+
+{% else %}
+<div class="detail-card text-center py-5">
+  <div style="font-size:3rem;opacity:.3;margin-bottom:1rem;">🎵</div>
+  <h3 style="font-family:var(--font-display);color:var(--text-mid);">
+    {% if search %}Aucun résultat pour « {{ search }} »{% else %}Aucune œuvre dans cette catégorie{% endif %}
+  </h3>
+</div>
+{% endif %}
+
+{% endblock %}
