@@ -83,39 +83,48 @@
   </main>
 
   <!-- ── FOOTER ─────────────────────────────── -->
-  <footer class="jb-footer" id="footer">
+    <footer class="jb-footer">
     <div class="container">
-      <div class="row g-4">
+      <div class="row g-5">
+
+        <!-- Brand & description -->
         <div class="col-lg-4">
-          <div class="footer-brand">Jack<em style="font-style:italic;">beat</em></div>
+          <div class="footer-brand">Jack<em>beat</em></div>
           <div class="footer-flag">
             <span style="background:var(--green);"></span>
             <span style="background:var(--red);"></span>
             <span style="background:var(--gold);"></span>
           </div>
-          <p style="font-size:0.85rem;color:var(--text-dim);max-width:280px;line-height:1.7;">
+          <p class="footer-desc">
             Recenser, préserver et analyser le patrimoine musical camerounais depuis l'indépendance de 1960.
           </p>
         </div>
-        <div class="col-lg-2 offset-lg-2 footer-links">
-          <p style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1rem;">Navigation</p>
+
+        <!-- Navigation -->
+        <div class="col-6 col-lg-2 offset-lg-2 footer-links">
+          <span class="label">Navigation</span>
           <a href="{{ url_for('main_bp.index') }}">Accueil</a>
           <a href="{{ url_for('dashboard_bp.index') }}">Analyse & Stats</a>
           <a href="{{ url_for('collecte_bp.index') }}">Contribuer</a>
           <a href="{{ url_for('main_bp.notre_histoire') }}">Notre Histoire</a>
         </div>
-        <div class="col-lg-3 footer-links">
-          <p style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1rem;">Contribuer</p>
+
+        <!-- Contribuer -->
+        <div class="col-6 col-lg-3 footer-links">
+          <span class="label">Contribuer</span>
           <a href="{{ url_for('collecte_bp.soumettre_artiste') }}">Ajouter un artiste</a>
           <a href="{{ url_for('collecte_bp.soumettre_oeuvre') }}">Ajouter une œuvre</a>
-          <a href="{{ url_for('admin_bp.login') }}" style="color:var(--text-dim);opacity:0.5;font-size:0.78rem;">
-            <i class="bi bi-lock me-1"></i>Admin
+          <a href="{{ url_for('admin_bp.login') }}" style="font-size:.82rem;opacity:.6;">
+            <i class="bi bi-lock me-1"></i>Espace Admin
           </a>
         </div>
+
       </div>
-      <div class="footer-bottom d-flex justify-content-between flex-wrap gap-2">
-        <span>© 2024 Jackbeat — Patrimoine Musical Camerounais. Projet TP INF 232 EC2.</span>
-        <span style="color:var(--green-l);">Fait avec ♥ pour la culture camerounaise 🇨🇲</span>
+
+      <!-- Bottom bar -->
+      <div class="footer-bottom">
+        <span>© 2026 <strong>Jackbeat</strong> — Patrimoine Musical Camerounais · TP INF 232 EC2</span>
+        <span class="love">Fait avec ♥ pour la culture Camerounaise 🇨🇲</span>
       </div>
     </div>
   </footer>

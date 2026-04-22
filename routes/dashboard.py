@@ -14,16 +14,16 @@ PALETTE = ['#007A5E','#FCD116','#CE1126','#00a87f','#c9a800',
 LAYOUT_BASE = dict(
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='DM Sans, sans-serif', color='#b5afa6', size=12),
+    font=dict(family='DM Sans, sans-serif', color='#4a4035', size=12),
     margin=dict(t=36, b=50, l=50, r=20),
-    legend=dict(font=dict(color='#b5afa6'), bgcolor='rgba(0,0,0,0)'),
+    legend=dict(font=dict(color='#4a4035'), bgcolor='rgba(0,0,0,0)'),
 )
 
 AXIS_STYLE = dict(
-    color='#b5afa6',
-    gridcolor='rgba(255,255,255,0.05)',
-    linecolor='rgba(255,255,255,0.08)',
-    zerolinecolor='rgba(255,255,255,0.06)'
+    color='#4a4035',
+    gridcolor='rgba(0,0,0,0.05)',
+    linecolor='rgba(0,0,0,0.1)',
+    zerolinecolor='rgba(0,0,0,0.06)'
 )
 
 
@@ -119,7 +119,7 @@ def chart_decennies(df):
                  color='Nombre',
                  color_continuous_scale=['#007A5E','#FCD116','#CE1126'],
                  text='Nombre')
-    fig.update_traces(textposition='outside', textfont_color='#b5afa6')
+    fig.update_traces(textposition='outside', textfont_color='#4a4035')
     fig.update_coloraxes(showscale=False)
     fig.update_layout(**base_layout('Productions par décennie', h=300,
                                     extra=dict(xaxis=dict(**AXIS_STYLE, tickangle=-20))))
@@ -146,7 +146,7 @@ def chart_regions(df):
                  color='Nombre',
                  color_continuous_scale=['#007A5E','#FCD116','#CE1126'],
                  text='Nombre')
-    fig.update_traces(textposition='outside', textfont_color='#b5afa6')
+    fig.update_traces(textposition='outside', textfont_color='#4a4035')
     fig.update_coloraxes(showscale=False)
     fig.update_layout(**base_layout('Productions par région', h=300,
                                     extra=dict(xaxis=dict(**AXIS_STYLE, tickangle=-30))))
@@ -168,7 +168,7 @@ def chart_popularite(df):
         x=counts['Popularité'], y=counts['Nombre'],
         marker_color=[colors_map.get(p, '#555') for p in counts['Popularité']],
         text=counts['Nombre'], textposition='outside',
-        textfont=dict(color='#b5afa6'),
+        textfont=dict(color='#4a4035'),
         hovertemplate='<b>%{x}</b><br>%{y} œuvre(s)<extra></extra>'
     ))
     fig.update_layout(**base_layout('Rayonnement géographique', h=280))
@@ -188,19 +188,23 @@ def chart_heatmap(df):
         z=pivot.values,
         x=list(pivot.columns),
         y=list(pivot.index),
-        colorscale=[[0,'#0d1317'],[0.3,'#007A5E'],[0.65,'#FCD116'],[1.0,'#CE1126']],
+        colorscale=[[0,'#f0faf6'],[0.25,'#a8dcc8'],[0.55,'#007A5E'],[0.8,'#005540'],[1.0,'#003829']],
         hovertemplate='%{y} — %{x}<br><b>%{z} œuvre(s)</b><extra></extra>',
         showscale=True,
         colorbar=dict(
-            tickfont=dict(color='#b5afa6', size=10),
+            tickfont=dict(color='#4a4035', size=10),
             outlinewidth=0, thickness=12
         )
     ))
-    fig.update_layout(**base_layout('Genres × Décennies (heatmap)', h=340,
-                                    extra=dict(
-                                        xaxis=dict(**AXIS_STYLE, tickangle=-30),
-                                        yaxis=dict(**AXIS_STYLE)
-                                    )))
+    layout = base_layout('Genres × Décennies (heatmap)', h=340,
+                          extra=dict(
+                              xaxis=dict(**AXIS_STYLE, tickangle=-30),
+                              yaxis=dict(**AXIS_STYLE)
+                          ))
+    # Fond blanc explicite pour la heatmap
+    layout['paper_bgcolor'] = '#ffffff'
+    layout['plot_bgcolor']  = '#ffffff'
+    fig.update_layout(**layout)
     return fig_json(fig)
 
 
