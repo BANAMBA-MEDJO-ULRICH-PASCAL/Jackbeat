@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Carte du Cameroun — Jackbeat{% endblock %}
+{% block extra_head %}
+<style>
+.carte-hero{background:linear-gradient(160deg,var(--green-tint) 0%,var(--bg) 100%);border-bottom:1.5px solid var(--bdr);padding:3rem 0 2.5rem;}
+.cameroun-svg{width:100%;max-width:500px;display:block;margin:0 auto;}
+.region-path{fill:var(--green-pale);stroke:#fff;stroke-width:1.5;cursor:pointer;transition:fill .25s,filter .25s;}
+.region-path:hover{fill:rgba(0,122,94,.3);filter:drop-shadow(0 2px 6px rgba(0,122,94,.25));}
+.region-path.active{fill:var(--green);}
+.region-path.has-data{fill:rgba(0,122,94,.2);}
+.region-path.has-data-med{fill:rgba(0,122,94,.42);}
+.region-path.has-data-hi{fill:var(--green);}
+.carte-wrap{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r-lg);padding:1.5rem;box-shadow:var(--shadow-md);position:relative;}
+.map-tooltip{position:absolute;pointer-events:none;background:var(--text);color:#fff;border-radius:var(--r-sm);padding:.45rem .85rem;font-size:.78rem;white-space:nowrap;box-shadow:var(--shadow-lg);opacity:0;transition:opacity .15s;z-index:10;}
+.map-tooltip.visible{opacity:1;}
+.map-tooltip strong{color:var(--gold);}
+.legende{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;font-size:.76rem;color:var(--text-mid);}
+.legende-item{display:flex;align-items:center;gap:.4rem;}
+.legende-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+.region-sidebar{background:var(--bg-2);border:1.5px solid var(--bdr);border-radius:var(--r-lg);padding:1.5rem;height:100%;}
+.region-empty{text-align:center;padding:2rem 1rem;color:var(--text-dim);}
+.region-stat{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--bg-3);font-size:.88rem;}
+.region-stat:last-child{border-bottom:none;}
+.region-stat .val{font-weight:700;color:var(--green);}
+.artiste-mini{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--bg-3);text-decoration:none;color:var(--text);transition:color .2s;}
+.artiste-mini:last-child{border-bottom:none;}
+.artiste-mini:hover{color:var(--green);}
+.artiste-mini-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green-pale),var(--gold-tint));display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;color:var(--green);flex-shrink:0;font-family:var(--font-display);overflow:hidden;}
+.artiste-mini-av img{width:100%;height:100%;object-fit:cover;}
+.region-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem;margin-top:2rem;}
+.region-card{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:.9rem 1.1rem;cursor:pointer;transition:all .22s;}
+.region-card:hover,.region-card.active{border-color:var(--green);background:var(--green-tint);}
+.region-card .rc-name{font-weight:700;font-size:.9rem;margin-bottom:.2rem;}
+.region-card .rc-stats{font-size:.74rem;color:var(--text-dim);display:flex;gap:.6rem;flex-wrap:wrap;}
+.region-card .rc-badge{font-size:.62rem;font-weight:700;padding:.1rem .4rem;border-radius:50px;background:var(--green-pale);color:var(--green);}
+</style>
+{% endblock %}
+{% block content %}
+<section class="carte-hero">
+  <div class="container">
+    <div class="hero-eyebrow"><i class="bi bi-geo-alt-fill me-1"></i>Analyse géographique</div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:.4rem;">
+      Carte du <span style="color:var(--green);">Cameroun</span>
+    </h1>
+    <p style="color:var(--text-dim);font-size:.92rem;">
+      <span class="live-dot"></span>{{ total_artistes }} artiste{{ 's' if total_artistes>1 }} archivé{{ 's' if total_artistes>1 }} · {{ total_oeuvres }} œuvre{{ 's' if total_oeuvres>1 }}
+    </p>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="carte-wrap">
+          <div style="position:relative;">
+            <div class="map-tooltip" id="mapTooltip"></div>
+            <svg class="cameroun-svg" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+              <path class="region-path {% if artistes_par_region.get('Extrême-Nord',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Extrême-Nord',0)>0 %}has-data{% endif %}" id="svg-Extrême-Nord" d="M80 20 L320 20 L300 80 L260 100 L220 90 L180 110 L140 95 L100 105 L70 85 Z" onclick="selectRegion('Extrême-Nord')"/>
+              <text x="190" y="65" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Extrême-Nord</text>
+              <path class="region-path {% if artistes_par_region.get('Nord',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Nord',0)>0 %}has-data{% endif %}" id="svg-Nord" d="M70 85 L100 105 L140 95 L180 110 L220 90 L260 100 L300 80 L310 140 L290 170 L240 180 L200 165 L160 175 L120 160 L80 165 L60 140 Z" onclick="selectRegion('Nord')"/>
+              <text x="185" y="132" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Nord</text>
+              <path class="region-path {% if artistes_par_region.get('Adamaoua',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Adamaoua',0)>0 %}has-data{% endif %}" id="svg-Adamaoua" d="M60 140 L80 165 L120 160 L160 175 L200 165 L240 180 L290 170 L310 140 L330 200 L310 240 L260 250 L220 240 L180 255 L140 245 L100 250 L65 230 L50 190 Z" onclick="selectRegion('Adamaoua')"/>
+              <text x="190" y="207" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Adamaoua</text>
+              <path class="region-path {% if artistes_par_region.get('Nord-Ouest',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Nord-Ouest',0)>0 %}has-data{% endif %}" id="svg-Nord-Ouest" d="M50 190 L65 230 L100 250 L80 290 L50 295 L30 270 L35 230 Z" onclick="selectRegion('Nord-Ouest')"/>
+              <text x="57" y="258" text-anchor="middle" font-size="8" fill="#4a453e" pointer-events="none">N-O</text>
+              <path class="region-path {% if artistes_par_region.get('Ouest',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Ouest',0)>=2 %}has-data-med{% elif artistes_par_region.get('Ouest',0)>0 %}has-data{% endif %}" id="svg-Ouest" d="M80 290 L100 250 L140 245 L155 275 L145 310 L115 320 L85 315 Z" onclick="selectRegion('Ouest')"/>
+              <text x="117" y="284" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Ouest</text>
+              <path class="region-path {% if artistes_par_region.get('Sud-Ouest',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Sud-Ouest',0)>0 %}has-data{% endif %}" id="svg-Sud-Ouest" d="M30 270 L50 295 L80 290 L85 315 L115 320 L110 360 L70 370 L30 340 L20 300 Z" onclick="selectRegion('Sud-Ouest')"/>
+              <text x="62" y="328" text-anchor="middle" font-size="8" fill="#4a453e" pointer-events="none">S-O</text>
+              <path class="region-path {% if artistes_par_region.get('Littoral',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Littoral',0)>=2 %}has-data-med{% elif artistes_par_region.get('Littoral',0)>0 %}has-data{% endif %}" id="svg-Littoral" d="M115 320 L145 310 L175 320 L185 355 L165 380 L130 385 L110 360 Z" onclick="selectRegion('Littoral')"/>
+              <text x="148" y="350" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Littoral</text>
+              <path class="region-path {% if artistes_par_region.get('Centre',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Centre',0)>=2 %}has-data-med{% elif artistes_par_region.get('Centre',0)>0 %}has-data{% endif %}" id="svg-Centre" d="M155 275 L180 255 L220 240 L260 250 L310 240 L330 300 L310 360 L270 370 L230 360 L185 355 L175 320 L145 310 Z" onclick="selectRegion('Centre')"/>
+              <text x="238" y="308" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Centre</text>
+              <path class="region-path {% if artistes_par_region.get('Est',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Est',0)>0 %}has-data{% endif %}" id="svg-Est" d="M310 240 L330 200 L360 220 L375 280 L370 360 L340 390 L310 380 L310 360 L330 300 Z" onclick="selectRegion('Est')"/>
+              <text x="346" y="298" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Est</text>
+              <path class="region-path {% if artistes_par_region.get('Sud',0)>=4 %}has-data-hi{% elif artistes_par_region.get('Sud',0)>0 %}has-data{% endif %}" id="svg-Sud" d="M110 360 L130 385 L165 380 L185 355 L230 360 L270 370 L310 380 L340 390 L330 440 L280 470 L200 475 L130 460 L80 430 L75 390 Z" onclick="selectRegion('Sud')"/>
+              <text x="210" y="425" text-anchor="middle" font-size="9" fill="#4a453e" pointer-events="none">Sud</text>
+            </svg>
+          </div>
+          <div class="legende">
+            <div class="legende-item"><div class="legende-dot" style="background:var(--green-pale);border:1px solid var(--bdr);"></div>Aucune donnée</div>
+            <div class="legende-item"><div class="legende-dot" style="background:rgba(0,122,94,.2);"></div>1 artiste</div>
+            <div class="legende-item"><div class="legende-dot" style="background:rgba(0,122,94,.42);"></div>2–3 artistes</div>
+            <div class="legende-item"><div class="legende-dot" style="background:var(--green);"></div>4+ artistes</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="region-sidebar" id="regionSidebar">
+          <div class="region-empty" id="regionEmpty">
+            <div style="font-size:3rem;opacity:.3;margin-bottom:1rem;">🗺️</div>
+            <h3 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text-mid);">Cliquez sur une région</h3>
+            <p style="font-size:.85rem;color:var(--text-dim);">pour voir les artistes et œuvres archivés.</p>
+            <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--bdr);">
+              <a href="{{ url_for('dashboard_bp.chronologie') }}" class="btn btn-jb-green btn-sm w-100 mb-2">
+                <i class="bi bi-clock-history me-1"></i>Voir la chronologie
+              </a>
+              <a href="{{ url_for('dashboard_bp.export_pdf') }}" class="btn btn-jb-outline btn-sm w-100">
+                <i class="bi bi-file-earmark-pdf me-1"></i>Télécharger rapport PDF
+              </a>
+            </div>
+          </div>
+          <div id="regionContent" style="display:none;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
+              <div style="width:44px;height:44px;border-radius:10px;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">📍</div>
+              <div>
+                <div id="regionName" style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;"></div>
+                <div id="regionSub" style="font-size:.76rem;color:var(--text-dim);"></div>
+              </div>
+            </div>
+            <div id="regionStats"></div>
+            <div id="regionArtistes" style="margin-top:1rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h2 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin-bottom:.75rem;">
+        <span class="title-line"></span>Toutes les régions
+      </h2>
+      <div class="region-grid">
+        {% for region in toutes_regions %}
+          {% set nb_a = artistes_par_region.get(region, 0) %}
+          {% set nb_o = oeuvres_par_region.get(region, 0) %}
+          <div class="region-card" onclick="selectRegion('{{ region }}')">
+            <div class="rc-name">{{ region }}</div>
+            <div class="rc-stats">
+              {% if nb_a > 0 %}
+                <span><i class="bi bi-people me-1" style="color:var(--green);"></i>{{ nb_a }}</span>
+                <span><i class="bi bi-music-note me-1" style="color:var(--gold-d);"></i>{{ nb_o }}</span>
+                {% if top_genre_region.get(region) %}<span class="rc-badge">{{ top_genre_region[region] }}</span>{% endif %}
+              {% else %}
+                <span style="color:var(--text-ghost);">Pas encore de données</span>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="jb-card text-center mt-4 py-4" style="border-color:rgba(0,122,94,.2);">
+      <p style="color:var(--text-dim);font-size:.9rem;margin-bottom:1rem;">
+        Plusieurs régions ne sont pas encore représentées. Enrichissez la carte !
+      </p>
+      <a href="{{ url_for('collecte_bp.soumettre_artiste') }}" class="btn btn-jb-gold btn-sm">
+        <i class="bi bi-person-plus me-2"></i>Ajouter un artiste
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+const DATA_A = {{ artistes_par_region | tojson }};
+const DATA_O = {{ oeuvres_par_region  | tojson }};
+const DATA_G = {{ top_genre_region    | tojson }};
+const ARTISTES = {};
+{% for region, artistes in artistes_detail.items() %}
+ARTISTES[{{ region|tojson }}] = [
+  {% for a in artistes %}
+  {id:{{ a.id }}, nom:{{ a.nom|tojson }}, type:{{ a.type_artiste|tojson }}, nb:{{ a.oeuvres_approuvees|length }}, photo:{{ (a.photo_url or '')|tojson }}},
+  {% endfor %}
+];
+{% endfor %}
+function selectRegion(name) {
+  document.querySelectorAll('.region-path').forEach(p => p.classList.remove('active'));
+  const svgEl = document.getElementById('svg-' + name);
+  if (svgEl) svgEl.classList.add('active');
+  document.querySelectorAll('.region-card').forEach(c => {
+    c.classList.toggle('active', c.querySelector('.rc-name')?.textContent === name);
+  });
+  const nb_a = DATA_A[name] || 0, nb_o = DATA_O[name] || 0, genre = DATA_G[name] || '—';
+  const artistes = ARTISTES[name] || [];
+  document.getElementById('regionEmpty').style.display   = 'none';
+  document.getElementById('regionContent').style.display = 'block';
+  document.getElementById('regionName').textContent = name;
+  document.getElementById('regionSub').textContent  = nb_a > 0 ? `${nb_a} artiste${nb_a>1?'s':''} · ${nb_o} œuvre${nb_o>1?'s':''}` : 'Aucune donnée';
+  document.getElementById('regionStats').innerHTML = nb_a > 0 ? `
+    <div class="region-stat"><span>Artistes archivés</span><span class="val">${nb_a}</span></div>
+    <div class="region-stat"><span>Œuvres archivées</span><span class="val">${nb_o}</span></div>
+    <div class="region-stat"><span>Genre dominant</span><span class="val" style="font-size:.82rem;">${genre}</span></div>
+  ` : `<p style="color:var(--text-dim);font-size:.85rem;text-align:center;padding:1rem 0;">Aucun artiste encore archivé.<br><a href="/collecte/artiste" style="color:var(--green);">Contribuer</a></p>`;
+  document.getElementById('regionArtistes').innerHTML = artistes.length > 0 ? `
+    <div style="font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.6rem;">Artistes</div>
+    ${artistes.map(a => `<a href="/explorer/artiste/${a.id}" class="artiste-mini">
+      <div class="artiste-mini-av">${a.photo ? `<img src="${a.photo}" alt="${a.nom}">` : a.nom[0]}</div>
+      <div><div style="font-size:.88rem;font-weight:600;">${a.nom}</div>
+      <div style="font-size:.72rem;color:var(--text-dim);">${a.type.replace('Soliste_H','Homme').replace('Soliste_F','Femme').replace('Groupe','Groupe')} · ${a.nb} œuvre${a.nb>1?'s':''}</div></div>
+      <i class="bi bi-chevron-right" style="color:var(--text-dim);margin-left:auto;font-size:.8rem;"></i>
+    </a>`).join('')}
+  ` : '';
+  if (window.innerWidth < 992) document.getElementById('regionSidebar').scrollIntoView({behavior:'smooth',block:'start'});
+}
+const tooltip = document.getElementById('mapTooltip');
+document.querySelectorAll('.region-path').forEach(path => {
+  const name = path.id.replace('svg-','');
+  path.addEventListener('mousemove', e => {
+    const rect = path.closest('.carte-wrap').getBoundingClientRect();
+    const nb_a = DATA_A[name]||0, nb_o = DATA_O[name]||0;
+    tooltip.innerHTML = `<strong>${name}</strong> · ${nb_a} artiste${nb_a!==1?'s':''} · ${nb_o} œuvre${nb_o!==1?'s':''}`;
+    tooltip.style.left = (e.clientX-rect.left+12)+'px';
+    tooltip.style.top  = (e.clientY-rect.top+12)+'px';
+    tooltip.classList.add('visible');
+  });
+  path.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+});
+</script>
+{% endblock %}

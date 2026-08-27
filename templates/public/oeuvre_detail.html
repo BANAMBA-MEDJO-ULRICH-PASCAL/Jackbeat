@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %}{{ oeuvre.titre }} — Jackbeat{% endblock %}
+
+{% block extra_head %}
+<style>
+.oeuvre-hero { background:linear-gradient(160deg,var(--green-tint) 0%,var(--bg) 100%); border-bottom:1.5px solid var(--bdr); padding:3.5rem 0 3rem; }
+.yt-embed-wrap { position:relative;padding-bottom:56.25%;height:0;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-lg);background:var(--bg-3); }
+.yt-embed-wrap iframe { position:absolute;inset:0;width:100%;height:100%;border:none; }
+.yt-placeholder { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;cursor:pointer;background:var(--bg-3); }
+.yt-play-big { width:72px;height:72px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.8rem;transition:transform .2s,background .2s;box-shadow:0 4px 16px rgba(206,17,38,.35); }
+.yt-placeholder:hover .yt-play-big { transform:scale(1.08);background:var(--red-l); }
+.yt-thumb-bg { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.7); }
+.info-row { display:flex;align-items:center;gap:.6rem;padding:.65rem 0;border-bottom:1px solid var(--bg-3);font-size:.9rem; }
+.info-row:last-child { border-bottom:none; }
+.info-label { font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);min-width:120px; }
+.like-btn { display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.25rem;border-radius:50px;border:2px solid var(--bdr);background:var(--bg);cursor:pointer;font-size:.88rem;font-weight:600;transition:all .25s;color:var(--text-mid); }
+.like-btn:hover { border-color:var(--red);color:var(--red);background:var(--red-pale); }
+.like-btn.liked { background:var(--red-pale);border-color:var(--red);color:var(--red); }
+.comment-card { background:var(--bg-2);border:1.5px solid var(--bdr);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:.6rem; }
+.comment-author { font-weight:600;font-size:.88rem; }
+.comment-date { font-size:.72rem;color:var(--text-dim);margin-left:.5rem; }
+.comment-text { color:var(--text-mid);font-size:.9rem;line-height:1.7;margin-top:.35rem; }
+.mini-oeuvre-card { background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:.75rem;display:flex;gap:.75rem;align-items:center;text-decoration:none;color:var(--text);transition:all .2s;margin-bottom:.5rem; }
+.mini-oeuvre-card:hover { border-color:var(--green);background:var(--green-tint);color:var(--text); }
+.mini-thumb { width:44px;height:44px;border-radius:4px;object-fit:cover;background:var(--bg-3);flex-shrink:0;display:flex;align-items:center;justify-content:center; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── HERO OEUVRE ────────────────────────────────────────── -->
+<section class="oeuvre-hero">
+  <div class="container">
+    <!-- Fil d'ariane -->
+    <div style="font-size:.8rem;color:var(--text-dim);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+      <a href="{{ url_for('public_bp.artistes') }}" style="color:var(--text-dim);">Explorer</a>
+      <i class="bi bi-chevron-right" style="font-size:.65rem;"></i>
+      {% if oeuvre.artiste %}
+        <a href="{{ url_for('public_bp.artiste_detail', id=oeuvre.artiste.id) }}" style="color:var(--text-dim);">{{ oeuvre.artiste.nom }}</a>
+        <i class="bi bi-chevron-right" style="font-size:.65rem;"></i>
+      {% endif %}
+      <span>{{ oeuvre.titre }}</span>
+    </div>
+
+    <div class="row g-4 align-items-center">
+      <!-- Lecteur YouTube -->
+      <div class="col-lg-6">
+        {% if oeuvre.youtube_id %}
+          <div class="yt-embed-wrap" id="ytWrap">
+            <!-- Placeholder cliquable avant chargement -->
+            <div class="yt-placeholder" id="ytPlaceholder" onclick="loadPlayer()">
+              {% if oeuvre.youtube_thumb %}
+                <img class="yt-thumb-bg" src="{{ oeuvre.youtube_thumb }}" alt="{{ oeuvre.titre }}">
+              {% endif %}
+              <div class="yt-play-big"><i class="bi bi-play-fill"></i></div>
+              <span style="color:#fff;font-weight:600;font-size:.92rem;position:relative;z-index:1;text-shadow:0 1px 4px rgba(0,0,0,.5);">Écouter — {{ oeuvre.titre }}</span>
+            </div>
+          </div>
+        {% else %}
+          <div class="yt-embed-wrap" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;">
+            <div style="font-size:4rem;opacity:.3;">🎵</div>
+            <p style="color:var(--text-dim);text-align:center;font-size:.88rem;">Pas de vidéo disponible pour cette œuvre.<br>
+              <a href="{{ url_for('collecte_bp.soumettre_oeuvre') }}" style="color:var(--green);">Proposer un lien YouTube</a>
+            </p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Infos -->
+      <div class="col-lg-6">
+        <span class="card-genre-badge">{{ oeuvre.genre_musical }}</span>
+        <h1 style="font-family:var(--font-display);font-size:clamp(1.8rem,4vw,3rem);font-weight:900;margin-bottom:.4rem;line-height:1.1;">
+          {{ oeuvre.titre }}
+        </h1>
+        {% if oeuvre.artiste %}
+          <a href="{{ url_for('public_bp.artiste_detail', id=oeuvre.artiste.id) }}"
+             style="font-size:1.05rem;color:var(--green);font-weight:600;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1rem;">
+            <i class="bi bi-person-fill"></i>{{ oeuvre.artiste.nom }}
+          </a>
+        {% endif %}
+
+        <!-- Métadonnées -->
+        <div style="background:var(--bg-2);border:1.5px solid var(--bdr);border-radius:var(--r);padding:.75rem 1.1rem;margin-bottom:1.25rem;">
+          {% for label, val in [
+            ('Année', oeuvre.annee_sortie),
+            ('Type', oeuvre.type_oeuvre),
+            ('Langue', oeuvre.langue),
+            ('Popularité', oeuvre.popularite or '—'),
+            ('Distinction', oeuvre.distinction or '—'),
+          ] %}
+            {% if val and val != '—' %}
+              <div class="info-row">
+                <span class="info-label">{{ label }}</span>
+                <span style="color:var(--text);">
+                  {% if label == 'Distinction' %}🏆 {% endif %}{{ val }}
+                </span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <!-- Stats + like -->
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <button class="like-btn {% if deja_like %}liked{% endif %}" id="likeBtn"
+                  onclick="toggleLike({{ oeuvre.id }}, this)">
+            <span>{% if deja_like %}❤️{% else %}🤍{% endif %}</span>
+            <span id="nbLikes">{{ nb_likes }}</span> like{{ 's' if nb_likes > 1 }}
+          </button>
+          <span style="font-size:.82rem;color:var(--text-dim);">
+            <i class="bi bi-eye me-1"></i>{{ oeuvre.nb_vues or 0 }} vue{{ 's' if oeuvre.nb_vues > 1 }}
+          </span>
+          <a href="{{ url_for('public_bp.signaler', cible_type='oeuvre', id=oeuvre.id) }}"
+             style="font-size:.78rem;color:var(--text-dim);display:inline-flex;align-items:center;gap:.3rem;
+                    padding:.3rem .75rem;border:1.5px solid var(--bdr);border-radius:50px;
+                    text-decoration:none;transition:all .2s;"
+             onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+             onmouseout="this.style.borderColor='';this.style.color=''">
+            <i class="bi bi-flag"></i> Signaler
+          </a>
+        </div>
+
+        {% if oeuvre.description %}
+          <p style="color:var(--text-mid);font-size:.92rem;line-height:1.8;margin-top:1rem;">{{ oeuvre.description }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTENU SECONDAIRE ────────────────────────────────── -->
+<section class="py-4">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- Commentaires -->
+      <div class="col-lg-7">
+        <h2 style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:1.25rem;">
+          <span class="title-line"></span>Commentaires
+          {% if commentaires %}<span style="font-size:.8rem;font-weight:400;color:var(--text-dim);">({{ commentaires|length }})</span>{% endif %}
+        </h2>
+
+        {% if commentaires %}
+          {% for c in commentaires %}
+            <div class="comment-card">
+              <span class="comment-author">{{ c.auteur }}</span>
+              <span class="comment-date">{{ c.created_at.strftime('%d/%m/%Y') }}</span>
+              <p class="comment-text">{{ c.texte }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p style="color:var(--text-dim);font-size:.9rem;margin-bottom:1rem;">Aucun commentaire pour l'instant. Partagez votre souvenir lié à cette chanson !</p>
+        {% endif %}
+
+        <!-- Formulaire -->
+        <div class="jb-form-card mt-3" style="padding:1.25rem;">
+          <div style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:.85rem;font-family:var(--font-mono);">Laisser un souvenir</div>
+          <form method="POST" action="{{ url_for('public_bp.commenter_oeuvre', id=oeuvre.id) }}">
+            <div class="row g-2">
+              <div class="col-md-4">
+                <input type="text" name="auteur" class="form-control" placeholder="Votre prénom *" required maxlength="80">
+              </div>
+              <div class="col-md-8">
+                <textarea name="texte" class="form-control" rows="1" placeholder="Ce que cette chanson vous évoque..." required maxlength="500" style="resize:none;"></textarea>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-jb-gold btn-sm mt-2">
+              <i class="bi bi-send me-1"></i>Publier
+            </button>
+            <span style="font-size:.72rem;color:var(--text-dim);margin-left:.75rem;">Modéré avant publication.</span>
+          </form>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-5">
+
+        <!-- Autres œuvres du même artiste -->
+        {% if autres_oeuvres %}
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:.85rem;">
+            <span class="title-line"></span>Autres œuvres de {{ oeuvre.artiste.nom if oeuvre.artiste }}
+          </h3>
+          {% for o in autres_oeuvres %}
+            <a href="{{ url_for('public_bp.oeuvre_detail', id=o.id) }}" class="mini-oeuvre-card">
+              {% if o.youtube_thumb %}
+                <img class="mini-thumb" src="{{ o.youtube_thumb }}" loading="lazy" onerror="this.outerHTML='<div class=mini-thumb>🎵</div>'">
+              {% else %}
+                <div class="mini-thumb">🎵</div>
+              {% endif %}
+              <div>
+                <div style="font-weight:600;font-size:.88rem;">{{ o.titre }}</div>
+                <div style="font-size:.75rem;color:var(--text-dim);">{{ o.annee_sortie }} · {{ o.genre_musical }}</div>
+              </div>
+            </a>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Même genre -->
+        {% if meme_genre %}
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin:1.5rem 0 .85rem;">
+            <span class="title-line"></span>Dans le même genre
+          </h3>
+          {% for o in meme_genre %}
+            <a href="{{ url_for('public_bp.oeuvre_detail', id=o.id) }}" class="mini-oeuvre-card">
+              {% if o.youtube_thumb %}
+                <img class="mini-thumb" src="{{ o.youtube_thumb }}" loading="lazy" onerror="this.outerHTML='<div class=mini-thumb>🎵</div>'">
+              {% else %}
+                <div class="mini-thumb">🎵</div>
+              {% endif %}
+              <div>
+                <div style="font-weight:600;font-size:.88rem;">{{ o.titre }}</div>
+                <div style="font-size:.75rem;color:var(--text-dim);">
+                  {{ o.artiste.nom if o.artiste }} · {{ o.annee_sortie }}
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const YT_ID = '{{ oeuvre.youtube_id or "" }}';
+
+function loadPlayer() {
+  if (!YT_ID) return;
+  const wrap   = document.getElementById('ytWrap');
+  const src    = `https://www.youtube-nocookie.com/embed/${YT_ID}?autoplay=1&rel=0&modestbranding=1`;
+  wrap.innerHTML = `<div class="yt-embed-wrap" style="padding-bottom:56.25%;height:0;border-radius:var(--r);overflow:hidden;">
+    <iframe style="position:absolute;inset:0;width:100%;height:100%;border:none;"
+      src="${src}" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+  </div>`;
+}
+
+async function toggleLike(oeuvreId, btn) {
+  try {
+    const res  = await fetch(`/explorer/like/oeuvre/${oeuvreId}`, {
+      method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+    const data = await res.json();
+    const nb   = document.getElementById('nbLikes');
+    if (data.liked) {
+      btn.classList.add('liked');
+      btn.innerHTML = `<span>❤️</span> <span id="nbLikes">${data.nb}</span> like${data.nb > 1 ? 's' : ''}`;
+    } else {
+      btn.classList.remove('liked');
+      btn.innerHTML = `<span>🤍</span> <span id="nbLikes">${data.nb}</span> like${data.nb > 1 ? 's' : ''}`;
+    }
+  } catch(e) {}
+}
+</script>
+{% endblock %}

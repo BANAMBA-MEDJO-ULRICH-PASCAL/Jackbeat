@@ -1,0 +1,120 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Commentaires{% endblock %}
+{% block breadcrumb %}<span class="sep">/</span><span class="current">Commentaires</span>{% endblock %}
+{% set pending_artistes_count = 0 %}{% set pending_oeuvres_count = 0 %}
+
+{% block admin_content %}
+<div class="adm-section-header">
+  <h1>Commentaires</h1>
+  <div style="font-size:.78rem;color:var(--text-dim);">
+    <span class="live-dot"></span>{{ counts.attente }} en attente · {{ counts.total }} total
+  </div>
+</div>
+
+<div class="adm-tabs mb-3">
+  {% for val, lbl in [('attente','En attente'),('approuves','Approuvés'),('tous','Tous')] %}
+    <a href="{{ url_for('admin_bp.commentaires', statut=val) }}"
+       class="adm-tab {% if statut_filtre == val %}active{% endif %}">
+      {{ lbl }}
+      <span class="count">{{ counts.attente if val=='attente' else (counts.approuves if val=='approuves' else counts.total) }}</span>
+    </a>
+  {% endfor %}
+</div>
+
+{% if comments %}
+<form method="POST" action="{{ url_for('admin_bp.commentaires_bulk') }}" id="bulkForm">
+  <div class="bulk-bar" id="bulkBar">
+    <span class="count-label"><span id="bulkCount">0</span> sélectionné(s)</span>
+    <span class="sep">|</span>
+    <button type="submit" name="action" value="approuver" class="adm-btn approve">
+      <i class="bi bi-check2-all"></i> Approuver tout
+    </button>
+    <button type="submit" name="action" value="supprimer" class="adm-btn delete"
+            onclick="return confirm('Supprimer les commentaires sélectionnés ?')">
+      <i class="bi bi-trash"></i> Supprimer
+    </button>
+  </div>
+
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" class="adm-cb select-all"></th>
+          <th>Auteur</th>
+          <th>Commentaire</th>
+          <th>Cible</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in comments %}
+          <tr>
+            <td><input type="checkbox" name="ids" value="{{ c.id }}" class="adm-cb row-cb"></td>
+            <td style="font-weight:600;color:var(--text);white-space:nowrap;font-size:.88rem;">
+              {{ c.auteur }}
+            </td>
+            <td style="max-width:320px;">
+              <p style="font-size:.85rem;color:var(--text-mid);margin:0;line-height:1.5;">
+                {{ c.texte[:180] }}{% if c.texte|length > 180 %}…{% endif %}
+              </p>
+            </td>
+            <td style="font-size:.82rem;white-space:nowrap;">
+              {% if c.artiste_id %}
+                <a href="{{ url_for('public_bp.artiste_detail', id=c.artiste_id) }}" target="_blank"
+                   style="color:var(--green);">
+                  <i class="bi bi-person me-1"></i>Artiste #{{ c.artiste_id }}
+                </a>
+              {% elif c.oeuvre_id %}
+                <a href="{{ url_for('public_bp.oeuvre_detail', id=c.oeuvre_id) }}" target="_blank"
+                   style="color:var(--gold-d);">
+                  <i class="bi bi-music-note me-1"></i>Œuvre #{{ c.oeuvre_id }}
+                </a>
+              {% endif %}
+            </td>
+            <td style="color:var(--text-dim);font-size:.76rem;white-space:nowrap;">
+              {{ c.created_at.strftime('%d/%m/%Y %H:%M') }}
+            </td>
+            <td>
+              {% if c.approuve %}
+                <span class="status-badge approuve">● Approuvé</span>
+              {% else %}
+                <span class="status-badge attente">● En attente</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex gap-1 flex-wrap">
+                {% if not c.approuve %}
+                  <a href="{{ url_for('admin_bp.action_commentaire', id=c.id, action='approuver') }}"
+                     class="adm-btn approve" title="Approuver">
+                    <i class="bi bi-check-lg"></i>
+                  </a>
+                {% endif %}
+                <a href="{{ url_for('admin_bp.action_commentaire', id=c.id, action='rejeter') }}"
+                   class="adm-btn delete" title="Supprimer"
+                   onclick="return confirm('Supprimer ce commentaire ?')">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+<div style="font-size:.75rem;color:var(--text-dim);margin-top:.5rem;text-align:right;">
+  {{ comments|length }} commentaire(s) affiché(s)
+</div>
+
+{% else %}
+  <div class="empty-state" style="padding:3rem 0;">
+    <div class="icon">💬</div>
+    <h3 style="font-family:var(--font-display);">Aucun commentaire dans cette catégorie</h3>
+    {% if statut_filtre == 'attente' %}
+      <p style="color:var(--text-dim);">Tout est à jour — aucun commentaire en attente.</p>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

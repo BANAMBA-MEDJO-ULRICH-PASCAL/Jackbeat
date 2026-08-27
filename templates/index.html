@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+
+<!-- ── HERO ───────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <div class="hero-eyebrow fade-up">Cameroun · 1960 — Aujourd'hui</div>
+        <h1 class="fade-up fade-up-1">
+          Le <span class="accent-gold">patrimoine</span><br>
+          musical<br>
+          <span class="accent-green">camerounais</span><br>
+          <em>en un seul endroit.</em>
+        </h1>
+        <p class="hero-sub fade-up fade-up-2">
+          Jackbeat recense, préserve et analyse les artistes et œuvres musicales
+          du Cameroun depuis l'indépendance. Contribuez à sauvegarder cette mémoire collective.
+        </p>
+        <div class="d-flex gap-3 flex-wrap fade-up fade-up-3">
+          <a href="{{ url_for('collecte_bp.index') }}" class="btn btn-jb-gold">
+            <i class="bi bi-plus-circle me-2"></i>Contribuer
+          </a>
+          <a href="{{ url_for('dashboard_bp.index') }}" class="btn btn-jb-green">
+            <i class="bi bi-bar-chart-line me-2"></i>Voir les statistiques
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats live -->
+      <div class="col-lg-5">
+        <div class="row g-3 fade-up fade-up-2">
+          <div class="col-6">
+            <div class="stat-card">
+              <div class="stat-number" data-target="{{ total_oeuvres }}">0</div>
+              <div class="stat-label">
+                <span class="live-dot"></span>Œuvres archivées
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="stat-card">
+              <div class="stat-number" data-target="{{ total_artistes }}">0</div>
+              <div class="stat-label">
+                <span class="live-dot"></span>Artistes recensés
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="stat-card" style="background:linear-gradient(135deg,rgba(0,122,94,0.12),rgba(252,209,22,0.05));">
+              <div class="d-flex align-items-center gap-3">
+                <span style="font-size:2.5rem;">🎵</span>
+                <div>
+                  <div style="font-size:0.78rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;">Genres couverts</div>
+                  <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:var(--gold);">
+                    Makossa · Bikutsi · Afrobeat...
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="tricolor-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DERNIÈRES OEUVRES ──────────────────────────── -->
+<section class="py-5 mt-4" id="dernieres">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <div class="section-title">
+          <span class="title-line"></span>Dernières entrées
+        </div>
+        <div class="section-sub">Récemment ajoutées à l'archive</div>
+      </div>
+      <a href="{{ url_for('dashboard_bp.index') }}" class="btn btn-jb-outline btn-sm d-none d-md-inline-flex">
+        Voir tout <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    {% if dernieres_oeuvres %}
+      <div class="row g-3">
+        {% for oeuvre in dernieres_oeuvres %}
+          <div class="col-md-6 col-lg-4 reveal" style="animation-delay:{{ loop.index0 * 0.08 }}s">
+            <div class="jb-card h-100">
+              <span class="card-genre-badge">{{ oeuvre.genre_musical }}</span>
+              <div class="card-title-jb">{{ oeuvre.titre }}</div>
+              <div class="card-artist">
+                <i class="bi bi-person me-1"></i>{{ oeuvre.artiste.nom if oeuvre.artiste }}
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <span class="card-year"><i class="bi bi-calendar3 me-1"></i>{{ oeuvre.annee_sortie }}</span>
+                {% if oeuvre.popularite %}
+                  <span style="font-size:0.72rem;color:var(--text-dim);">
+                    <i class="bi bi-globe me-1"></i>{{ oeuvre.popularite }}
+                  </span>
+                {% endif %}
+              </div>
+              {% if oeuvre.lien_youtube %}
+                <a href="{{ oeuvre.lien_youtube }}" target="_blank" rel="noopener"
+                   class="mt-2 d-inline-flex align-items-center gap-1"
+                   style="font-size:0.78rem;color:var(--red);">
+                  <i class="bi bi-youtube"></i> Écouter
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="jb-card text-center py-5">
+        <div style="font-size:3rem;opacity:0.3">🎶</div>
+        <p style="color:var(--text-dim);margin-top:1rem;">
+          Aucune œuvre validée pour l'instant.<br>
+          <a href="{{ url_for('collecte_bp.index') }}" class="text-gold">Soyez le premier à contribuer !</a>
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ── CALL TO ACTION ─────────────────────────────── -->
+<section class="py-5">
+  <div class="container">
+    <div class="jb-card text-center py-5"
+         style="background:linear-gradient(135deg,rgba(0,122,94,0.1),rgba(252,209,22,0.06),rgba(206,17,38,0.06));
+                border-color:rgba(252,209,22,0.25);">
+      <h2 class="section-title mb-2">Vous connaissez une chanson camerounaise ?</h2>
+      <p style="color:var(--text-mid);max-width:520px;margin:0 auto 2rem;line-height:1.8;">
+        Chaque contribution enrichit cette archive vivante. Artiste, chanson, album —
+        partagez ce que vous savez.
+      </p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="{{ url_for('collecte_bp.soumettre_artiste') }}" class="btn btn-jb-gold">
+          <i class="bi bi-person-plus me-2"></i>Ajouter un artiste
+        </a>
+        <a href="{{ url_for('collecte_bp.soumettre_oeuvre') }}" class="btn btn-jb-green">
+          <i class="bi bi-music-note-beamed me-2"></i>Ajouter une œuvre
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

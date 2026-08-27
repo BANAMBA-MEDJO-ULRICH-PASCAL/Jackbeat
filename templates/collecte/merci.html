@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Merci pour votre contribution{% endblock %}
+
+{% block content %}
+<section class="merci-wrap">
+  <div class="container text-center">
+    <span class="merci-icon">🎶</span>
+    <h1 style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;margin-bottom:1rem;">
+      Merci pour votre<br><span style="color:var(--gold);">contribution !</span>
+    </h1>
+    <p style="color:var(--text-mid);max-width:480px;margin:0 auto 2.5rem;line-height:1.8;font-size:1.05rem;">
+      Votre soumission a bien été reçue. Elle sera examinée par notre équipe
+      et publiée dans l'archive une fois validée.
+    </p>
+
+    <div class="jb-card d-inline-block px-4 py-3 mb-4"
+         style="background:rgba(0,122,94,0.1);border-color:rgba(0,122,94,0.3);">
+      <i class="bi bi-clock me-2" style="color:var(--green-l);"></i>
+      <span style="color:var(--text-mid);font-size:0.9rem;">
+        Délai de validation habituel : <strong style="color:var(--green-l);">24 à 48 heures</strong>
+      </span>
+    </div>
+
+    <div class="d-flex gap-3 justify-content-center flex-wrap mt-3">
+      <a href="{{ url_for('collecte_bp.index') }}" class="btn btn-jb-gold">
+        <i class="bi bi-plus-circle me-2"></i>Ajouter une autre entrée
+      </a>
+      <a href="{{ url_for('main_bp.index') }}" class="btn btn-jb-outline">
+        <i class="bi bi-house me-2"></i>Retour à l'accueil
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

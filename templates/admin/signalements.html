@@ -1,0 +1,191 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Signalements{% endblock %}
+{% block breadcrumb %}<span class="sep">/</span><span class="current">Signalements</span>{% endblock %}
+{% set pending_artistes_count = 0 %}{% set pending_oeuvres_count = 0 %}
+
+{% block extra_head %}
+<style>
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.45); z-index:9999;
+  align-items:center; justify-content:center;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:var(--bg); border:1.5px solid var(--bdr);
+  border-radius:var(--r-lg); padding:2rem;
+  width:min(480px,90vw); box-shadow:var(--shadow-xl);
+  animation: fadeUp .25s ease;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+.statut-select {
+  width:100%; padding:.6rem 1rem; border:1.5px solid var(--bdr);
+  border-radius:var(--r-sm); background:var(--bg-2); color:var(--text);
+  font-family:var(--font-body); font-size:.9rem;
+}
+.statut-select:focus { border-color:var(--green); outline:none; }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="adm-section-header">
+  <h1>Signalements d'erreurs</h1>
+  <div style="font-size:.78rem;color:var(--text-dim);">
+    <span class="live-dot"></span>{{ counts.nouveau }} nouveau{{ 'x' if counts.nouveau > 1 }}
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="adm-tabs mb-3">
+  {% set total_all = counts.nouveau + counts.en_cours + counts.resolu + counts.rejete %}
+  {% for val, lbl, cnt in [
+    ('nouveau','Nouveaux',counts.nouveau),
+    ('en_cours','En cours',counts.en_cours),
+    ('resolu','Résolus',counts.resolu),
+    ('rejete','Rejetés',counts.rejete),
+    ('tous','Tous',total_all),
+  ] %}
+    <a href="{{ url_for('admin_bp.signalements', statut=val) }}"
+       class="adm-tab {% if statut_filtre == val %}active{% endif %}">
+      {{ lbl }} <span class="count">{{ cnt }}</span>
+    </a>
+  {% endfor %}
+</div>
+
+{% if signalements %}
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead>
+        <tr>
+          <th>Cible</th>
+          <th>Raison</th>
+          <th>Description</th>
+          <th>Contact</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set raison_labels = {
+          'information_incorrecte':'✏️ Info incorrecte',
+          'mauvaise_photo':'🖼️ Photo / lien',
+          'doublon':'🔁 Doublon',
+          'contenu_inapproprie':'🚫 Inapproprié',
+          'annee_incorrecte':'📅 Année',
+          'autre':'💬 Autre'
+        } %}
+        {% set statut_colors = {
+          'nouveau':'attente','en_cours':'attente',
+          'resolu':'approuve','rejete':'rejete'
+        } %}
+        {% for s in signalements %}
+          <tr>
+            <td style="white-space:nowrap;">
+              <a href="{{ s.cible_url }}" target="_blank"
+                 style="color:var(--green);font-weight:600;font-size:.87rem;">
+                <i class="bi bi-{{ 'person' if s.cible_type=='artiste' else 'music-note' }} me-1"></i>
+                {{ s.cible_nom[:28] }}{% if s.cible_nom|length > 28 %}…{% endif %}
+              </a>
+              <div style="font-size:.7rem;color:var(--text-dim);">{{ s.cible_type }}</div>
+            </td>
+            <td style="font-size:.82rem;color:var(--text);">
+              {{ raison_labels.get(s.raison, s.raison) }}
+            </td>
+            <td style="max-width:240px;font-size:.82rem;color:var(--text-mid);">
+              {% if s.description %}
+                {{ s.description[:100] }}{% if s.description|length > 100 %}…{% endif %}
+              {% else %}—{% endif %}
+              {% if s.note_admin %}
+                <div style="margin-top:.3rem;font-size:.73rem;color:var(--green);
+                            border-top:1px solid var(--bg-3);padding-top:.25rem;">
+                  <i class="bi bi-sticky me-1"></i>{{ s.note_admin[:60] }}
+                </div>
+              {% endif %}
+            </td>
+            <td style="font-size:.78rem;color:var(--text-dim);">
+              {{ s.email_contact or '—' }}
+            </td>
+            <td style="font-size:.74rem;color:var(--text-dim);white-space:nowrap;">
+              {{ s.created_at.strftime('%d/%m/%Y') }}
+            </td>
+            <td>
+              <span class="status-badge {{ statut_colors.get(s.statut,'attente') }}">
+                ● {{ s.statut.replace('_',' ').title() }}
+              </span>
+            </td>
+            <td>
+              <button class="adm-btn edit"
+                      onclick="openModal({{ s.id }}, '{{ s.statut }}', `{{ (s.note_admin or '')|e }}`)"
+                      title="Traiter">
+                <i class="bi bi-pencil"></i> Traiter
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:.75rem;color:var(--text-dim);margin-top:.5rem;text-align:right;">
+    {{ signalements|length }} signalement(s) affiché(s)
+  </div>
+
+{% else %}
+  <div class="empty-state" style="padding:3rem 0;">
+    <div class="icon">🚩</div>
+    <h3 style="font-family:var(--font-display);">
+      {% if statut_filtre == 'nouveau' %}Aucun nouveau signalement{% else %}Aucun signalement ici{% endif %}
+    </h3>
+    {% if statut_filtre == 'nouveau' %}
+      <p style="color:var(--text-dim);">Tout est à jour — aucune erreur signalée pour l'instant.</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+<!-- Modal traitement -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <h3 style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;">
+      <i class="bi bi-flag me-2" style="color:var(--red);"></i>Traiter le signalement
+    </h3>
+    <form method="POST" id="modalForm">
+      <div class="mb-3">
+        <label class="form-label">Nouveau statut</label>
+        <select name="statut" class="statut-select" id="modalStatut">
+          <option value="nouveau">🔴 Nouveau</option>
+          <option value="en_cours">🟡 En cours de traitement</option>
+          <option value="resolu">🟢 Résolu — erreur corrigée</option>
+          <option value="rejete">⚫ Rejeté — non pertinent</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Note interne (optionnel)</label>
+        <textarea name="note_admin" id="modalNote" class="form-control" rows="3"
+                  placeholder="Ex : Corrigé — l'année était bien 1973 selon Discogs."></textarea>
+        <div class="form-text">Visible uniquement par les admins.</div>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-jb-gold">
+          <i class="bi bi-check-lg me-1"></i>Enregistrer
+        </button>
+        <button type="button" class="btn btn-jb-outline" onclick="closeModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openModal(id, statut, note) {
+  document.getElementById('modalForm').action = `/admin/signalement/${id}/statut`;
+  document.getElementById('modalStatut').value = statut;
+  document.getElementById('modalNote').value = note;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+</script>
+{% endblock %}

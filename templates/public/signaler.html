@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Signaler une erreur — {{ cible.nom if cible_type == 'artiste' else cible.titre }}{% endblock %}
+
+{% block extra_head %}
+<style>
+.signaler-hero { background:linear-gradient(160deg,var(--red-pale) 0%,var(--bg) 100%); border-bottom:1.5px solid var(--bdr); padding:3rem 0 2.5rem; }
+.raison-card { display:flex;align-items:flex-start;gap:1rem;background:var(--card);border:2px solid var(--bdr);border-radius:var(--r);padding:1rem 1.25rem;cursor:pointer;transition:all .2s;margin-bottom:.5rem;position:relative; }
+.raison-card:hover { border-color:var(--red); background:var(--red-pale); }
+.raison-card input[type=radio] { position:absolute;opacity:0; }
+.raison-card.selected { border-color:var(--red); background:var(--red-pale); }
+.raison-radio { width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s; }
+.raison-card.selected .raison-radio { border-color:var(--red);background:var(--red); }
+.raison-card.selected .raison-radio::after { content:'';width:6px;height:6px;border-radius:50%;background:#fff; }
+.raison-icon  { font-size:1.3rem;flex-shrink:0; }
+.raison-label { font-weight:600;font-size:.92rem;color:var(--text); }
+.raison-sub   { font-size:.78rem;color:var(--text-dim);margin-top:.1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="signaler-hero">
+  <div class="container" style="max-width:660px;">
+    <a href="{{ retour_url }}" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--text-dim);font-size:.85rem;text-decoration:none;margin-bottom:1.5rem;transition:color .2s;"
+       onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color=''">
+      <i class="bi bi-arrow-left"></i> Retour à la fiche
+    </a>
+    <div class="hero-eyebrow" style="color:var(--red);"><i class="bi bi-flag-fill me-1"></i>Signalement d'erreur</div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:900;margin-bottom:1rem;">
+      Signaler une erreur
+    </h1>
+    <div style="display:flex;align-items:center;gap:.75rem;background:var(--bg-3);border:1.5px solid var(--bdr);border-radius:var(--r);padding:.75rem 1.1rem;max-width:460px;">
+      <span style="font-size:1.4rem;">{{ '🎤' if cible_type == 'artiste' else '🎵' }}</span>
+      <div>
+        <div style="font-weight:700;font-family:var(--font-display);font-size:1rem;">{{ cible.nom if cible_type == 'artiste' else cible.titre }}</div>
+        <div style="font-size:.76rem;color:var(--text-dim);">
+          {{ 'Artiste · ' + cible.region_origine if cible_type=='artiste' else 'Œuvre · ' + cible.genre_musical + ' · ' + cible.annee_sortie|string }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container" style="max-width:660px;">
+    <form method="POST" id="signalerForm">
+      <div class="jb-form-card">
+
+        <div class="form-section-title">Quelle est l'erreur ?</div>
+        {% set icons = {'information_incorrecte':'✏️','mauvaise_photo':'🖼️','doublon':'🔁','contenu_inapproprie':'🚫','annee_incorrecte':'📅','autre':'💬'} %}
+        {% set subs  = {'information_incorrecte':'Nom, bio, région, langue…','mauvaise_photo':'Miniature YouTube incorrecte ou lien cassé','doublon':'Cette entrée existe déjà dans l\'archive','contenu_inapproprie':'Contenu offensant ou non-approprié','annee_incorrecte':'L\'année de sortie est erronée','autre':'Autre type d\'erreur'} %}
+        <div id="raisonsContainer">
+          {% for val, lbl in raisons %}
+            <label class="raison-card" onclick="selectRaison(this)">
+              <input type="radio" name="raison" value="{{ val }}" required>
+              <span class="raison-radio"></span>
+              <span class="raison-icon">{{ icons.get(val,'❓') }}</span>
+              <div>
+                <div class="raison-label">{{ lbl }}</div>
+                <div class="raison-sub">{{ subs.get(val,'') }}</div>
+              </div>
+            </label>
+          {% endfor %}
+        </div>
+
+        <div class="form-section-title">Détails (optionnel)</div>
+        <div class="mb-3">
+          <textarea name="description" class="form-control" rows="4"
+                    placeholder="Décrivez l'erreur, précisez la bonne information et sa source si possible…"
+                    maxlength="800"></textarea>
+          <div class="form-text">Max 800 caractères.</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Votre email (optionnel)</label>
+          <input type="email" name="email" class="form-control" placeholder="pour être informé de la correction">
+        </div>
+
+        <div class="d-flex gap-3 flex-wrap mt-4">
+          <button type="submit" class="btn btn-jb-gold" style="background:var(--red);box-shadow:0 4px 14px rgba(206,17,38,.25);">
+            <i class="bi bi-flag-fill me-2"></i>Envoyer le signalement
+          </button>
+          <a href="{{ retour_url }}" class="btn btn-jb-outline">Annuler</a>
+        </div>
+        <p style="font-size:.75rem;color:var(--text-dim);margin-top:1rem;">
+          <i class="bi bi-shield-check me-1" style="color:var(--green);"></i>
+          Votre signalement est anonyme. Aucune donnée personnelle n'est requise.
+        </p>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function selectRaison(card) {
+  document.querySelectorAll('.raison-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  card.querySelector('input[type=radio]').checked = true;
+}
+document.getElementById('signalerForm').addEventListener('submit', function(e) {
+  if (!this.querySelector('input[name=raison]:checked')) {
+    e.preventDefault();
+    const el = document.getElementById('raisonsContainer');
+    el.style.outline = '2px solid var(--red)';
+    el.style.borderRadius = '8px';
+    el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Tableau de bord{% endblock %}
+{% block breadcrumb %}<span class="sep">/</span><span class="current">Tableau de bord</span>{% endblock %}
+
+{% block admin_content %}
+<div class="adm-section-header">
+  <h1>Tableau de bord</h1>
+  <div style="font-size:.78rem;color:var(--text-dim);">
+    <span class="live-dot"></span>{{ stats.soumissions_semaine }} activité(s) cette semaine
+  </div>
+</div>
+
+<div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.6rem;font-family:var(--font-mono);">À modérer</div>
+<div class="row g-2 mb-4">
+  {% for icon, val, lbl, color, href in [
+    ('bi-hourglass-split', stats.total_attente,          'Total en attente',  'var(--red)',    '#'),
+    ('bi-people',          stats.artistes_attente,       'Artistes',          'var(--gold-d)', url_for('admin_bp.artistes')),
+    ('bi-music-note-list', stats.oeuvres_attente,        'Œuvres',            'var(--gold-d)', url_for('admin_bp.oeuvres')),
+    ('bi-chat-left-text',  stats.commentaires_attente,   'Commentaires',      'var(--green)',  url_for('admin_bp.commentaires')),
+    ('bi-flag',            stats.signalements_nouveaux,  'Signalements',      'var(--red)',    url_for('admin_bp.signalements')),
+  ] %}
+    <div class="col-6 col-md-4 col-xl" style="flex:1;min-width:130px;">
+      <a href="{{ href }}" style="text-decoration:none;">
+        <div class="kpi-mini" style="transition:all .2s;cursor:pointer;"
+             onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(0,122,94,.25)'"
+             onmouseout="this.style.transform='';this.style.borderColor=''">
+          <i class="bi {{ icon }}" style="font-size:1.2rem;color:{{ color }};margin-bottom:.3rem;display:block;"></i>
+          <div class="val" style="font-size:1.7rem;-webkit-text-fill-color:{{ color }};color:{{ color }};" data-target="{{ val }}">0</div>
+          <div class="lbl">{{ lbl }}</div>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+<div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.6rem;font-family:var(--font-mono);">Archive publiée</div>
+<div class="row g-2 mb-4">
+  {% for icon, val, lbl, color in [
+    ('bi-check2-circle', stats.oeuvres_approuvees, 'Œuvres publiées',   'var(--green)'),
+    ('bi-people-fill',   stats.artistes_approuves, 'Artistes publiés',  'var(--green)'),
+    ('bi-heart-fill',    stats.total_likes,          'Likes reçus',       'var(--red)'),
+    ('bi-chat-fill',     stats.commentaires_total,   'Commentaires',      'var(--text-mid)'),
+    ('bi-calendar-week', stats.soumissions_semaine,  'Activités/semaine', 'var(--gold-d)'),
+  ] %}
+    <div class="col-6 col-md-4 col-xl" style="flex:1;min-width:130px;">
+      <div class="kpi-mini">
+        <i class="bi {{ icon }}" style="font-size:1.2rem;color:{{ color }};margin-bottom:.3rem;display:block;opacity:.8;"></i>
+        <div class="val" style="font-size:1.7rem;-webkit-text-fill-color:{{ color }};color:{{ color }};" data-target="{{ val }}">0</div>
+        <div class="lbl">{{ lbl }}</div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% if artistes_attente or oeuvres_attente or commentaires_attente or signalements_recents %}
+<div class="row g-3">
+
+  {% if artistes_attente %}
+  <div class="col-lg-6">
+    <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;font-family:var(--font-mono);">
+      <i class="bi bi-people me-1" style="color:var(--gold-d);"></i>Artistes ({{ artistes_attente|length }})
+    </div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead><tr><th>Nom</th><th>Région</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for a in artistes_attente %}
+          <tr>
+            <td><a href="{{ url_for('admin_bp.artiste_detail', id=a.id) }}" style="color:var(--text);font-weight:600;text-decoration:none;font-size:.87rem;">{{ a.nom }}</a></td>
+            <td style="color:var(--text-dim);font-size:.8rem;">{{ a.region_origine }}</td>
+            <td style="color:var(--text-dim);font-size:.74rem;white-space:nowrap;">{{ a.created_at.strftime('%d/%m/%y') }}</td>
+            <td><div class="d-flex gap-1">
+              <a href="{{ url_for('admin_bp.action_artiste', id=a.id, action='approuver') }}" class="adm-btn approve">✓</a>
+              <a href="{{ url_for('admin_bp.action_artiste', id=a.id, action='rejeter') }}" class="adm-btn reject">✗</a>
+            </div></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <a href="{{ url_for('admin_bp.artistes') }}" style="font-size:.74rem;color:var(--green);display:block;margin-top:.35rem;">Voir tous <i class="bi bi-arrow-right ms-1"></i></a>
+  </div>
+  {% endif %}
+
+  {% if oeuvres_attente %}
+  <div class="col-lg-6">
+    <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;font-family:var(--font-mono);">
+      <i class="bi bi-music-note-list me-1" style="color:var(--gold-d);"></i>Œuvres ({{ oeuvres_attente|length }})
+    </div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead><tr><th>Titre</th><th>Genre</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for o in oeuvres_attente %}
+          <tr>
+            <td>
+              <a href="{{ url_for('admin_bp.oeuvre_detail', id=o.id) }}" style="color:var(--text);font-weight:600;text-decoration:none;font-size:.87rem;">{{ o.titre }}</a>
+              <div style="font-size:.72rem;color:var(--green);">{{ o.artiste.nom if o.artiste }}</div>
+            </td>
+            <td><span class="card-genre-badge" style="font-size:.63rem;">{{ o.genre_musical }}</span></td>
+            <td style="color:var(--text-dim);font-size:.74rem;white-space:nowrap;">{{ o.created_at.strftime('%d/%m/%y') }}</td>
+            <td><div class="d-flex gap-1">
+              <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='approuver') }}" class="adm-btn approve">✓</a>
+              <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='rejeter') }}" class="adm-btn reject">✗</a>
+            </div></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <a href="{{ url_for('admin_bp.oeuvres') }}" style="font-size:.74rem;color:var(--green);display:block;margin-top:.35rem;">Voir toutes <i class="bi bi-arrow-right ms-1"></i></a>
+  </div>
+  {% endif %}
+
+  {% if commentaires_attente %}
+  <div class="col-lg-6">
+    <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;font-family:var(--font-mono);">
+      <i class="bi bi-chat-left-text me-1" style="color:var(--green);"></i>Commentaires ({{ commentaires_attente|length }})
+    </div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead><tr><th>Auteur</th><th>Extrait</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for c in commentaires_attente %}
+          <tr>
+            <td style="font-weight:600;color:var(--text);font-size:.87rem;white-space:nowrap;">{{ c.auteur }}</td>
+            <td style="font-size:.82rem;color:var(--text-mid);max-width:180px;">{{ c.texte[:60] }}{% if c.texte|length > 60 %}…{% endif %}</td>
+            <td style="color:var(--text-dim);font-size:.74rem;white-space:nowrap;">{{ c.created_at.strftime('%d/%m/%y') }}</td>
+            <td><div class="d-flex gap-1">
+              <a href="{{ url_for('admin_bp.action_commentaire', id=c.id, action='approuver') }}" class="adm-btn approve" title="Approuver">✓</a>
+              <a href="{{ url_for('admin_bp.action_commentaire', id=c.id, action='rejeter') }}" class="adm-btn delete" title="Supprimer" onclick="return confirm('Supprimer ?')">🗑</a>
+            </div></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <a href="{{ url_for('admin_bp.commentaires') }}" style="font-size:.74rem;color:var(--green);display:block;margin-top:.35rem;">Voir tous <i class="bi bi-arrow-right ms-1"></i></a>
+  </div>
+  {% endif %}
+
+  {% if signalements_recents %}
+  <div class="col-lg-6">
+    <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;font-family:var(--font-mono);">
+      <i class="bi bi-flag me-1" style="color:var(--red);"></i>Signalements ({{ signalements_recents|length }})
+    </div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead><tr><th>Cible</th><th>Raison</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody>
+          {% set rs = {'information_incorrecte':'✏️','mauvaise_photo':'🖼️','doublon':'🔁','contenu_inapproprie':'🚫','annee_incorrecte':'📅','autre':'💬'} %}
+          {% for s in signalements_recents %}
+          <tr>
+            <td style="font-size:.85rem;color:var(--text);font-weight:600;">
+              {{ s.cible_nom[:18] }}{% if s.cible_nom|length > 18 %}…{% endif %}
+              <div style="font-size:.7rem;color:var(--text-dim);">{{ s.cible_type }}</div>
+            </td>
+            <td style="font-size:.82rem;color:var(--text-mid);">{{ rs.get(s.raison,'💬') }} {{ s.raison.replace('_',' ').title() }}</td>
+            <td style="color:var(--text-dim);font-size:.74rem;white-space:nowrap;">{{ s.created_at.strftime('%d/%m/%y') }}</td>
+            <td><a href="{{ url_for('admin_bp.signalements') }}" class="adm-btn view"><i class="bi bi-eye"></i></a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <a href="{{ url_for('admin_bp.signalements') }}" style="font-size:.74rem;color:var(--green);display:block;margin-top:.35rem;">Voir tous <i class="bi bi-arrow-right ms-1"></i></a>
+  </div>
+  {% endif %}
+
+</div>
+{% else %}
+<div class="detail-card text-center py-4 mt-2">
+  <div style="font-size:2.5rem;margin-bottom:.6rem;">🎉</div>
+  <h3 style="font-family:var(--font-display);color:var(--green);font-size:1.2rem;">Tout est à jour !</h3>
+  <p style="color:var(--text-dim);font-size:.88rem;margin:0;">Aucune modération en attente.</p>
+</div>
+{% endif %}
+
+{% if dernieres_approbations %}
+<div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin:2rem 0 .5rem;font-family:var(--font-mono);">
+  <i class="bi bi-check-all me-1" style="color:var(--green);"></i>Dernières approbations
+</div>
+<div class="adm-table-wrap">
+  <table class="adm-table">
+    <thead><tr><th>Titre</th><th>Artiste</th><th>Genre</th><th>Année</th><th>Statut</th></tr></thead>
+    <tbody>
+      {% for o in dernieres_approbations %}
+      <tr>
+        <td style="color:var(--text);font-weight:500;font-size:.88rem;">{{ o.titre }}</td>
+        <td style="color:var(--green);font-size:.83rem;">{{ o.artiste.nom if o.artiste }}</td>
+        <td><span class="card-genre-badge" style="font-size:.65rem;">{{ o.genre_musical }}</span></td>
+        <td style="font-family:var(--font-mono);font-size:.78rem;color:var(--text-dim);">{{ o.annee_sortie }}</td>
+        <td><span class="status-badge approuve">● Approuvé</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% endblock %}

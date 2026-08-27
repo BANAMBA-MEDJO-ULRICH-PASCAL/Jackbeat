@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Chronologie — Jackbeat{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+<style>
+.chrono-hero{background:linear-gradient(160deg,var(--gold-tint) 0%,var(--bg) 100%);border-bottom:1.5px solid var(--bdr);padding:3rem 0 2.5rem;}
+.global-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1rem;margin-bottom:2rem;}
+.gs-card{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:1.1rem 1.25rem;box-shadow:var(--shadow-card);text-align:center;}
+.gs-val{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--green);line-height:1;}
+.gs-lbl{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-top:.3rem;}
+.chart-card{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:1.5rem;box-shadow:var(--shadow-card);margin-bottom:2rem;}
+.chart-card h3{font-family:var(--font-display);font-size:1.1rem;font-weight:700;margin-bottom:.75rem;}
+.timeline-wrap{position:relative;padding-left:2.5rem;}
+.timeline-wrap::before{content:'';position:absolute;left:8px;top:8px;bottom:0;width:2px;background:linear-gradient(180deg,var(--green),var(--gold),var(--red),transparent);border-radius:2px;}
+.decade-block{position:relative;margin-bottom:3rem;}
+.decade-dot{position:absolute;left:-2.15rem;top:4px;width:16px;height:16px;border-radius:50%;background:var(--card);border:3px solid var(--green);box-shadow:0 0 0 3px rgba(0,122,94,.12);transition:all .25s;}
+.decade-block:hover .decade-dot{background:var(--green);transform:scale(1.2);}
+.decade-label{font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:var(--green);margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.decade-badge{font-family:var(--font-body);font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--green-pale);color:var(--green);border:1px solid rgba(0,122,94,.2);border-radius:50px;padding:.15rem .6rem;}
+.decade-summary{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.85rem;font-size:.78rem;color:var(--text-dim);}
+.oeuvre-timeline{display:flex;align-items:center;gap:.85rem;background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);padding:.7rem 1rem;margin-bottom:.45rem;text-decoration:none;color:var(--text);transition:all .2s;box-shadow:var(--shadow-card);}
+.oeuvre-timeline:hover{border-color:var(--green);transform:translateX(4px);color:var(--text);box-shadow:var(--shadow-md);}
+.oeuvre-timeline .thumb{width:44px;height:44px;border-radius:var(--r-sm);object-fit:cover;flex-shrink:0;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.oeuvre-timeline .year-pill{font-family:var(--font-mono);font-size:.7rem;font-weight:700;background:var(--bg-3);color:var(--text-dim);border-radius:50px;padding:.15rem .55rem;flex-shrink:0;}
+.oeuvre-timeline .titre{font-weight:600;font-size:.9rem;line-height:1.2;}
+.oeuvre-timeline .artiste{font-size:.75rem;color:var(--green);margin-top:.1rem;}
+.oeuvre-timeline .yt-icon{color:var(--red);font-size:.95rem;flex-shrink:0;margin-left:auto;}
+.sidebar-sticky{position:sticky;top:80px;}
+.decade-nav-btn{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:var(--r-sm);background:var(--bg-3);border:1.5px solid var(--bdr);font-weight:700;font-size:.8rem;color:var(--text-mid);text-decoration:none;transition:all .2s;}
+.decade-nav-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-tint);}
+</style>
+{% endblock %}
+{% block content %}
+<section class="chrono-hero">
+  <div class="container">
+    <div class="hero-eyebrow"><i class="bi bi-clock-history me-1"></i>Évolution temporelle</div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:.4rem;">
+      Chronologie <span style="color:var(--green);">musicale</span>
+    </h1>
+    <p style="color:var(--text-dim);font-size:.92rem;">{{ annee_min }} → {{ annee_max }} · {{ total_oeuvres }} œuvre{{ 's' if total_oeuvres>1 }} archivée{{ 's' if total_oeuvres>1 }}</p>
+  </div>
+</section>
+<section class="py-4">
+  <div class="container">
+    <div class="global-stats fade-up">
+      <div class="gs-card"><div class="gs-val" data-target="{{ total_oeuvres }}">0</div><div class="gs-lbl">Œuvres</div></div>
+      <div class="gs-card"><div class="gs-val" style="color:var(--gold-d);" data-target="{{ decennies|length }}">0</div><div class="gs-lbl">Décennies</div></div>
+      <div class="gs-card"><div class="gs-val" style="color:var(--red);" data-target="{{ annee_max - annee_min }}">0</div><div class="gs-lbl">Années couvertes</div></div>
+      <div class="gs-card">
+        <div class="gs-val" style="color:var(--text);" data-target="{% set ns=namespace(n=0) %}{% for o in oeuvres %}{% if o.youtube_id %}{% set ns.n=ns.n+1 %}{% endif %}{% endfor %}{{ ns.n }}">0</div>
+        <div class="gs-lbl">Vidéos dispo</div>
+      </div>
+    </div>
+    <div class="chart-card fade-up">
+      <h3><span class="title-line"></span>Productions par année et genre</h3>
+      <div id="chronoChart"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <h2 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700;margin-bottom:1.5rem;">
+          <span class="title-line"></span>Décennie par décennie
+        </h2>
+        <div class="timeline-wrap">
+          {% for dec, info in decennies.items() %}
+            <div class="decade-block reveal" data-delay="{{ loop.index0 * 80 }}" id="dec-{{ dec }}">
+              <div class="decade-dot"></div>
+              <div class="decade-label">
+                {{ dec }}s
+                <span class="decade-badge">{{ info.nb_oeuvres }} œuvre{{ 's' if info.nb_oeuvres>1 }}</span>
+                {% if info.top_genre != '—' %}
+                  <span class="card-genre-badge" style="font-size:.65rem;margin:0;">{{ info.top_genre }}</span>
+                {% endif %}
+              </div>
+              <div class="decade-summary">
+                <span><i class="bi bi-people" style="color:var(--green);"></i> {{ info.artistes|length }} artiste{{ 's' if info.artistes|length>1 }}</span>
+                <span><i class="bi bi-music-note-list" style="color:var(--gold-d);"></i> {{ info.nb_oeuvres }} œuvre{{ 's' if info.nb_oeuvres>1 }}</span>
+                {% if info.artistes %}<span style="color:var(--text-dim);">{{ info.artistes[:3]|join(', ') }}{% if info.artistes|length>3 %}…{% endif %}</span>{% endif %}
+              </div>
+              {% for o in info.oeuvres %}
+                <a href="{{ url_for('public_bp.oeuvre_detail', id=o.id) }}" class="oeuvre-timeline">
+                  {% if o.youtube_thumb %}
+                    <img class="thumb" src="{{ o.youtube_thumb }}" loading="lazy" onerror="this.outerHTML='<div class=thumb>🎵</div>'">
+                  {% else %}
+                    <div class="thumb">🎵</div>
+                  {% endif %}
+                  <span class="year-pill">{{ o.annee_sortie }}</span>
+                  <div style="flex:1;min-width:0;">
+                    <div class="titre">{{ o.titre }}</div>
+                    <div class="artiste">{{ o.artiste.nom if o.artiste }}</div>
+                  </div>
+                  <span class="card-genre-badge" style="font-size:.63rem;flex-shrink:0;margin:0;">{{ o.genre_musical }}</span>
+                  {% if o.youtube_id %}<i class="bi bi-youtube yt-icon"></i>{% endif %}
+                  {% if o.distinction %}<span title="{{ o.distinction }}" style="font-size:.9rem;flex-shrink:0;">🏆</span>{% endif %}
+                </a>
+              {% endfor %}
+            </div>
+          {% endfor %}
+          <div class="decade-block" style="opacity:.35;">
+            <div class="decade-dot" style="border-style:dashed;border-color:var(--text-dim);"></div>
+            <div class="decade-label" style="color:var(--text-dim);font-size:1rem;">
+              Aujourd'hui &amp; demain
+              <span style="font-weight:400;font-size:.75rem;color:var(--text-ghost);">— Archive en cours</span>
+            </div>
+            <div class="oeuvre-timeline" style="border-style:dashed;cursor:default;">
+              <div class="thumb" style="opacity:.4;">✨</div>
+              <div style="color:var(--text-dim);font-size:.88rem;">
+                La prochaine entrée pourrait être la vôtre !
+                <a href="{{ url_for('collecte_bp.soumettre_oeuvre') }}" style="color:var(--green);">Contribuer</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="sidebar-sticky">
+          <div class="jb-card mb-3">
+            <div style="font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.85rem;">Aller à une décennie</div>
+            <div class="d-flex flex-wrap gap-2">
+              {% for dec in decennies.keys() %}
+                <a class="decade-nav-btn" onclick="document.getElementById('dec-{{ dec }}').scrollIntoView({behavior:'smooth',block:'start'});return false;" href="#">{{ dec }}s</a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="jb-card mb-3" style="background:linear-gradient(135deg,var(--green-pale),var(--gold-tint));border-color:rgba(0,122,94,.2);">
+            <div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem;">
+              <i class="bi bi-file-earmark-pdf me-1"></i>Export
+            </div>
+            <h4 style="font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:.4rem;">Rapport PDF complet</h4>
+            <p style="font-size:.82rem;color:var(--text-mid);margin-bottom:.85rem;line-height:1.6;">
+              Genres, langues, régions, décennies et catalogue complet.
+            </p>
+            <a href="{{ url_for('dashboard_bp.export_pdf') }}" class="btn btn-jb-gold btn-sm w-100">
+              <i class="bi bi-download me-2"></i>Télécharger le PDF
+            </a>
+          </div>
+          <div class="jb-card" style="text-align:center;">
+            <div style="font-size:2rem;margin-bottom:.5rem;">🗺️</div>
+            <h4 style="font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:.4rem;">Voir la carte</h4>
+            <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:.75rem;">Répartition géographique par région.</p>
+            <a href="{{ url_for('dashboard_bp.carte') }}" class="btn btn-jb-green btn-sm">
+              <i class="bi bi-geo-alt me-1"></i>Ouvrir la carte
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+const CHART = {{ chart_json | tojson }};
+const CFG = {responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d'],
+             toImageButtonOptions:{filename:'jackbeat_chronologie',format:'png',scale:2}};
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('chronoChart');
+  if (el && CHART && CHART.data) Plotly.newPlot(el, CHART.data, CHART.layout||{}, CFG);
+});
+</script>
+{% endblock %}

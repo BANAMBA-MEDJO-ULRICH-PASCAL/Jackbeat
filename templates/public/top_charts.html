@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block title %}Top Charts — Jackbeat{% endblock %}
+
+{% block extra_head %}
+<style>
+.top-hero {
+  background: linear-gradient(160deg, var(--gold-tint) 0%, var(--bg) 100%);
+  border-bottom: 1.5px solid var(--bdr); padding: 3.5rem 0 2.5rem;
+}
+.top-tab {
+  padding: .55rem 1.4rem; border-radius: 50px; font-size: .85rem; font-weight: 600;
+  border: 2px solid var(--bdr); color: var(--text-mid);
+  text-decoration: none; transition: all .2s; cursor: pointer; background: transparent;
+}
+.top-tab.active, .top-tab:hover { background: var(--green); color: #fff; border-color: var(--green); }
+
+.chart-item {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--card); border: 1.5px solid var(--bdr);
+  border-radius: var(--r); padding: .9rem 1.1rem;
+  text-decoration: none; color: var(--text);
+  transition: all .22s; margin-bottom: .5rem;
+  box-shadow: var(--shadow-card);
+}
+.chart-item:hover { border-color: var(--green); transform: translateX(4px); color: var(--text); box-shadow: var(--shadow-md); }
+
+.chart-rank {
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 900;
+  min-width: 36px; text-align: center; flex-shrink: 0;
+}
+.rank-1 { color: #f0a500; }
+.rank-2 { color: #8a9aaa; }
+.rank-3 { color: #c07a3a; }
+.rank-other { color: var(--text-dim); font-size: 1rem; }
+
+.chart-thumb {
+  width: 52px; height: 52px; border-radius: var(--r-sm);
+  object-fit: cover; background: var(--bg-3); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+}
+
+.chart-info { flex: 1; min-width: 0; }
+.chart-title { font-weight: 700; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chart-sub   { font-size: .78rem; color: var(--text-dim); margin-top: .1rem; }
+.chart-stat  {
+  flex-shrink: 0; font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+  color: var(--green); display: flex; align-items: center; gap: .3rem;
+}
+.chart-stat.likes { color: var(--red); }
+
+/* Panel tabs content */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.artiste-chart-card {
+  background: var(--card); border: 1.5px solid var(--bdr); border-radius: var(--r);
+  padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem;
+  text-decoration: none; color: var(--text); transition: all .2s;
+  margin-bottom: .5rem; box-shadow: var(--shadow-card);
+}
+.artiste-chart-card:hover { border-color: var(--green); transform: translateX(4px); color: var(--text); }
+.artiste-avatar-sm {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-pale), var(--gold-tint));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 1.2rem; font-weight: 900;
+  color: var(--green); flex-shrink: 0; overflow: hidden;
+}
+.artiste-avatar-sm img { width:100%;height:100%;object-fit:cover; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="top-hero">
+  <div class="container">
+    <div class="hero-eyebrow">Patrimoine · Classements</div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:.4rem;">
+      🏆 Top <span style="color:var(--green);">Jackbeat</span>
+    </h1>
+    <p style="color:var(--text-dim);font-size:.92rem;">Les artistes et œuvres les plus populaires de l'archive.</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+
+    <!-- Tabs -->
+    <div class="d-flex gap-2 mb-4 flex-wrap">
+      <button class="top-tab active" onclick="showTab('vues-oeuvres', this)">
+        <i class="bi bi-eye me-1"></i>Œuvres les plus vues
+      </button>
+      <button class="top-tab" onclick="showTab('likes-oeuvres', this)">
+        <i class="bi bi-heart me-1"></i>Œuvres les plus aimées
+      </button>
+      <button class="top-tab" onclick="showTab('artistes', this)">
+        <i class="bi bi-people me-1"></i>Artistes populaires
+      </button>
+    </div>
+
+    <!-- Panel : Œuvres les plus vues -->
+    <div class="tab-panel active" id="panel-vues-oeuvres">
+      <div style="max-width:720px;">
+        {% if top_oeuvres_vues %}
+          {% for o in top_oeuvres_vues %}
+            <a href="{{ url_for('public_bp.oeuvre_detail', id=o.id) }}" class="chart-item">
+              <!-- Rang -->
+              <div class="chart-rank {% if loop.index == 1 %}rank-1{% elif loop.index == 2 %}rank-2{% elif loop.index == 3 %}rank-3{% else %}rank-other{% endif %}">
+                {% if loop.index <= 3 %}{{ ['🥇','🥈','🥉'][loop.index-1] }}{% else %}{{ loop.index }}{% endif %}
+              </div>
+              <!-- Thumb -->
+              {% if o.youtube_thumb %}
+                <img class="chart-thumb" src="{{ o.youtube_thumb }}" loading="lazy"
+                     onerror="this.outerHTML='<div class=chart-thumb>🎵</div>'">
+              {% else %}
+                <div class="chart-thumb">🎵</div>
+              {% endif %}
+              <!-- Info -->
+              <div class="chart-info">
+                <div class="chart-title">{{ o.titre }}</div>
+                <div class="chart-sub">
+                  {{ o.artiste.nom if o.artiste }} · {{ o.annee_sortie }} · {{ o.genre_musical }}
+                </div>
+              </div>
+              <!-- Stat -->
+              <div class="chart-stat">
+                <i class="bi bi-eye"></i> {{ o.nb_vues or 0 }}
+              </div>
+              {% if o.youtube_id %}
+                <i class="bi bi-youtube" style="color:var(--red);font-size:1.1rem;flex-shrink:0;"></i>
+              {% endif %}
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:3rem 0;">
+            <div class="icon">👀</div>
+            <h3>Pas encore de données</h3>
+            <p>Les classements se construisent à mesure que les visiteurs explorent l'archive.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Panel : Œuvres les plus likées -->
+    <div class="tab-panel" id="panel-likes-oeuvres">
+      <div style="max-width:720px;">
+        {% if top_oeuvres_likes %}
+          {% for o, nb in top_oeuvres_likes %}
+            <a href="{{ url_for('public_bp.oeuvre_detail', id=o.id) }}" class="chart-item">
+              <div class="chart-rank {% if loop.index == 1 %}rank-1{% elif loop.index == 2 %}rank-2{% elif loop.index == 3 %}rank-3{% else %}rank-other{% endif %}">
+                {% if loop.index <= 3 %}{{ ['🥇','🥈','🥉'][loop.index-1] }}{% else %}{{ loop.index }}{% endif %}
+              </div>
+              {% if o.youtube_thumb %}
+                <img class="chart-thumb" src="{{ o.youtube_thumb }}" loading="lazy"
+                     onerror="this.outerHTML='<div class=chart-thumb>🎵</div>'">
+              {% else %}
+                <div class="chart-thumb">🎵</div>
+              {% endif %}
+              <div class="chart-info">
+                <div class="chart-title">{{ o.titre }}</div>
+                <div class="chart-sub">{{ o.artiste.nom if o.artiste }} · {{ o.annee_sortie }}</div>
+              </div>
+              <div class="chart-stat likes">
+                <i class="bi bi-heart-fill"></i> {{ nb }}
+              </div>
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:3rem 0;">
+            <div class="icon">❤️</div>
+            <h3>Aucun like encore</h3>
+            <p>Soyez le premier à aimer une œuvre !</p>
+            <a href="{{ url_for('public_bp.artistes') }}" class="btn btn-jb-gold mt-2">Explorer les œuvres</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Panel : Artistes populaires -->
+    <div class="tab-panel" id="panel-artistes">
+      <div style="max-width:720px;">
+        {% if top_artistes %}
+          {% for a in top_artistes %}
+            <a href="{{ url_for('public_bp.artiste_detail', id=a.id) }}" class="artiste-chart-card">
+              <div class="chart-rank {% if loop.index == 1 %}rank-1{% elif loop.index == 2 %}rank-2{% elif loop.index == 3 %}rank-3{% else %}rank-other{% endif %}">
+                {% if loop.index <= 3 %}{{ ['🥇','🥈','🥉'][loop.index-1] }}{% else %}{{ loop.index }}{% endif %}
+              </div>
+              <div class="artiste-avatar-sm">
+                {% if a.photo_url %}<img src="{{ a.photo_url }}" alt="{{ a.nom }}">
+                {% else %}{{ a.nom[0] }}{% endif %}
+              </div>
+              <div class="flex-grow-1">
+                <div style="font-weight:700;font-size:.95rem;">{{ a.nom }}</div>
+                <div style="font-size:.78rem;color:var(--text-dim);">
+                  {{ a.region_origine }} · {{ a.oeuvres_approuvees|length }} œuvre{{ 's' if a.oeuvres_approuvees|length > 1 }}
+                </div>
+              </div>
+              <div class="chart-stat">
+                <i class="bi bi-eye"></i> {{ a.nb_vues or 0 }}
+              </div>
+            </a>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:3rem 0;">
+            <div class="icon">🎤</div>
+            <h3>Pas encore de données</h3>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-5 pt-3" style="border-top:1.5px solid var(--bdr);">
+      <p style="color:var(--text-dim);font-size:.92rem;margin-bottom:1rem;">
+        Ces classements évoluent en temps réel selon les vues et les likes des visiteurs.
+      </p>
+      <a href="{{ url_for('public_bp.artistes') }}" class="btn btn-jb-gold">
+        <i class="bi bi-grid me-2"></i>Explorer tout le catalogue
+      </a>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function showTab(id, btn) {
+  // Masquer tous les panels
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.top-tab').forEach(b => b.classList.remove('active'));
+  // Afficher le panel cible
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+{% endblock %}

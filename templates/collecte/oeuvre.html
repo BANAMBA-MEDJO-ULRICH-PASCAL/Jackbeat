@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Ajouter une Œuvre{% endblock %}
+
+{% block content %}
+<section class="collecte-hero">
+  <div class="container">
+    <div class="hero-eyebrow justify-content-center">
+      <a href="{{ url_for('collecte_bp.index') }}" style="color:var(--text-dim);">Contribuer</a>
+      <i class="bi bi-chevron-right mx-2" style="font-size:0.7rem;"></i> Œuvre
+    </div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(1.8rem,4vw,3rem);font-weight:900;">
+      <span style="color:var(--gold);">Ajouter</span> une œuvre
+    </h1>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container" style="max-width:680px;">
+    <form method="POST" class="needs-validation" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="jb-form-card">
+
+        <!-- L'œuvre -->
+        <div class="form-section-title">L'Œuvre</div>
+        <div class="row g-3">
+          <div class="col-12">
+            {{ form.titre.label(class="form-label") }}
+            {{ form.titre(class="form-control" + (" is-invalid" if form.titre.errors else ""),
+                          placeholder="Ex: Soul Makossa, Ndo Kolo, Kotto Bass...") }}
+            {% for e in form.titre.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="col-md-6">
+            {{ form.type_oeuvre.label(class="form-label") }}
+            {{ form.type_oeuvre(class="form-select") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.annee_sortie.label(class="form-label") }}
+            {{ form.annee_sortie(class="form-control" + (" is-invalid" if form.annee_sortie.errors else ""),
+                                  placeholder="Ex: 1972") }}
+            {% for e in form.annee_sortie.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          </div>
+        </div>
+
+        <!-- L'artiste -->
+        <div class="form-section-title">L'Artiste</div>
+        <div class="col-12">
+          {{ form.artiste_nom.label(class="form-label") }}
+          {{ form.artiste_nom(class="form-control" + (" is-invalid" if form.artiste_nom.errors else ""),
+                              placeholder="Nom exact de l'artiste ou du groupe") }}
+          {% for e in form.artiste_nom.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          <div class="form-text">
+            <i class="bi bi-lightbulb me-1" style="color:var(--gold);"></i>
+            Si l'artiste n'est pas encore dans l'archive, il sera créé automatiquement en attente de validation.
+          </div>
+        </div>
+
+        <!-- Caractéristiques musicales -->
+        <div class="form-section-title">Caractéristiques musicales</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form.genre_musical.label(class="form-label") }}
+            {{ form.genre_musical(class="form-select" + (" is-invalid" if form.genre_musical.errors else "")) }}
+            {% for e in form.genre_musical.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="col-md-6">
+            {{ form.langue.label(class="form-label") }}
+            {{ form.langue(class="form-select" + (" is-invalid" if form.langue.errors else "")) }}
+            {% for e in form.langue.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="col-12">
+            {{ form.popularite.label(class="form-label") }}
+            {{ form.popularite(class="form-select") }}
+          </div>
+        </div>
+
+        <!-- Distinctions & extras -->
+        <div class="form-section-title">Distinctions & Liens</div>
+        <div class="row g-3">
+          <div class="col-12">
+            {{ form.distinction.label(class="form-label") }}
+            {{ form.distinction(class="form-control", placeholder="Ex: Billboard Hot 100, Prix RFI Musique...") }}
+          </div>
+          <div class="col-12">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=3, placeholder="Contexte, anecdote, histoire de cette œuvre...") }}
+          </div>
+          <div class="col-12">
+            {{ form.lien_youtube.label(class="form-label") }}
+            {{ form.lien_youtube(id="lien_youtube", class="form-control",
+                                  placeholder="https://youtube.com/watch?v=...") }}
+            <div class="form-text">Lien vers un enregistrement officiel ou une vidéo YouTube.</div>
+          </div>
+        </div>
+
+        <!-- Soumetteur -->
+        <div class="form-section-title">Votre identité (optionnel)</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form.soumis_par.label(class="form-label") }}
+            {{ form.soumis_par(class="form-control", placeholder="Votre prénom ou pseudo") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.soumis_email.label(class="form-label") }}
+            {{ form.soumis_email(class="form-control" + (" is-invalid" if form.soumis_email.errors else ""),
+                                  placeholder="votre@email.com") }}
+            {% for e in form.soumis_email.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 mt-4 flex-wrap">
+          <button type="submit" class="btn btn-jb-gold">
+            <i class="bi bi-send me-2"></i>Soumettre l'œuvre
+          </button>
+          <a href="{{ url_for('collecte_bp.index') }}" class="btn btn-jb-outline">Annuler</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
