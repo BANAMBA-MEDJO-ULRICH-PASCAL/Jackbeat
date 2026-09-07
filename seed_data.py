@@ -89,17 +89,21 @@ SAMPLE_DATA = [
 
 
 def seed():
+    """Insère ou met à jour les artistes de démonstration par nom (upsert),
+    sans jamais toucher aux artistes/œuvres soumis par les utilisateurs."""
     with app.app_context():
-        if Artiste.query.count() > 0:
-            print("⚠️  Base non vide — suppression et recréation...")
-            Oeuvre.query.delete()
-            Artiste.query.delete()
-            db.session.commit()
-
         for entry in SAMPLE_DATA:
-            artiste = Artiste(**entry['artiste'])
-            db.session.add(artiste)
-            db.session.flush()
+            data = entry['artiste']
+            artiste = Artiste.query.filter_by(nom=data['nom']).first()
+            if artiste is None:
+                artiste = Artiste(**data)
+                db.session.add(artiste)
+                db.session.flush()
+            else:
+                for key, value in data.items():
+                    setattr(artiste, key, value)
+                Oeuvre.query.filter_by(artiste_id=artiste.id).delete()
+
             for o in entry['oeuvres']:
                 oeuvre = Oeuvre(artiste_id=artiste.id, statut='approuve', **o)
                 db.session.add(oeuvre)

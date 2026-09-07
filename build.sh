@@ -34,17 +34,10 @@ with app.app_context():
     print('✅ Base de données migrée')
 "
 
-echo "🌱 Données de démonstration..."
+echo "🌱 Données de démonstration (synchronisation)..."
 python -c "
-from app import create_app
-from models import Artiste
-app = create_app('production')
-with app.app_context():
-    if Artiste.query.count() == 0:
-        import seed_data
-        seed_data.seed()
-    else:
-        print(f'ℹ️  Base existante : {Artiste.query.count()} artistes')
+import seed_data
+seed_data.seed()
 "
 
 echo "✅ Build Jackbeat Phase 1 terminé !"
