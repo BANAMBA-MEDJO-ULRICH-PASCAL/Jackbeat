@@ -1,0 +1,17 @@
+{# Bouton d'action admin qui déclenche un vrai POST protégé CSRF au lieu
+   d'un lien GET — évite qu'une action destructrice (ex: suppression) puisse
+   être déclenchée par un simple lien/image externe (CSRF).
+
+   Le texte de confirmation passe par un attribut data-confirm (échappé
+   comme du texte HTML normal par Jinja) plutôt que d'être injecté dans du
+   JS inline : un nom d'artiste/œuvre contenant une apostrophe ne peut donc
+   pas casser hors de la chaîne JS et exécuter du code arbitraire. #}
+{% macro action_btn(url, cls, label, confirm=None, extra_style=None, title=None) %}
+<form method="POST" action="{{ url }}" class="adm-action-form" style="display:inline-block;"
+      {% if confirm %}data-confirm="{{ confirm }}"{% endif %}>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button type="submit" class="{{ cls }}"
+          {% if extra_style %}style="{{ extra_style }}"{% endif %}
+          {% if title %}title="{{ title }}"{% endif %}>{{ label|safe }}</button>
+</form>
+{% endmacro %}

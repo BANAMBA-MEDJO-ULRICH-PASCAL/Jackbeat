@@ -1,10 +1,13 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
+from werkzeug.middleware.proxy_fix import ProxyFix
 from models import db, Admin
 from config import config
 import os
 
 login_manager = LoginManager()
+csrf = CSRFProtect()
 
 def create_app(config_name=None):
     if config_name is None:
@@ -13,11 +16,17 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
+    # Render est le seul proxy en amont : on ne fait confiance qu'à un seul
+    # saut pour X-Forwarded-For / X-Forwarded-Proto, ce qui empêche un client
+    # de falsifier son IP (utilisée pour l'anti-spam) via ce header.
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+
     db_url = app.config.get('SQLALCHEMY_DATABASE_URI', '')
     if db_url.startswith('postgres://'):
         app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace('postgres://', 'postgresql://', 1)
 
     db.init_app(app)
+    csrf.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'admin_bp.login'
     login_manager.login_message = 'Veuillez vous connecter.'

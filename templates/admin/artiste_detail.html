@@ -1,4 +1,5 @@
 {% extends "admin/base_admin.html" %}
+{% import "admin/_macros.html" as m %}
 {% block title %}{{ artiste.nom }}{% endblock %}
 {% block breadcrumb %}
   <span class="sep">/</span><a href="{{ url_for('admin_bp.artistes') }}">Artistes</a>
@@ -26,22 +27,20 @@
       <i class="bi bi-pencil"></i> Modifier
     </a>
     {% if artiste.statut != 'approuve' %}
-      <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='approuver') }}"
-         class="adm-btn approve"><i class="bi bi-check-lg"></i> Approuver</a>
+      {{ m.action_btn(url_for('admin_bp.action_artiste', id=artiste.id, action='approuver'),
+                      'adm-btn approve', '<i class="bi bi-check-lg"></i> Approuver') }}
     {% endif %}
     {% if artiste.statut != 'rejete' %}
-      <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='rejeter') }}"
-         class="adm-btn reject"><i class="bi bi-x-lg"></i> Rejeter</a>
+      {{ m.action_btn(url_for('admin_bp.action_artiste', id=artiste.id, action='rejeter'),
+                      'adm-btn reject', '<i class="bi bi-x-lg"></i> Rejeter') }}
     {% endif %}
     {% if artiste.statut != 'en_attente' %}
-      <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='remettre_attente') }}"
-         class="adm-btn edit"><i class="bi bi-arrow-counterclockwise"></i> Remettre en attente</a>
+      {{ m.action_btn(url_for('admin_bp.action_artiste', id=artiste.id, action='remettre_attente'),
+                      'adm-btn edit', '<i class="bi bi-arrow-counterclockwise"></i> Remettre en attente') }}
     {% endif %}
-    <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='supprimer') }}"
-       class="adm-btn delete"
-       onclick="return confirm('Supprimer définitivement cet artiste et toutes ses œuvres ?')">
-      <i class="bi bi-trash"></i> Supprimer
-    </a>
+    {{ m.action_btn(url_for('admin_bp.action_artiste', id=artiste.id, action='supprimer'),
+                    'adm-btn delete', '<i class="bi bi-trash"></i> Supprimer',
+                    confirm='Supprimer définitivement cet artiste et toutes ses œuvres ?') }}
   </div>
 </div>
 
@@ -105,8 +104,9 @@
               <td><span class="status-pill {{ o.statut }}" style="font-size:.65rem;">{{ o.statut }}</span></td>
               <td>
                 {% if o.statut != 'approuve' %}
-                  <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='approuver') }}"
-                     class="adm-btn approve" style="padding:.2rem .55rem;font-size:.7rem;">✓</a>
+                  {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=o.id, action='approuver'),
+                                  'adm-btn approve', '✓',
+                                  extra_style='padding:.2rem .55rem;font-size:.7rem;') }}
                 {% endif %}
               </td>
             </tr>

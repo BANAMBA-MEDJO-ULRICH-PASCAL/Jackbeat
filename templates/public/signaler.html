@@ -43,6 +43,7 @@
 <section class="py-4">
   <div class="container" style="max-width:660px;">
     <form method="POST" id="signalerForm">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="jb-form-card">
 
         <div class="form-section-title">Quelle est l'erreur ?</div>

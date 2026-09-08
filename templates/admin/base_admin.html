@@ -422,6 +422,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, 5000);
 });
+
+// Confirmation avant les actions destructrices (formulaires .adm-action-form
+// avec data-confirm). Le texte vient d'un attribut HTML, jamais concaténé
+// dans du JS inline — donc pas de risque d'injection via un nom d'artiste
+// ou de titre d'œuvre contenant des apostrophes.
+document.addEventListener('submit', (e) => {
+  const form = e.target;
+  if (form.matches('.adm-action-form[data-confirm]') && !confirm(form.dataset.confirm)) {
+    e.preventDefault();
+  }
+});
 </script>
 {% block extra_scripts %}{% endblock %}
 </body>

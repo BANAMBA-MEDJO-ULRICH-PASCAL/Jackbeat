@@ -1,4 +1,5 @@
 {% extends "admin/base_admin.html" %}
+{% import "admin/_macros.html" as m %}
 {% block title %}{{ oeuvre.titre }}{% endblock %}
 {% block breadcrumb %}
   <span class="sep">/</span><a href="{{ url_for('admin_bp.oeuvres') }}">Œuvres</a>
@@ -31,22 +32,20 @@
       <i class="bi bi-pencil"></i> Modifier
     </a>
     {% if oeuvre.statut != 'approuve' %}
-      <a href="{{ url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='approuver') }}"
-         class="adm-btn approve"><i class="bi bi-check-lg"></i> Approuver</a>
+      {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='approuver'),
+                      'adm-btn approve', '<i class="bi bi-check-lg"></i> Approuver') }}
     {% endif %}
     {% if oeuvre.statut != 'rejete' %}
-      <a href="{{ url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='rejeter') }}"
-         class="adm-btn reject"><i class="bi bi-x-lg"></i> Rejeter</a>
+      {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='rejeter'),
+                      'adm-btn reject', '<i class="bi bi-x-lg"></i> Rejeter') }}
     {% endif %}
     {% if oeuvre.statut != 'en_attente' %}
-      <a href="{{ url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='remettre_attente') }}"
-         class="adm-btn edit"><i class="bi bi-arrow-counterclockwise"></i> Remettre en attente</a>
+      {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='remettre_attente'),
+                      'adm-btn edit', '<i class="bi bi-arrow-counterclockwise"></i> Remettre en attente') }}
     {% endif %}
-    <a href="{{ url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='supprimer') }}"
-       class="adm-btn delete"
-       onclick="return confirm('Supprimer définitivement cette œuvre ?')">
-      <i class="bi bi-trash"></i> Supprimer
-    </a>
+    {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=oeuvre.id, action='supprimer'),
+                    'adm-btn delete', '<i class="bi bi-trash"></i> Supprimer',
+                    confirm='Supprimer définitivement cette œuvre ?') }}
   </div>
 </div>
 

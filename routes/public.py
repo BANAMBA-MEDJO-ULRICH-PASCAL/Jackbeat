@@ -14,9 +14,12 @@ public_bp = Blueprint('public_bp', __name__)
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def get_ip_hash(req):
-    """Retourne un hash SHA-256 de l'IP du visiteur (anonymisation RGPD)."""
-    ip = req.headers.get('X-Forwarded-For', req.remote_addr or '0.0.0.0')
-    ip = ip.split(',')[0].strip()
+    """Retourne un hash SHA-256 de l'IP du visiteur (anonymisation RGPD).
+
+    req.remote_addr est résolu par ProxyFix (app.py) à partir du seul saut
+    de proxy de confiance (Render) — un client ne peut donc pas falsifier
+    son IP via un en-tête X-Forwarded-For pour contourner l'anti-spam."""
+    ip = req.remote_addr or '0.0.0.0'
     return hashlib.sha256(ip.encode()).hexdigest()
 
 

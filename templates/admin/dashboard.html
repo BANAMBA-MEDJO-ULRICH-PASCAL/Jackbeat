@@ -1,4 +1,5 @@
 {% extends "admin/base_admin.html" %}
+{% import "admin/_macros.html" as m %}
 {% block title %}Tableau de bord{% endblock %}
 {% block breadcrumb %}<span class="sep">/</span><span class="current">Tableau de bord</span>{% endblock %}
 
@@ -70,8 +71,8 @@
             <td style="color:var(--text-dim);font-size:.8rem;">{{ a.region_origine }}</td>
             <td style="color:var(--text-dim);font-size:.74rem;white-space:nowrap;">{{ a.created_at.strftime('%d/%m/%y') }}</td>
             <td><div class="d-flex gap-1">
-              <a href="{{ url_for('admin_bp.action_artiste', id=a.id, action='approuver') }}" class="adm-btn approve">✓</a>
-              <a href="{{ url_for('admin_bp.action_artiste', id=a.id, action='rejeter') }}" class="adm-btn reject">✗</a>
+              {{ m.action_btn(url_for('admin_bp.action_artiste', id=a.id, action='approuver'), 'adm-btn approve', '✓') }}
+              {{ m.action_btn(url_for('admin_bp.action_artiste', id=a.id, action='rejeter'), 'adm-btn reject', '✗') }}
             </div></td>
           </tr>
           {% endfor %}
@@ -100,8 +101,8 @@
             <td><span class="card-genre-badge" style="font-size:.63rem;">{{ o.genre_musical }}</span></td>
             <td style="color:var(--text-dim);font-size:.74rem;white-space:nowrap;">{{ o.created_at.strftime('%d/%m/%y') }}</td>
             <td><div class="d-flex gap-1">
-              <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='approuver') }}" class="adm-btn approve">✓</a>
-              <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='rejeter') }}" class="adm-btn reject">✗</a>
+              {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=o.id, action='approuver'), 'adm-btn approve', '✓') }}
+              {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=o.id, action='rejeter'), 'adm-btn reject', '✗') }}
             </div></td>
           </tr>
           {% endfor %}
@@ -127,8 +128,8 @@
             <td style="font-size:.82rem;color:var(--text-mid);max-width:180px;">{{ c.texte[:60] }}{% if c.texte|length > 60 %}…{% endif %}</td>
             <td style="color:var(--text-dim);font-size:.74rem;white-space:nowrap;">{{ c.created_at.strftime('%d/%m/%y') }}</td>
             <td><div class="d-flex gap-1">
-              <a href="{{ url_for('admin_bp.action_commentaire', id=c.id, action='approuver') }}" class="adm-btn approve" title="Approuver">✓</a>
-              <a href="{{ url_for('admin_bp.action_commentaire', id=c.id, action='rejeter') }}" class="adm-btn delete" title="Supprimer" onclick="return confirm('Supprimer ?')">🗑</a>
+              {{ m.action_btn(url_for('admin_bp.action_commentaire', id=c.id, action='approuver'), 'adm-btn approve', '✓', title='Approuver') }}
+              {{ m.action_btn(url_for('admin_bp.action_commentaire', id=c.id, action='rejeter'), 'adm-btn delete', '🗑', confirm='Supprimer ?', title='Supprimer') }}
             </div></td>
           </tr>
           {% endfor %}

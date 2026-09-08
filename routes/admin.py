@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from flask import (Blueprint, render_template, redirect, url_for,
                    flash, request, Response, jsonify)
 from flask_login import login_user, logout_user, login_required, current_user
@@ -5,6 +6,18 @@ from flask_wtf.csrf import generate_csrf
 from models import db, Admin, Artiste, Oeuvre, Like, Commentaire, Signalement
 from datetime import datetime, timedelta
 import csv, io
+
+
+def _safe_next_url(target):
+    """N'autorise que les redirections relatives internes (anti open-redirect)."""
+    if not target:
+        return None
+    parsed = urlparse(target)
+    if parsed.netloc or parsed.scheme:
+        return None
+    if not target.startswith('/') or target.startswith('//'):
+        return None
+    return target
 
 admin_bp = Blueprint('admin_bp', __name__)
 
@@ -27,7 +40,7 @@ def login():
         if admin and admin.check_password(password):
             login_user(admin, remember=True)
             flash('Connexion réussie. Bienvenue dans l\'espace admin Jackbeat.', 'success')
-            return redirect(request.args.get('next') or url_for('admin_bp.dashboard'))
+            return redirect(_safe_next_url(request.args.get('next')) or url_for('admin_bp.dashboard'))
         else:
             error = 'Identifiants incorrects. Veuillez réessayer.'
 
@@ -130,7 +143,7 @@ def artiste_detail(id):
                            artiste=artiste, oeuvres=oeuvres)
 
 
-@admin_bp.route('/artiste/<int:id>/action/<action>')
+@admin_bp.route('/artiste/<int:id>/action/<action>', methods=['POST'])
 @login_required
 def action_artiste(id, action):
     artiste = Artiste.query.get_or_404(id)
@@ -221,7 +234,7 @@ def oeuvre_detail(id):
     return render_template('admin/oeuvre_detail.html', oeuvre=oeuvre)
 
 
-@admin_bp.route('/oeuvre/<int:id>/action/<action>')
+@admin_bp.route('/oeuvre/<int:id>/action/<action>', methods=['POST'])
 @login_required
 def action_oeuvre(id, action):
     oeuvre = Oeuvre.query.get_or_404(id)
@@ -396,7 +409,7 @@ def commentaires():
                            comments=items, statut_filtre=filtre, counts=counts)
 
 
-@admin_bp.route('/commentaire/<int:id>/action/<action>')
+@admin_bp.route('/commentaire/<int:id>/action/<action>', methods=['POST'])
 @login_required
 def action_commentaire(id, action):
     c = db.session.get(Commentaire, id) or Commentaire.query.get_or_404(id)

@@ -285,6 +285,7 @@
           <div class="jb-form-card mt-3" style="padding:1.25rem;">
             <div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:1rem;font-family:var(--font-mono);">Laisser un commentaire</div>
             <form method="POST" action="{{ url_for('public_bp.commenter_artiste', id=artiste.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               <div class="mb-2">
                 <input type="text" name="auteur" class="form-control" placeholder="Votre prénom *" required maxlength="80">
               </div>
@@ -382,9 +383,10 @@ function closePlayer() {
 
 async function toggleLike(type, id, btn) {
   try {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     const res  = await fetch(`/explorer/like/${type}/${id}`, {
       method: 'POST',
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': csrfToken }
     });
     const data = await res.json();
     const nbEl = document.getElementById('nbLikes');

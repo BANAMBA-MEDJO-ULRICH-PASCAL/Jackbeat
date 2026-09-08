@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,6 +13,11 @@ class Config:
     WTF_CSRF_ENABLED = True
     ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME') or 'admin'
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'jackbeat2024'
+
+    # Cookie « remember me » (Flask-Login) — 14 jours au lieu du défaut (365 j.)
+    REMEMBER_COOKIE_DURATION  = timedelta(days=14)
+    REMEMBER_COOKIE_HTTPONLY  = True
+    REMEMBER_COOKIE_SAMESITE  = 'Lax'
 
 
 class DevelopmentConfig(Config):
@@ -41,6 +47,7 @@ class ProductionConfig(Config):
     SESSION_COOKIE_SECURE   = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
+    REMEMBER_COOKIE_SECURE  = True
 
 
 config = {

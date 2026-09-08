@@ -1,4 +1,5 @@
 {% extends "admin/base_admin.html" %}
+{% import "admin/_macros.html" as m %}
 {% block title %}Œuvres{% endblock %}
 {% block breadcrumb %}
   <span class="sep">/</span>
@@ -33,6 +34,7 @@
 {% if oeuvres %}
 
 <form method="POST" action="{{ url_for('admin_bp.bulk_action') }}" id="bulkForm">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input type="hidden" name="model" value="oeuvre">
 
   <div class="bulk-bar" id="bulkBar">
@@ -104,18 +106,16 @@
                 <i class="bi bi-pencil"></i>
               </a>
               {% if o.statut != 'approuve' %}
-                <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='approuver') }}"
-                   class="adm-btn approve"><i class="bi bi-check-lg"></i></a>
+                {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=o.id, action='approuver'),
+                                'adm-btn approve', '<i class="bi bi-check-lg"></i>') }}
               {% endif %}
               {% if o.statut != 'rejete' %}
-                <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='rejeter') }}"
-                   class="adm-btn reject"><i class="bi bi-x-lg"></i></a>
+                {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=o.id, action='rejeter'),
+                                'adm-btn reject', '<i class="bi bi-x-lg"></i>') }}
               {% endif %}
-              <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='supprimer') }}"
-                 class="adm-btn delete"
-                 onclick="return confirm('Supprimer « {{ o.titre }} » définitivement ?')">
-                <i class="bi bi-trash"></i>
-              </a>
+              {{ m.action_btn(url_for('admin_bp.action_oeuvre', id=o.id, action='supprimer'),
+                              'adm-btn delete', '<i class="bi bi-trash"></i>',
+                              confirm='Supprimer « ' + o.titre + ' » définitivement ?') }}
             </div>
           </td>
         </tr>

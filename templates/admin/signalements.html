@@ -149,6 +149,7 @@
       <i class="bi bi-flag me-2" style="color:var(--red);"></i>Traiter le signalement
     </h3>
     <form method="POST" id="modalForm">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="mb-3">
         <label class="form-label">Nouveau statut</label>
         <select name="statut" class="statut-select" id="modalStatut">
