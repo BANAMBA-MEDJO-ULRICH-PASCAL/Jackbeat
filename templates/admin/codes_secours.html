@@ -1,0 +1,17 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ _('Codes de secours') }}{% endblock %}
+{% block breadcrumb %}<span class="sep">/</span><a href="{{ url_for('admin_bp.securite') }}">{{ _('Sécurité du compte') }}</a><span class="sep">/</span><span class="current">{{ _('Codes de secours') }}</span>{% endblock %}
+{% block admin_content %}
+<div class="adm-section-header"><h1>{{ _('Vos codes de secours') }}</h1></div>
+<div class="adm-form-card" style="max-width:640px;">
+  <div class="adm-flash warning mb-3">
+    <i class="bi bi-exclamation-triangle"></i>
+    <span>{{ _("Notez-les et gardez-les en lieu sûr : ils ne seront plus jamais affichés. Chaque code permet une seule connexion si vous perdez votre téléphone.") }}</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;font-family:var(--font-mono);font-size:1.1rem;">
+    {% for c in codes %}<div style="background:var(--bg-3);padding:.5rem .8rem;border-radius:6px;text-align:center;">{{ c }}</div>{% endfor %}
+  </div>
+  <button type="button" class="btn btn-jb-outline btn-sm mt-3" data-copy="{{ codes|join('\n') }}"><i class="bi bi-clipboard me-1"></i>{{ _('Copier') }}</button>
+  <a href="{{ url_for('admin_bp.securite') }}" class="btn btn-jb-gold btn-sm mt-3">{{ _("J'ai noté mes codes") }}</a>
+</div>
+{% endblock %}

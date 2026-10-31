@@ -1,58 +1,46 @@
 {% extends "admin/base_admin.html" %}
-{% block title %}Artistes{% endblock %}
+{% from "_macros.html" import row_button with context %}
+{% block title %}{{ _('Artistes') }}{% endblock %}
+{% set onglets = [('en_attente', _('En attente')), ('approuve', _('Approuvés')), ('rejete', _('Rejetés')), ('incomplet', _('À compléter'))] %}
 {% block breadcrumb %}
   <span class="sep">/</span>
-  <a href="{{ url_for('admin_bp.artistes') }}">Artistes</a>
+  <a href="{{ url_for('admin_bp.artistes') }}">{{ _('Artistes') }}</a>
   <span class="sep">/</span>
-  <span class="current">{{ statut.replace('_',' ').title() }}</span>
+  <span class="current">{{ dict(onglets).get(statut, statut) }}</span>
 {% endblock %}
 
-{% set pending_artistes_count = counts.en_attente %}
-{% set pending_oeuvres_count  = 0 %}
-
 {% block admin_content %}
-
 <div class="adm-section-header">
-  <h1>Artistes</h1>
-  <div class="d-flex gap-2 flex-wrap align-items-center">
-    <!-- Recherche -->
-    <form method="GET" style="display:contents;">
-      <input type="hidden" name="statut" value="{{ statut }}">
-      <input type="text" name="q" value="{{ search }}"
-             class="adm-search" placeholder="🔍 Rechercher un artiste...">
-    </form>
-  </div>
+  <h1>{{ _('Artistes') }}</h1>
+  <form method="GET" class="d-flex gap-2 align-items-center" role="search">
+    <input type="hidden" name="statut" value="{{ statut }}">
+    <label for="adm-q" class="visually-hidden">{{ _('Rechercher un artiste') }}</label>
+    <input type="search" id="adm-q" name="q" value="{{ search }}" class="adm-search" placeholder="🔍 {{ _('Rechercher un artiste...') }}">
+  </form>
 </div>
 
-<!-- Tabs statut -->
 <div class="adm-tabs mb-3">
-  {% for val, lbl in [('en_attente','En attente'),('approuve','Approuvés'),('rejete','Rejetés')] %}
-    <a href="{{ url_for('admin_bp.artistes', statut=val) }}"
-       class="adm-tab {% if statut == val %}active{% endif %}">
-      {{ lbl }}
-      <span class="count">{{ counts[val] }}</span>
+  {% for val, lbl in onglets %}
+    <a href="{{ url_for('admin_bp.artistes', statut=val) }}" class="adm-tab {% if statut == val %}active{% endif %}">
+      {{ lbl }} <span class="count">{{ counts[val] }}</span>
     </a>
   {% endfor %}
 </div>
 
 {% if artistes %}
-
-<!-- Barre d'actions en lot -->
-<form method="POST" action="{{ url_for('admin_bp.bulk_action') }}" id="bulkForm">
+<form method="POST" action="{{ url_for('admin_bp.bulk_action') }}" data-bulk>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input type="hidden" name="model" value="artiste">
+  <input type="hidden" name="next" value="{{ request.full_path }}">
 
-  <div class="bulk-bar" id="bulkBar">
-    <span class="count-label"><span id="bulkCount">0</span> sélectionné(s)</span>
+  <div class="bulk-bar">
+    <span class="count-label">{{ _('Sélection :') }} <span data-bulk-count>0</span></span>
     <span class="sep">|</span>
-    <button type="submit" name="action" value="approuver" class="adm-btn approve">
-      <i class="bi bi-check2-all"></i> Approuver tout
-    </button>
-    <button type="submit" name="action" value="rejeter" class="adm-btn reject">
-      <i class="bi bi-x-lg"></i> Rejeter tout
-    </button>
+    <button type="submit" name="action" value="approuver" class="adm-btn approve"><i class="bi bi-check2-all"></i> {{ _('Approuver') }}</button>
+    <button type="submit" name="action" value="rejeter" class="adm-btn reject"><i class="bi bi-x-lg"></i> {{ _('Rejeter') }}</button>
     <button type="submit" name="action" value="supprimer" class="adm-btn delete"
-            onclick="return confirm('Supprimer les entrées sélectionnées ?')">
-      <i class="bi bi-trash"></i> Supprimer
+            data-confirm="{{ _('Supprimer définitivement les artistes sélectionnés et toutes leurs œuvres ?') }}">
+      <i class="bi bi-trash"></i> {{ _('Supprimer') }}
     </button>
   </div>
 
@@ -60,67 +48,40 @@
     <table class="adm-table">
       <thead>
         <tr>
-          <th><input type="checkbox" class="adm-cb select-all"></th>
-          <th>Artiste</th>
-          <th>Région</th>
-          <th>Type</th>
-          <th>Période</th>
-          <th>Soumis par</th>
-          <th>Date</th>
-          <th>Actions</th>
+          <th><input type="checkbox" class="adm-cb select-all" aria-label="{{ _('Tout sélectionner') }}"></th>
+          <th>{{ _('Artiste') }}</th><th>{{ _('Région') }}</th><th>{{ _('Type') }}</th><th>{{ _('Période') }}</th>
+          <th>{{ _('Soumis par') }}</th><th>{{ _('Date') }}</th><th>{{ _('Actions') }}</th>
         </tr>
       </thead>
       <tbody>
         {% for a in artistes %}
         <tr>
-          <td><input type="checkbox" name="ids" value="{{ a.id }}" class="adm-cb row-cb"></td>
+          <td><input type="checkbox" name="ids" value="{{ a.id }}" class="adm-cb row-cb" aria-label="{{ a.nom }}"></td>
           <td>
-            <a href="{{ url_for('admin_bp.artiste_detail', id=a.id) }}"
-               style="color:var(--text);font-weight:600;text-decoration:none;">{{ a.nom }}</a>
-            {% if a.nom_reel %}
-              <div style="font-size:.75rem;color:var(--text-dim);">{{ a.nom_reel }}</div>
-            {% endif %}
+            <a href="{{ url_for('admin_bp.artiste_detail', id=a.id) }}" style="color:var(--text);font-weight:600;text-decoration:none;">{{ a.nom }}</a>
+            {% if a.profil_incomplet %}<span class="status-pill rejete" style="font-size:.6rem;margin-left:.3rem;">{{ _('À compléter') }}</span>{% endif %}
+            {% if a.nom_reel %}<div style="font-size:.75rem;color:var(--text-dim);">{{ a.nom_reel }}</div>{% endif %}
             {% if a.biographie %}
-              <div style="font-size:.73rem;color:var(--text-dim);max-width:220px;
-                          overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                {{ a.biographie[:80] }}…
-              </div>
+              <div style="font-size:.73rem;color:var(--text-dim);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ a.biographie|truncate(80, True, '…') }}</div>
             {% endif %}
           </td>
-          <td style="color:var(--text-dim);font-size:.83rem;">{{ a.region_origine }}</td>
-          <td style="font-size:.8rem;">
-            <span class="card-genre-badge" style="font-size:.68rem;">
-              {{ a.type_artiste.replace('Soliste_H','Homme').replace('Soliste_F','Femme') }}
-            </span>
-          </td>
-          <td style="color:var(--text-dim);font-size:.8rem;white-space:nowrap;">
-            {{ a.annee_debut or '?' }} – {{ a.annee_fin or 'actif' }}
-          </td>
+          <td style="color:var(--text-dim);font-size:.83rem;">{{ a.region_origine|libelle('region') }}</td>
+          <td style="font-size:.8rem;"><span class="card-genre-badge" style="font-size:.68rem;">{{ a.type_artiste|libelle('type_artiste') }}</span></td>
+          <td style="color:var(--text-dim);font-size:.8rem;white-space:nowrap;">{{ a.annee_debut or '?' }} – {{ a.annee_fin or _('actif') }}</td>
           <td style="color:var(--text-dim);font-size:.78rem;">{{ a.soumis_par or '—' }}</td>
-          <td style="color:var(--text-dim);font-size:.76rem;white-space:nowrap;">
-            {{ a.created_at.strftime('%d/%m/%Y') }}
-          </td>
+          <td style="color:var(--text-dim);font-size:.76rem;white-space:nowrap;">{{ a.created_at|date_courte }}</td>
           <td>
             <div class="d-flex gap-1 flex-wrap">
-              <a href="{{ url_for('admin_bp.artiste_detail', id=a.id) }}" class="adm-btn view">
-                <i class="bi bi-eye"></i>
-              </a>
-              <a href="{{ url_for('admin_bp.artiste_edit', id=a.id) }}" class="adm-btn edit">
-                <i class="bi bi-pencil"></i>
-              </a>
-              {% if a.statut != 'approuve' %}
-                <a href="{{ url_for('admin_bp.action_artiste', id=a.id, action='approuver') }}"
-                   class="adm-btn approve"><i class="bi bi-check-lg"></i></a>
+              <a href="{{ url_for('admin_bp.artiste_detail', id=a.id) }}" class="adm-btn view" title="{{ _('Voir') }}"><i class="bi bi-eye"></i></a>
+              <a href="{{ url_for('admin_bp.artiste_edit', id=a.id) }}" class="adm-btn edit" title="{{ _('Modifier') }}"><i class="bi bi-pencil"></i></a>
+              {% if a.statut != 'approuve' and not a.profil_incomplet %}
+                {{ row_button(url_for('admin_bp.action_artiste', id=a.id, action='approuver'), 'adm-btn approve', 'bi-check-lg', _('Approuver')) }}
               {% endif %}
               {% if a.statut != 'rejete' %}
-                <a href="{{ url_for('admin_bp.action_artiste', id=a.id, action='rejeter') }}"
-                   class="adm-btn reject"><i class="bi bi-x-lg"></i></a>
+                {{ row_button(url_for('admin_bp.action_artiste', id=a.id, action='rejeter'), 'adm-btn reject', 'bi-x-lg', _('Rejeter')) }}
               {% endif %}
-              <a href="{{ url_for('admin_bp.action_artiste', id=a.id, action='supprimer') }}"
-                 class="adm-btn delete"
-                 onclick="return confirm('Supprimer « {{ a.nom }} » définitivement ?')">
-                <i class="bi bi-trash"></i>
-              </a>
+              {{ row_button(url_for('admin_bp.action_artiste', id=a.id, action='supprimer'), 'adm-btn delete', 'bi-trash', _('Supprimer'),
+                            confirm=_('Supprimer « %(n)s » définitivement, avec toutes ses œuvres ?', n=a.nom)) }}
             </div>
           </td>
         </tr>
@@ -129,18 +90,15 @@
     </table>
   </div>
 </form>
-
 <div style="font-size:.75rem;color:var(--text-dim);margin-top:.6rem;text-align:right;">
-  {{ artistes|length }} artiste(s) affiché(s)
+  {{ ngettext('%(num)d artiste affiché', '%(num)d artistes affichés', artistes|length) }}
 </div>
-
 {% else %}
 <div class="detail-card text-center py-5">
-  <div style="font-size:3rem;opacity:.3;margin-bottom:1rem;">🎤</div>
-  <h3 style="font-family:var(--font-display);color:var(--text-mid);">
-    {% if search %}Aucun résultat pour « {{ search }} »{% else %}Aucun artiste dans cette catégorie{% endif %}
-  </h3>
+  <div style="font-size:3rem;opacity:.3;margin-bottom:1rem;" aria-hidden="true">🎤</div>
+  <h2 class="h3" style="font-family:var(--font-display);color:var(--text-mid);">
+    {% if search %}{{ _('Aucun résultat pour « %(q)s »', q=search) }}{% else %}{{ _('Aucun artiste dans cette catégorie') }}{% endif %}
+  </h2>
 </div>
 {% endif %}
-
 {% endblock %}

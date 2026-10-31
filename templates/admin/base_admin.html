@@ -1,12 +1,13 @@
+{% import "_assets.html" as assets with context %}
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ lang }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="robots" content="noindex, nofollow">
   <title>{% block title %}Admin{% endblock %} — Jackbeat</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {{ assets.css() }}
   <style>
   /* ══ Admin Layout ══════════════════════════════ */
   body { background: var(--bg); overflow-x: hidden; }
@@ -271,158 +272,122 @@
 <body>
 <div class="adm-shell">
 
-  <!-- ══ SIDEBAR ══════════════════════════════════ -->
-  {% set nb_a = namespace(val=0) %}
-  {% set nb_o = namespace(val=0) %}
-
-  <aside class="adm-sidebar">
+  <aside class="adm-sidebar" aria-label="{{ _('Menu administrateur') }}">
     <div class="adm-sidebar-brand">
       <div class="brand">Jack<em style="font-style:italic;font-weight:400;">beat</em></div>
-      <div class="badge-admin">Espace Admin</div>
+      <div class="badge-admin">{{ _('Espace Admin') }}</div>
     </div>
 
-    <div class="adm-nav-section">Modération</div>
+    {% set ep = request.endpoint or '' %}
+    <div class="adm-nav-section">{{ _('Modération') }}</div>
     <a href="{{ url_for('admin_bp.dashboard') }}"
-       class="adm-nav-link {% if request.endpoint == 'admin_bp.dashboard' %}active{% endif %}">
-      <i class="bi bi-speedometer2"></i> Tableau de bord
+       class="adm-nav-link {% if ep == 'admin_bp.dashboard' %}active{% endif %}">
+      <i class="bi bi-speedometer2"></i> {{ _('Tableau de bord') }}
     </a>
     <a href="{{ url_for('admin_bp.artistes', statut='en_attente') }}"
-       class="adm-nav-link {% if request.endpoint in ['admin_bp.artistes','admin_bp.artiste_detail','admin_bp.artiste_edit'] %}active{% endif %}">
-      <i class="bi bi-people"></i> Artistes
+       class="adm-nav-link {% if ep in ['admin_bp.artistes','admin_bp.artiste_detail','admin_bp.artiste_edit'] %}active{% endif %}">
+      <i class="bi bi-people"></i> {{ _('Artistes') }}
       {%- set cnt = pending_artistes_count if pending_artistes_count is defined else 0 %}
       <span class="nav-badge {% if cnt == 0 %}zero{% endif %}">{{ cnt }}</span>
     </a>
     <a href="{{ url_for('admin_bp.oeuvres', statut='en_attente') }}"
-       class="adm-nav-link {% if request.endpoint in ['admin_bp.oeuvres','admin_bp.oeuvre_detail','admin_bp.oeuvre_edit'] %}active{% endif %}">
-      <i class="bi bi-music-note-list"></i> Œuvres
+       class="adm-nav-link {% if ep in ['admin_bp.oeuvres','admin_bp.oeuvre_detail','admin_bp.oeuvre_edit'] %}active{% endif %}">
+      <i class="bi bi-music-note-list"></i> {{ _('Œuvres') }}
       {%- set cnt2 = pending_oeuvres_count if pending_oeuvres_count is defined else 0 %}
       <span class="nav-badge {% if cnt2 == 0 %}zero{% endif %}">{{ cnt2 }}</span>
     </a>
 
-    <div class="adm-nav-section">Communauté</div>
+    <div class="adm-nav-section">{{ _('Communauté') }}</div>
     <a href="{{ url_for('admin_bp.commentaires') }}"
-       class="adm-nav-link {% if request.endpoint == 'admin_bp.commentaires' %}active{% endif %}">
-      <i class="bi bi-chat-left-text"></i> Commentaires
+       class="adm-nav-link {% if ep == 'admin_bp.commentaires' %}active{% endif %}">
+      <i class="bi bi-chat-left-text"></i> {{ _('Commentaires') }}
       {%- set cnt_c = pending_comments_count if pending_comments_count is defined else 0 %}
       <span class="nav-badge {% if cnt_c == 0 %}zero{% endif %}">{{ cnt_c }}</span>
     </a>
     <a href="{{ url_for('admin_bp.signalements') }}"
-       class="adm-nav-link {% if request.endpoint == 'admin_bp.signalements' %}active{% endif %}">
-      <i class="bi bi-flag"></i> Signalements
+       class="adm-nav-link {% if ep == 'admin_bp.signalements' %}active{% endif %}">
+      <i class="bi bi-flag"></i> {{ _('Signalements') }}
       {%- set cnt_s = pending_signalements_count if pending_signalements_count is defined else 0 %}
       <span class="nav-badge {% if cnt_s == 0 %}zero{% endif %}">{{ cnt_s }}</span>
     </a>
 
-    <div class="adm-nav-section">Données</div>
-    <a href="{{ url_for('admin_bp.export_csv') }}"
-       class="adm-nav-link">
-      <i class="bi bi-download"></i> Export CSV
+    <div class="adm-nav-section">{{ _('Données') }}</div>
+    <a href="{{ url_for('admin_bp.export_csv') }}" class="adm-nav-link">
+      <i class="bi bi-download"></i> {{ _('Export CSV complet') }}
     </a>
-    <a href="{{ url_for('dashboard_bp.index') }}"
-       class="adm-nav-link">
-      <i class="bi bi-bar-chart-line"></i> Voir les stats
+    <a href="{{ url_for('admin_bp.journal') }}" class="adm-nav-link {% if ep == 'admin_bp.journal' %}active{% endif %}">
+      <i class="bi bi-journal-text"></i> {{ _("Journal d'audit") }}
+    </a>
+    <a href="{{ url_for('dashboard_bp.index') }}" class="adm-nav-link">
+      <i class="bi bi-bar-chart-line"></i> {{ _('Voir les stats') }}
     </a>
 
-    <div class="adm-nav-section">Site</div>
-    <a href="{{ url_for('main_bp.index') }}" target="_blank"
-       class="adm-nav-link">
-      <i class="bi bi-globe"></i> Voir le site public
+    <div class="adm-nav-section">{{ _('Compte') }}</div>
+    <a href="{{ url_for('admin_bp.securite') }}" class="adm-nav-link {% if ep.startswith('admin_bp.securite') or ep in ['admin_bp.activer_2fa'] %}active{% endif %}">
+      <i class="bi bi-shield-lock"></i> {{ _('Sécurité du compte') }}
+      {% if not current_user.totp_enabled %}<span class="nav-badge" title="{{ _('Double authentification désactivée') }}">!</span>{% endif %}
     </a>
-    <a href="{{ url_for('collecte_bp.index') }}" target="_blank"
-       class="adm-nav-link">
-      <i class="bi bi-plus-circle"></i> Formulaire public
+    <a href="{{ url_for('main_bp.index') }}" target="_blank" rel="noopener" class="adm-nav-link">
+      <i class="bi bi-globe"></i> {{ _('Voir le site public') }}
     </a>
 
     <div class="adm-sidebar-footer">
-      <a href="{{ url_for('admin_bp.logout') }}">
-        <i class="bi bi-box-arrow-right"></i> Se déconnecter
-      </a>
+      <form method="POST" action="{{ url_for('admin_bp.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn-linklike" style="color:inherit;">
+          <i class="bi bi-box-arrow-right"></i> {{ _('Se déconnecter') }}
+        </button>
+      </form>
     </div>
   </aside>
 
-  <!-- ══ MAIN ═════════════════════════════════════ -->
   <div class="adm-main">
-
-    <!-- Topbar -->
     <div class="adm-topbar">
-      <div class="adm-breadcrumb">
+      <nav class="adm-breadcrumb" aria-label="{{ _('Fil d’Ariane') }}">
         <a href="{{ url_for('admin_bp.dashboard') }}">Admin</a>
         {% block breadcrumb %}{% endblock %}
-      </div>
+      </nav>
       <div class="d-flex align-items-center gap-3">
+        <div class="lang-switch" role="group" aria-label="{{ _('Langue') }}">
+          {% for code, nom in languages.items() %}
+            <a href="{{ lang_url(code) }}" class="{% if lang == code %}active{% endif %}" title="{{ nom }}">{{ code|upper }}</a>
+          {% endfor %}
+        </div>
         <span style="font-size:0.75rem;color:var(--text-dim);">
           <span class="live-dot"></span>{{ current_user.username }}
+          {% if current_user.totp_enabled %}<i class="bi bi-shield-check" style="color:var(--green);" title="{{ _('Double authentification activée') }}"></i>{% endif %}
         </span>
-        <a href="{{ url_for('admin_bp.logout') }}"
-           class="adm-btn edit" style="padding:0.3rem 0.8rem;">
-          <i class="bi bi-box-arrow-right"></i>
-        </a>
+        <form method="POST" action="{{ url_for('admin_bp.logout') }}" class="inline-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="adm-btn edit" style="padding:0.3rem 0.8rem;" title="{{ _('Se déconnecter') }}" aria-label="{{ _('Se déconnecter') }}">
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
+        </form>
       </div>
     </div>
 
-    <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div style="padding:1rem 2rem 0;">
           {% for category, message in messages %}
-            <div class="adm-flash {{ category }}">
+            <div class="adm-flash {{ category }}" role="alert">
               <i class="bi bi-{% if category=='success' %}check-circle{% elif category=='danger' %}x-circle{% elif category=='warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
-              {{ message }}
+              <span>{{ message }}</span>
             </div>
           {% endfor %}
         </div>
       {% endif %}
     {% endwith %}
 
-    <!-- Page content -->
     <div class="adm-content">
       {% block admin_content %}{% endblock %}
     </div>
+  </div>
+</div>
 
-  </div><!-- /.adm-main -->
-</div><!-- /.adm-shell -->
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{{ assets.js_config() }}
+{{ assets.bootstrap_js() }}
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-<!-- Select-all + bulk bar logic -->
-<script>
-function initSelectAll(formId) {
-  const form = document.getElementById(formId);
-  if (!form) return;
-  const selectAll = form.querySelector('.select-all');
-  const checkboxes = form.querySelectorAll('.row-cb');
-  const bulkBar = document.getElementById('bulkBar');
-  const bulkCount = document.getElementById('bulkCount');
-
-  function updateBulkBar() {
-    const checked = form.querySelectorAll('.row-cb:checked');
-    if (bulkBar) {
-      bulkBar.classList.toggle('visible', checked.length > 0);
-      if (bulkCount) bulkCount.textContent = checked.length;
-    }
-  }
-
-  if (selectAll) {
-    selectAll.addEventListener('change', () => {
-      checkboxes.forEach(cb => cb.checked = selectAll.checked);
-      updateBulkBar();
-    });
-  }
-  checkboxes.forEach(cb => cb.addEventListener('change', updateBulkBar));
-}
-document.addEventListener('DOMContentLoaded', () => {
-  initSelectAll('bulkForm');
-  // Auto-dismiss flash messages after 5s
-  setTimeout(() => {
-    document.querySelectorAll('.adm-flash').forEach(el => {
-      el.style.transition = 'opacity 0.5s';
-      el.style.opacity = '0';
-      setTimeout(() => el.remove(), 500);
-    });
-  }, 5000);
-});
-</script>
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>

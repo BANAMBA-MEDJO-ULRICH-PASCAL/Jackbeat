@@ -1,0 +1,28 @@
+{# Panneau « Contribution d'origine » : compare la soumission initiale à la fiche actuelle.
+   Attend `obj` (Artiste ou Oeuvre) et `champs` [(clé, libellé, catégorie_libelle|None)]. #}
+{% set orig = obj.soumission_originale %}
+{% if orig %}
+<div class="detail-card mb-3">
+  <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green-l);margin-bottom:.75rem;">
+    <i class="bi bi-inbox me-1"></i>{{ _("Contribution d'origine") }}
+  </div>
+  <p style="font-size:.78rem;color:var(--text-dim);margin-bottom:.75rem;">
+    {{ _('Ce que le contributeur a envoyé. Les champs modifiés depuis sont signalés.') }}
+  </p>
+  {% for cle, label, cat in champs %}
+    {% if cle in orig %}
+      {% set avant = orig[cle] %}
+      {% set maintenant = obj[cle] if cle in obj.CHAMPS_EDITABLES else none %}
+      {% set change = cle in obj.CHAMPS_EDITABLES and (avant or none) != (maintenant or none) and avant|string != maintenant|string %}
+      <div class="detail-field">
+        <div class="detail-label">{{ label }}</div>
+        <div class="detail-val" style="white-space:pre-line;">
+          {% if avant in [none, ''] %}<span style="color:var(--text-ghost);">∅</span>
+          {% else %}{{ avant|libelle(cat) if cat else avant }}{% endif %}
+          {% if change %}<span class="status-pill attente" style="font-size:.6rem;margin-left:.4rem;">{{ _('corrigé') }}</span>{% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}

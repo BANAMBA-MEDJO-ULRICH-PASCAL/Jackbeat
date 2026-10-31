@@ -1,90 +1,73 @@
 {% extends "admin/base_admin.html" %}
-{% block title %}Modifier — {{ oeuvre.titre }}{% endblock %}
+{% from "_macros.html" import field with context %}
+{% block title %}{{ _('Modifier') }} — {{ oeuvre.titre }}{% endblock %}
 {% block breadcrumb %}
-  <span class="sep">/</span><a href="{{ url_for('admin_bp.oeuvres') }}">Œuvres</a>
-  <span class="sep">/</span>
-  <a href="{{ url_for('admin_bp.oeuvre_detail', id=oeuvre.id) }}">{{ oeuvre.titre }}</a>
-  <span class="sep">/</span><span class="current">Modifier</span>
+  <span class="sep">/</span><a href="{{ url_for('admin_bp.oeuvres') }}">{{ _('Œuvres') }}</a>
+  <span class="sep">/</span><a href="{{ url_for('admin_bp.oeuvre_detail', id=oeuvre.id) }}">{{ oeuvre.titre }}</a>
+  <span class="sep">/</span><span class="current">{{ _('Modifier') }}</span>
 {% endblock %}
-{% set pending_artistes_count = 0 %}{% set pending_oeuvres_count = 0 %}
 
 {% block admin_content %}
 <div class="adm-section-header">
-  <h1>Modifier l'œuvre</h1>
+  <h1>{{ _("Modifier l'œuvre") }}</h1>
+  <span class="status-pill {{ oeuvre.statut }}">● {{ oeuvre.statut|libelle('statut') }}</span>
 </div>
 
-<div style="max-width:640px;">
-  <form method="POST">
-    <div class="adm-form-card">
+<div class="row g-4">
+  <div class="col-xl-7">
+    <form method="POST" novalidate>
+      {{ form.csrf_token }}
+      <div class="adm-form-card">
+        <div class="adm-form-section">{{ _("L'Œuvre") }}</div>
+        <div class="row g-3">
+          <div class="col-12">{{ field(form.titre) }}</div>
+          <div class="col-12">
+            {{ field(form.artiste_id, select=True,
+                     help=_("Rattacher l'œuvre à une autre fiche (ex : faute de frappe du contributeur).")) }}
+            {% if oeuvre.artiste %}
+              <a href="{{ url_for('admin_bp.artiste_edit', id=oeuvre.artiste.id) }}" style="font-size:.78rem;">
+                <i class="bi bi-pencil me-1"></i>{{ _("Modifier la fiche de l'artiste") }}</a>
+              {% if oeuvre.artiste.profil_incomplet %}<span class="status-pill rejete" style="font-size:.6rem;">{{ _('À compléter') }}</span>{% endif %}
+            {% endif %}
+          </div>
+          <div class="col-md-6">{{ field(form.type_oeuvre, select=True) }}</div>
+          <div class="col-md-6">{{ field(form.annee_sortie) }}</div>
+          <div class="col-md-6">{{ field(form.genre_musical, select=True) }}</div>
+          <div class="col-md-6">{{ field(form.langue, select=True) }}</div>
+          <div class="col-12">{{ field(form.popularite, select=True) }}</div>
+          <div class="col-12">{{ field(form.distinction) }}</div>
+        </div>
 
-      <div class="adm-form-section">L'Œuvre</div>
-      <div class="row g-3">
-        <div class="col-12">
-          <label class="form-label">Titre *</label>
-          <input type="text" name="titre" value="{{ oeuvre.titre }}" class="form-control" required>
+        <div class="adm-form-section">{{ _('Description (bilingue)') }}</div>
+        <div class="row g-3">
+          <div class="col-12">{{ field(form.description, rows=4) }}</div>
+          <div class="col-12">{{ field(form.description_en, rows=4,
+                help=_("Affichée aux visiteurs anglophones. Si vide, la version française est affichée avec une mention.")) }}</div>
         </div>
-        <div class="col-md-6">
-          <label class="form-label">Type</label>
-          <select name="type_oeuvre" class="form-select">
-            {% for t in ['Chanson','Album','EP','Live'] %}
-              <option {% if oeuvre.type_oeuvre == t %}selected{% endif %}>{{ t }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Année de sortie *</label>
-          <input type="number" name="annee_sortie" value="{{ oeuvre.annee_sortie }}"
-                 class="form-control" min="1960" max="2030" required>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Genre musical *</label>
-          <select name="genre_musical" class="form-select" required>
-            {% for val, lbl in genres %}
-              <option value="{{ val }}" {% if oeuvre.genre_musical == val %}selected{% endif %}>{{ lbl }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Langue *</label>
-          <select name="langue" class="form-select" required>
-            {% for val, lbl in langues %}
-              <option value="{{ val }}" {% if oeuvre.langue == val %}selected{% endif %}>{{ lbl }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-12">
-          <label class="form-label">Popularité</label>
-          <select name="popularite" class="form-select">
-            <option value="">— Non renseignée —</option>
-            {% for val, lbl in popularites %}
-              <option value="{{ val }}" {% if oeuvre.popularite == val %}selected{% endif %}>{{ lbl }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-12">
-          <label class="form-label">Distinction / Prix</label>
-          <input type="text" name="distinction" value="{{ oeuvre.distinction or '' }}" class="form-control">
-        </div>
-        <div class="col-12">
-          <label class="form-label">Description</label>
-          <textarea name="description" class="form-control" rows="3">{{ oeuvre.description or '' }}</textarea>
-        </div>
-        <div class="col-12">
-          <label class="form-label">Lien YouTube</label>
-          <input type="text" name="lien_youtube" value="{{ oeuvre.lien_youtube or '' }}"
-                 class="form-control" placeholder="https://youtube.com/watch?v=...">
-        </div>
-      </div>
 
-      <div class="d-flex gap-2 mt-4">
-        <button type="submit" class="btn btn-jb-gold">
-          <i class="bi bi-check-lg me-1"></i>Enregistrer
-        </button>
-        <a href="{{ url_for('admin_bp.oeuvre_detail', id=oeuvre.id) }}" class="btn btn-jb-outline">
-          Annuler
-        </a>
+        <div class="adm-form-section">{{ _('Vidéo') }}</div>
+        {{ field(form.lien_youtube, 'https://www.youtube.com/watch?v=…', help=_('Seuls les liens YouTube sont acceptés.')) }}
+        {% if oeuvre.youtube_thumb %}
+          <img src="{{ oeuvre.youtube_thumb }}" alt="" style="width:200px;border-radius:8px;margin-top:.75rem;" data-fallback="🎵">
+        {% endif %}
+
+        {% set obj = oeuvre %}{% set cancel_url = url_for('admin_bp.oeuvre_detail', id=oeuvre.id) %}
+        {% include "admin/_edit_buttons.html" %}
       </div>
+    </form>
+  </div>
+  <div class="col-xl-5">
+    {% set obj = oeuvre %}
+    {% set champs = [('titre', _('Titre'), None), ('artiste_nom', _('Artiste'), None), ('type_oeuvre', _('Type'), 'type_oeuvre'),
+                     ('genre_musical', _('Genre'), 'genre'), ('langue', _('Langue'), 'langue'), ('annee_sortie', _('Année'), None),
+                     ('popularite', _('Popularité'), 'popularite'), ('distinction', _('Distinction'), None),
+                     ('description', _('Description'), None), ('lien_youtube', _('Lien YouTube'), None)] %}
+    {% include "admin/_soumission.html" %}
+    <div class="detail-card">
+      <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;">{{ _('Contributeur') }}</div>
+      <div style="font-size:.85rem;">{{ oeuvre.soumis_par or '—' }} {% if oeuvre.soumis_email %}· {{ oeuvre.soumis_email }}{% endif %}</div>
+      <div style="font-size:.75rem;color:var(--text-dim);">{{ oeuvre.created_at|date_longue }}</div>
     </div>
-  </form>
+  </div>
 </div>
 {% endblock %}

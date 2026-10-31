@@ -1,0 +1,3352 @@
+# English translations for Jackbeat.
+# Copyright (C) 2026 Jackbeat
+# This file is distributed under the same license as the Jackbeat project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Jackbeat VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-31 02:59+0000\n"
+"PO-Revision-Date: 2026-10-31 02:59+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app.py:76
+msgid "Veuillez vous connecter."
+msgstr "Please log in."
+
+#: app.py:145
+msgid "Requête invalide"
+msgstr "Bad request"
+
+#: app.py:145
+msgid "La requête n'a pas pu être traitée."
+msgstr "The request could not be processed."
+
+#: app.py:146
+msgid "Accès refusé"
+msgstr "Access denied"
+
+#: app.py:146
+msgid "Vous n'avez pas l'autorisation d'accéder à cette page."
+msgstr "You are not allowed to access this page."
+
+#: app.py:147
+msgid "Page introuvable"
+msgstr "Page not found"
+
+#: app.py:147
+msgid "Cette page n'existe pas ou a été déplacée."
+msgstr "This page does not exist or has been moved."
+
+#: app.py:148
+msgid "Méthode non autorisée"
+msgstr "Method not allowed"
+
+#: app.py:148
+msgid "Cette action n'est pas permise de cette façon."
+msgstr "This action is not allowed this way."
+
+#: app.py:149
+msgid "Requête trop volumineuse"
+msgstr "Request too large"
+
+#: app.py:149
+msgid "Les données envoyées dépassent la taille autorisée."
+msgstr "The data sent exceeds the allowed size."
+
+#: app.py:150
+msgid "Trop de requêtes"
+msgstr "Too many requests"
+
+#: app.py:150
+msgid "Vous avez effectué trop de requêtes. Merci de patienter quelques minutes."
+msgstr "You have made too many requests. Please wait a few minutes."
+
+#: app.py:151
+msgid "Erreur interne"
+msgstr "Internal error"
+
+#: app.py:151
+msgid "Une erreur inattendue s'est produite. Nous avons été notifiés."
+msgstr "An unexpected error occurred. We have been notified."
+
+#: app.py:171
+msgid "Session expirée"
+msgstr "Session expired"
+
+#: app.py:172
+msgid "Le formulaire a expiré ou est invalide. Rechargez la page et réessayez."
+msgstr "The form has expired or is invalid. Reload the page and try again."
+
+#: forms.py:36
+#, python-format
+msgid "Année entre %(a)d et %(b)d."
+msgstr "Year between %(a)d and %(b)d."
+
+#: forms.py:41
+msgid "Lien YouTube invalide (ex : https://www.youtube.com/watch?v=…)."
+msgstr "Invalid YouTube link (e.g. https://www.youtube.com/watch?v=…)."
+
+#: forms.py:46
+msgid "Adresse invalide : elle doit commencer par https://"
+msgstr "Invalid address: it must start with https://"
+
+#: forms.py:51
+msgid "Adresse invalide : elle doit commencer par http:// ou https://"
+msgstr "Invalid address: it must start with http:// or https://"
+
+#: forms.py:75
+msgid "L'année de fin doit être postérieure à l'année de début."
+msgstr "The end year must be after the start year."
+
+#: forms.py:83
+msgid "Nom d'artiste / Pseudonyme *"
+msgstr "Artist name / Stage name *"
+
+#: forms.py:84 forms.py:90 forms.py:92 forms.py:111 forms.py:123 forms.py:126
+#: forms.py:128
+msgid "Ce champ est obligatoire."
+msgstr "This field is required."
+
+#: forms.py:86
+msgid "Nom réel (optionnel)"
+msgstr "Real name (optional)"
+
+#: forms.py:88 forms.py:156
+msgid "Région d'origine *"
+msgstr "Region of origin *"
+
+#: forms.py:89
+msgid "— Choisir une région —"
+msgstr "— Choose a region —"
+
+#: forms.py:91
+msgid "— Choisir —"
+msgstr "— Choose —"
+
+#: forms.py:91 forms.py:158
+msgid "Type *"
+msgstr "Type *"
+
+#: forms.py:93
+msgid "Année de début de carrière"
+msgstr "Career start year"
+
+#: forms.py:95
+msgid "Année de fin (laisser vide si encore actif)"
+msgstr "End year (leave empty if still active)"
+
+#: forms.py:97
+msgid "Biographie / Note (optionnel)"
+msgstr "Biography / Notes (optional)"
+
+#: forms.py:99 forms.py:140
+msgid "Votre nom (optionnel)"
+msgstr "Your name (optional)"
+
+#: forms.py:101 forms.py:142 templates/public/signaler.html:85
+msgid "Votre email (optionnel)"
+msgstr "Your email (optional)"
+
+#: forms.py:102 forms.py:143
+msgid "Adresse email invalide."
+msgstr "Invalid email address."
+
+#: forms.py:107
+msgid "Titre de l'œuvre *"
+msgstr "Title of the work *"
+
+#: forms.py:108
+msgid "Le titre est obligatoire."
+msgstr "The title is required."
+
+#: forms.py:110
+msgid "Nom de l'artiste *"
+msgstr "Artist name *"
+
+#: forms.py:113
+msgid "Région d'origine de l'artiste"
+msgstr "Artist's region of origin"
+
+#: forms.py:114 forms.py:117
+msgid "— Je ne sais pas —"
+msgstr "— I don't know —"
+
+#: forms.py:116
+msgid "Type d'artiste"
+msgstr "Artist type"
+
+#: forms.py:119
+msgid "Type d'œuvre *"
+msgstr "Type of work *"
+
+#: forms.py:121 forms.py:177
+msgid "Genre musical *"
+msgstr "Music genre *"
+
+#: forms.py:122
+msgid "— Choisir un genre —"
+msgstr "— Choose a genre —"
+
+#: forms.py:124
+msgid "Langue principale *"
+msgstr "Main language *"
+
+#: forms.py:125
+msgid "— Choisir une langue —"
+msgstr "— Choose a language —"
+
+#: forms.py:127 forms.py:180
+msgid "Année de sortie *"
+msgstr "Release year *"
+
+#: forms.py:130
+msgid "Niveau de popularité"
+msgstr "Popularity level"
+
+#: forms.py:131
+msgid "— Optionnel —"
+msgstr "— Optional —"
+
+#: forms.py:133
+msgid "Distinction / Prix (optionnel)"
+msgstr "Award / Distinction (optional)"
+
+#: forms.py:135
+msgid "Description (optionnel)"
+msgstr "Description (optional)"
+
+#: forms.py:137
+msgid "Lien YouTube (optionnel)"
+msgstr "YouTube link (optional)"
+
+#: forms.py:152
+msgid "Nom d'artiste *"
+msgstr "Artist name *"
+
+#: forms.py:154 templates/admin/_journal_table.html:12
+#: templates/admin/artiste_detail.html:67
+#: templates/admin/artiste_detail.html:94 templates/admin/artiste_edit.html:58
+msgid "Nom réel"
+msgstr "Real name"
+
+#: forms.py:160
+msgid "Année de début"
+msgstr "Start year"
+
+#: forms.py:161
+msgid "Année de fin"
+msgstr "End year"
+
+#: forms.py:162 templates/admin/artiste_detail.html:85
+msgid "Biographie (français)"
+msgstr "Biography (French)"
+
+#: forms.py:164 templates/admin/artiste_detail.html:85
+msgid "Biographie (anglais)"
+msgstr "Biography (English)"
+
+#: forms.py:166
+msgid "Photo (URL https)"
+msgstr "Photo (https URL)"
+
+#: forms.py:168 templates/admin/artiste_detail.html:72
+#: templates/public/artiste_detail.html:166
+msgid "Site officiel"
+msgstr "Official website"
+
+#: forms.py:173
+msgid "Titre *"
+msgstr "Title *"
+
+#: forms.py:175
+msgid "Artiste *"
+msgstr "Artist *"
+
+#: forms.py:176 routes/admin.py:653 routes/dashboard.py:435
+#: routes/dashboard.py:609 templates/admin/_journal_table.html:12
+#: templates/admin/_journal_table.html:15
+#: templates/admin/artiste_detail.html:69
+#: templates/admin/artiste_detail.html:95 templates/admin/artiste_edit.html:59
+#: templates/admin/artistes.html:52 templates/admin/oeuvre_detail.html:54
+#: templates/admin/oeuvre_detail.html:112 templates/admin/oeuvre_edit.html:61
+#: templates/notre_histoire.html:678 templates/public/oeuvre_detail.html:78
+msgid "Type"
+msgstr "Type"
+
+#: forms.py:179
+msgid "Langue *"
+msgstr "Language *"
+
+#: forms.py:181
+msgid "— Non renseignée —"
+msgstr "— Not specified —"
+
+#: forms.py:181 routes/admin.py:654 routes/dashboard.py:436
+#: templates/admin/_journal_table.html:16 templates/admin/oeuvre_detail.html:59
+#: templates/admin/oeuvre_detail.html:114 templates/admin/oeuvre_edit.html:63
+#: templates/admin/oeuvres.html:51 templates/dashboard/index.html:305
+#: templates/public/oeuvre_detail.html:80
+msgid "Popularité"
+msgstr "Popularity"
+
+#: forms.py:183
+msgid "Distinction / Prix"
+msgstr "Award / Distinction"
+
+#: forms.py:185 templates/admin/oeuvre_detail.html:84
+msgid "Description (français)"
+msgstr "Description (French)"
+
+#: forms.py:187 templates/admin/oeuvre_detail.html:84
+msgid "Description (anglais)"
+msgstr "Description (English)"
+
+#: forms.py:189 routes/admin.py:654 routes/dashboard.py:436
+#: templates/admin/_journal_table.html:17
+#: templates/admin/oeuvre_detail.html:115 templates/admin/oeuvre_edit.html:64
+msgid "Lien YouTube"
+msgstr "YouTube link"
+
+#: forms.py:198 templates/admin/login.html:39
+msgid "Identifiant"
+msgstr "Username"
+
+#: forms.py:200 templates/admin/login.html:47
+msgid "Mot de passe"
+msgstr "Password"
+
+#: forms.py:204 templates/admin/login_2fa.html:11
+msgid "Code de vérification"
+msgstr "Verification code"
+
+#: forms.py:209 forms.py:223
+msgid "Mot de passe actuel"
+msgstr "Current password"
+
+#: forms.py:210
+msgid "Nouveau mot de passe"
+msgstr "New password"
+
+#: forms.py:212
+msgid "Confirmer le nouveau mot de passe"
+msgstr "Confirm new password"
+
+#: forms.py:214
+msgid "Les mots de passe ne correspondent pas."
+msgstr "Passwords do not match."
+
+#: forms.py:218
+msgid "Code affiché dans l'application"
+msgstr "Code shown in the app"
+
+#: forms.py:224
+msgid "Je comprends que mon compte sera moins protégé"
+msgstr "I understand my account will be less protected"
+
+#: models.py:19
+msgid "Adamaoua"
+msgstr "Adamawa"
+
+#: models.py:19
+msgid "Centre"
+msgstr "Centre"
+
+#: models.py:19
+msgid "Est"
+msgstr "East"
+
+#: models.py:20
+msgid "Extrême-Nord"
+msgstr "Far North"
+
+#: models.py:20
+msgid "Littoral"
+msgstr "Littoral"
+
+#: models.py:20
+msgid "Nord"
+msgstr "North"
+
+#: models.py:21
+msgid "Nord-Ouest"
+msgstr "North-West"
+
+#: models.py:21
+msgid "Ouest"
+msgstr "West"
+
+#: models.py:21
+msgid "Sud"
+msgstr "South"
+
+#: models.py:22
+msgid "Sud-Ouest"
+msgstr "South-West"
+
+#: models.py:22
+msgid "Diaspora / International"
+msgstr "Diaspora / International"
+
+#: models.py:30
+msgid "Musique Traditionnelle"
+msgstr "Traditional Music"
+
+#: models.py:30
+msgid "Autres"
+msgstr "Other"
+
+#: models.py:34
+msgid "Français"
+msgstr "French"
+
+#: models.py:34
+msgid "Anglais"
+msgstr "English"
+
+#: models.py:36
+msgid "Bamiléké"
+msgstr "Bamileke"
+
+#: models.py:36
+msgid "Pidgin English"
+msgstr "Pidgin English"
+
+#: models.py:36
+msgid "Arabe Choa"
+msgstr "Chadian Arabic (Choa)"
+
+#: models.py:37
+msgid "Autres Langues"
+msgstr "Other languages"
+
+#: models.py:37
+msgid "Multilingue"
+msgstr "Multilingual"
+
+#: models.py:41
+msgid "Locale (ville / région)"
+msgstr "Local (city / region)"
+
+#: models.py:41
+msgid "Nationale (tout le Cameroun)"
+msgstr "National (all of Cameroon)"
+
+#: models.py:42
+msgid "Continentale (Afrique)"
+msgstr "Continental (Africa)"
+
+#: models.py:42
+msgid "Internationale (Monde)"
+msgstr "International (World)"
+
+#: models.py:47
+msgid "Locale"
+msgstr "Local"
+
+#: models.py:47
+msgid "Nationale"
+msgstr "National"
+
+#: models.py:48
+msgid "Continentale"
+msgstr "Continental"
+
+#: models.py:48
+msgid "Internationale"
+msgstr "International"
+
+#: models.py:52
+msgid "Artiste Solo (Homme)"
+msgstr "Solo artist (Male)"
+
+#: models.py:53
+msgid "Artiste Solo (Femme)"
+msgstr "Solo artist (Female)"
+
+#: models.py:54
+msgid "Groupe / Band"
+msgstr "Group / Band"
+
+#: models.py:58
+msgid "Chanson"
+msgstr "Song"
+
+#: models.py:58
+msgid "Album"
+msgstr "Album"
+
+#: models.py:59
+msgid "EP"
+msgstr "EP"
+
+#: models.py:59
+msgid "Live / Concert"
+msgstr "Live / Concert"
+
+#: models.py:62 models.py:75
+msgid "Rejeté"
+msgstr "Rejected"
+
+#: models.py:62 templates/admin/artistes.html:4
+#: templates/admin/commentaires.html:13 templates/admin/commentaires.html:58
+#: templates/admin/oeuvres.html:4
+msgid "En attente"
+msgstr "Pending"
+
+#: models.py:62 templates/admin/commentaires.html:57
+msgid "Approuvé"
+msgstr "Approved"
+
+#: models.py:65
+msgid "Information incorrecte"
+msgstr "Incorrect information"
+
+#: models.py:66
+msgid "Photo / lien YouTube incorrect"
+msgstr "Wrong photo / YouTube link"
+
+#: models.py:67
+msgid "Doublon — entrée déjà existante"
+msgstr "Duplicate — entry already exists"
+
+#: models.py:68
+msgid "Contenu inapproprié"
+msgstr "Inappropriate content"
+
+#: models.py:69
+msgid "Année de sortie incorrecte"
+msgstr "Wrong release year"
+
+#: models.py:70
+msgid "Autre raison"
+msgstr "Other reason"
+
+#: models.py:74 templates/admin/signalements.html:37
+msgid "En cours"
+msgstr "In progress"
+
+#: models.py:74 templates/admin/signalements.html:109
+msgid "Nouveau"
+msgstr "New"
+
+#: models.py:75
+msgid "Résolu"
+msgstr "Resolved"
+
+#: routes/admin.py:104
+msgid "Connexion réussie. Bienvenue dans l'espace admin Jackbeat."
+msgstr "Logged in. Welcome to the Jackbeat admin area."
+
+#: routes/admin.py:119 routes/admin.py:154
+#, python-format
+msgid "Trop de tentatives échouées. Réessayez dans %(n)d minutes."
+msgstr "Too many failed attempts. Try again in %(n)d minutes."
+
+#: routes/admin.py:133
+msgid "Identifiants incorrects. Veuillez réessayer."
+msgstr "Incorrect credentials. Please try again."
+
+#: routes/admin.py:143
+msgid "Session de vérification expirée. Reconnectez-vous."
+msgstr "Verification session expired. Please log in again."
+
+#: routes/admin.py:168
+#, python-format
+msgid "Code de secours utilisé. Il en reste %(n)d."
+msgstr "Backup code used. %(n)d remaining."
+
+#: routes/admin.py:171
+msgid "Code invalide ou déjà utilisé."
+msgstr "Invalid or already used code."
+
+#: routes/admin.py:185
+msgid "Vous avez été déconnecté."
+msgstr "You have been logged out."
+
+#: routes/admin.py:219
+msgid "Mot de passe actuel incorrect."
+msgstr "Current password is incorrect."
+
+#: routes/admin.py:223
+#, python-format
+msgid "Mot de passe refusé : %(p)s"
+msgstr "Password rejected: %(p)s"
+
+#: routes/admin.py:229
+msgid "Mot de passe modifié. Toutes vos autres sessions ont été déconnectées."
+msgstr "Password changed. All your other sessions have been logged out."
+
+#: routes/admin.py:246
+msgid "Code incorrect : vérifiez l’heure de votre téléphone et réessayez."
+msgstr "Incorrect code: check your phone's clock and try again."
+
+#: routes/admin.py:256
+msgid "Double authentification activée."
+msgstr "Two-factor authentication enabled."
+
+#: routes/admin.py:268
+msgid "Mot de passe incorrect ou confirmation manquante."
+msgstr "Incorrect password or missing confirmation."
+
+#: routes/admin.py:275
+msgid "Double authentification désactivée."
+msgstr "Two-factor authentication disabled."
+
+#: routes/admin.py:379
+#, python-format
+msgid "« %(n)s » a un profil incomplet (région / type à vérifier) : modifiez la fiche avant de l’approuver."
+msgstr "“%(n)s” has an incomplete profile (region / type to check): edit the profile before approving it."
+
+#: routes/admin.py:382
+#, python-format
+msgid "Artiste « %(n)s » approuvé et publié."
+msgstr "Artist “%(n)s” approved and published."
+
+#: routes/admin.py:385
+#, python-format
+msgid "Artiste « %(n)s » rejeté."
+msgstr "Artist “%(n)s” rejected."
+
+#: routes/admin.py:388
+#, python-format
+msgid "Artiste « %(n)s » remis en attente."
+msgstr "Artist “%(n)s” moved back to pending."
+
+#: routes/admin.py:389 routes/admin.py:609
+msgid "Action invalide."
+msgstr "Invalid action."
+
+#: routes/admin.py:401
+#, python-format
+msgid "Artiste « %(n)s » supprimé définitivement."
+msgstr "Artist “%(n)s” permanently deleted."
+
+#: routes/admin.py:428
+#, python-format
+msgid "Artiste « %(n)s » mis à jour."
+msgstr "Artist “%(n)s” updated."
+
+#: routes/admin.py:434
+#, python-format
+msgid "Artiste « %(n)s » mis à jour et publié."
+msgstr "Artist “%(n)s” updated and published."
+
+#: routes/admin.py:449
+msgid "Choisissez une fiche de destination valide."
+msgstr "Choose a valid target profile."
+
+#: routes/admin.py:472
+#, python-format
+msgid "« %(s)s » fusionné dans « %(c)s » (%(n)d œuvre(s) transférée(s))."
+msgstr "“%(s)s” merged into “%(c)s” (%(n)d work(s) transferred)."
+
+#: routes/admin.py:519
+#, python-format
+msgid "L’œuvre restera invisible tant que l’artiste « %(n)s » n’est pas publié : sa fiche a été créée automatiquement et doit être complétée."
+msgstr "The work will stay hidden until the artist “%(n)s” is published: their profile was created automatically and must be completed."
+
+#: routes/admin.py:522 templates/admin/artiste_detail.html:49
+msgid "Compléter la fiche"
+msgstr "Complete the profile"
+
+#: routes/admin.py:536
+#, python-format
+msgid "Œuvre « %(t)s » supprimée définitivement."
+msgstr "Work “%(t)s” permanently deleted."
+
+#: routes/admin.py:541
+#, python-format
+msgid "Œuvre « %(t)s » approuvée."
+msgstr "Work “%(t)s” approved."
+
+#: routes/admin.py:544
+#, python-format
+msgid "Œuvre « %(t)s » rejetée."
+msgstr "Work “%(t)s” rejected."
+
+#: routes/admin.py:547
+#, python-format
+msgid "Œuvre « %(t)s » remise en attente."
+msgstr "Work “%(t)s” moved back to pending."
+
+#: routes/admin.py:560
+msgid "en attente"
+msgstr "pending"
+
+#: routes/admin.py:560
+msgid "rejeté"
+msgstr "rejected"
+
+#: routes/admin.py:583
+#, python-format
+msgid "Œuvre « %(t)s » mise à jour."
+msgstr "Work “%(t)s” updated."
+
+#: routes/admin.py:588
+#, python-format
+msgid "Œuvre « %(t)s » mise à jour et approuvée."
+msgstr "Work “%(t)s” updated and approved."
+
+#: routes/admin.py:636
+#, python-format
+msgid "%(n)d entrée(s) traitée(s)."
+msgstr "%(n)d entry(ies) processed."
+
+#: routes/admin.py:638
+#, python-format
+msgid "%(n)d artiste(s) ignoré(s) : profil incomplet à compléter d’abord."
+msgstr "%(n)d artist(s) skipped: incomplete profile must be completed first."
+
+#: routes/admin.py:653 routes/dashboard.py:143 routes/dashboard.py:435
+#: routes/dashboard.py:576 templates/admin/_journal_table.html:15
+#: templates/admin/artiste_detail.html:129 templates/admin/base_admin.html:351
+#: templates/admin/login.html:19 templates/admin/oeuvre_detail.html:57
+#: templates/admin/oeuvre_detail.html:113 templates/admin/oeuvre_edit.html:62
+#: templates/admin/oeuvres.html:50 templates/base.html:89
+#: templates/dashboard/index.html:181 templates/dashboard/index.html:305
+#: templates/public/oeuvre_detail.html:79
+msgid "Langue"
+msgstr "Language"
+
+#: routes/admin.py:653 routes/dashboard.py:156 routes/dashboard.py:435
+#: routes/dashboard.py:584 routes/dashboard.py:609
+#: templates/admin/_journal_table.html:12
+#: templates/admin/artiste_detail.html:68
+#: templates/admin/artiste_detail.html:94 templates/admin/artiste_edit.html:58
+#: templates/admin/artistes.html:52 templates/admin/dashboard.html:75
+#: templates/dashboard/index.html:174
+msgid "Région"
+msgstr "Region"
+
+#: routes/admin.py:653 routes/dashboard.py:435
+msgid "ID"
+msgstr "ID"
+
+#: routes/admin.py:653 routes/dashboard.py:435 routes/dashboard.py:568
+#: templates/admin/_journal_table.html:15
+#: templates/admin/artiste_detail.html:129 templates/admin/dashboard.html:106
+#: templates/admin/oeuvre_detail.html:113 templates/admin/oeuvre_edit.html:62
+#: templates/admin/oeuvres.html:50 templates/dashboard/index.html:167
+#: templates/dashboard/index.html:305
+msgid "Genre"
+msgstr "Genre"
+
+#: routes/admin.py:653 routes/dashboard.py:435 routes/dashboard.py:609
+#: templates/_assets.html:26 templates/admin/_journal_table.html:14
+#: templates/admin/artistes.html:52 templates/admin/dashboard.html:166
+#: templates/admin/oeuvre_detail.html:55 templates/admin/oeuvre_detail.html:112
+#: templates/admin/oeuvre_edit.html:61 templates/admin/oeuvres.html:50
+#: templates/admin/signalements.html:58 templates/collecte/artiste.html:10
+#: templates/dashboard/index.html:305 templates/public/signaler.html:36
+msgid "Artiste"
+msgstr "Artist"
+
+#: routes/admin.py:653 routes/dashboard.py:435
+#: templates/admin/_journal_table.html:14
+#: templates/admin/artiste_detail.html:129 templates/admin/dashboard.html:106
+#: templates/admin/oeuvre_detail.html:53 templates/admin/oeuvre_detail.html:112
+#: templates/admin/oeuvre_edit.html:61 templates/admin/oeuvres.html:50
+#: templates/dashboard/index.html:305
+msgid "Titre"
+msgstr "Title"
+
+#: routes/admin.py:654 routes/dashboard.py:127 routes/dashboard.py:436
+#: routes/dashboard.py:594 templates/dashboard/index.html:188
+msgid "Décennie"
+msgstr "Decade"
+
+#: routes/admin.py:654 routes/dashboard.py:436
+#: templates/admin/_journal_table.html:15
+#: templates/admin/artiste_detail.html:129
+#: templates/admin/oeuvre_detail.html:113 templates/admin/oeuvre_edit.html:62
+#: templates/admin/oeuvres.html:51 templates/dashboard/index.html:305
+#: templates/public/oeuvre_detail.html:77
+msgid "Année"
+msgstr "Year"
+
+#: routes/admin.py:654 routes/dashboard.py:436
+#: templates/admin/_journal_table.html:16 templates/admin/oeuvre_detail.html:60
+#: templates/admin/oeuvre_detail.html:114 templates/admin/oeuvre_edit.html:63
+#: templates/public/oeuvre_detail.html:81
+msgid "Distinction"
+msgstr "Award"
+
+#: routes/admin.py:655 templates/admin/_journal_table.html:17
+#: templates/admin/artiste_detail.html:129 templates/admin/commentaires.html:37
+#: templates/admin/signalements.html:49
+msgid "Statut"
+msgstr "Status"
+
+#: routes/admin.py:655 templates/admin/artiste_detail.html:75
+#: templates/admin/artistes.html:53 templates/admin/oeuvre_detail.html:62
+msgid "Soumis par"
+msgstr "Submitted by"
+
+#: routes/admin.py:655 templates/admin/oeuvre_detail.html:63
+msgid "Email"
+msgstr "Email"
+
+#: routes/admin.py:709
+#, python-format
+msgid "Commentaire de « %(a)s » approuvé."
+msgstr "Comment by “%(a)s” approved."
+
+#: routes/admin.py:713
+msgid "Commentaire supprimé."
+msgstr "Comment deleted."
+
+#: routes/admin.py:726
+msgid "Aucune sélection."
+msgstr "Nothing selected."
+
+#: routes/admin.py:736
+#, python-format
+msgid "%(n)d commentaire(s) traité(s)."
+msgstr "%(n)d comment(s) processed."
+
+#: routes/admin.py:773
+#, python-format
+msgid "Signalement mis à jour : %(s)s."
+msgstr "Report updated: %(s)s."
+
+#: routes/collecte.py:50
+msgid "Artiste soumis avec succès ! Il sera visible après validation."
+msgstr "Artist submitted successfully! It will be visible once validated."
+
+#: routes/collecte.py:112
+msgid "Œuvre soumise avec succès ! Elle sera visible après validation."
+msgstr "Work submitted successfully! It will be visible once validated."
+
+#: routes/dashboard.py:66 routes/dashboard.py:172
+msgid "Non renseignée"
+msgstr "Not specified"
+
+#: routes/dashboard.py:98 routes/dashboard.py:147 routes/dashboard.py:178
+#: routes/dashboard.py:198
+msgid "œuvre(s)"
+msgstr "work(s)"
+
+#: routes/dashboard.py:100
+msgid "Répartition par genre musical"
+msgstr "Breakdown by music genre"
+
+#: routes/dashboard.py:115 routes/dashboard.py:406
+msgid "sortie(s)"
+msgstr "release(s)"
+
+#: routes/dashboard.py:116
+msgid "Sorties"
+msgstr "Releases"
+
+#: routes/dashboard.py:118
+msgid "Évolution des sorties par année"
+msgstr "Releases per year"
+
+#: routes/dashboard.py:127 routes/dashboard.py:143 routes/dashboard.py:156
+msgid "Nombre"
+msgstr "Count"
+
+#: routes/dashboard.py:133 templates/dashboard/index.html:281
+msgid "Productions par décennie"
+msgstr "Releases per decade"
+
+#: routes/dashboard.py:148 routes/dashboard.py:555
+#: templates/dashboard/index.html:273
+msgid "Langues utilisées"
+msgstr "Languages used"
+
+#: routes/dashboard.py:162 templates/dashboard/index.html:282
+msgid "Productions par région"
+msgstr "Releases per region"
+
+#: routes/dashboard.py:180 templates/dashboard/index.html:275
+msgid "Rayonnement géographique"
+msgstr "Geographic reach"
+
+#: routes/dashboard.py:205
+msgid "Genres × Décennies (heatmap)"
+msgstr "Genres × Decades (heatmap)"
+
+#: routes/dashboard.py:226 templates/dashboard/index.html:274
+msgid "Types d'œuvres"
+msgstr "Types of works"
+
+#: routes/dashboard.py:543 templates/base.html:9 templates/base.html:171
+msgid "Patrimoine Musical Camerounais"
+msgstr "Cameroonian Musical Heritage"
+
+#: routes/dashboard.py:544
+msgid "Rapport d'analyse"
+msgstr "Analysis report"
+
+#: routes/dashboard.py:547
+msgid "Résumé de l'archive"
+msgstr "Archive summary"
+
+#: routes/dashboard.py:551
+msgid "Indicateur"
+msgstr "Indicator"
+
+#: routes/dashboard.py:551
+msgid "Valeur"
+msgstr "Value"
+
+#: routes/dashboard.py:551
+msgid "Détail"
+msgstr "Detail"
+
+#: routes/dashboard.py:552
+msgid "Approuvés et publiés"
+msgstr "Approved and published"
+
+#: routes/dashboard.py:552 templates/_assets.html:33
+msgid "Artistes archivés"
+msgstr "Archived artists"
+
+#: routes/dashboard.py:553
+msgid "Chansons, albums, EP, lives"
+msgstr "Songs, albums, EPs, live recordings"
+
+#: routes/dashboard.py:553 templates/_assets.html:33 templates/index.html:47
+msgid "Œuvres archivées"
+msgstr "Archived works"
+
+#: routes/dashboard.py:554
+msgid "Styles représentés"
+msgstr "Styles represented"
+
+#: routes/dashboard.py:554 routes/dashboard.py:566
+#: templates/dashboard/index.html:272
+msgid "Genres musicaux"
+msgstr "Music genres"
+
+#: routes/dashboard.py:555
+msgid "Langues de composition"
+msgstr "Languages of composition"
+
+#: routes/dashboard.py:556
+msgid "Régions couvertes"
+msgstr "Regions covered"
+
+#: routes/dashboard.py:556
+msgid "Sur 10 régions du Cameroun"
+msgstr "Out of Cameroon's 10 regions"
+
+#: routes/dashboard.py:557
+msgid "Rayonnement continental ou plus"
+msgstr "Continental reach or wider"
+
+#: routes/dashboard.py:557
+msgid "Part internationale"
+msgstr "International share"
+
+#: routes/dashboard.py:563
+#, python-format
+msgid "Période couverte : %(a)s – %(b)s (%(n)s ans)"
+msgstr "Period covered: %(a)s – %(b)s (%(n)s years)"
+
+#: routes/dashboard.py:568
+msgid "Rang"
+msgstr "Rank"
+
+#: routes/dashboard.py:568 routes/dashboard.py:576 routes/dashboard.py:584
+#: routes/dashboard.py:594 routes/dashboard.py:609
+#: templates/admin/base_admin.html:295 templates/admin/dashboard.html:26
+#: templates/admin/dashboard.html:103 templates/admin/journal.html:10
+#: templates/admin/oeuvre_detail.html:5 templates/admin/oeuvre_edit.html:5
+#: templates/admin/oeuvres.html:3 templates/admin/oeuvres.html:6
+#: templates/admin/oeuvres.html:12 templates/dashboard/carte.html:130
+#: templates/dashboard/chronologie.html:47 templates/dashboard/index.html:221
+#: templates/public/artistes.html:73 templates/public/recherche.html:186
+msgid "Œuvres"
+msgstr "Works"
+
+#: routes/dashboard.py:574
+msgid "Diversité linguistique"
+msgstr "Linguistic diversity"
+
+#: routes/dashboard.py:581
+msgid "Production par région"
+msgstr "Output by region"
+
+#: routes/dashboard.py:584 templates/_assets.html:32
+#: templates/admin/artiste_detail.html:5 templates/admin/artiste_edit.html:5
+#: templates/admin/artistes.html:3 templates/admin/artistes.html:7
+#: templates/admin/artistes.html:14 templates/admin/base_admin.html:289
+#: templates/admin/dashboard.html:25 templates/admin/dashboard.html:72
+#: templates/admin/journal.html:10 templates/dashboard/carte.html:129
+#: templates/dashboard/index.html:225 templates/public/recherche.html:153
+msgid "Artistes"
+msgstr "Artists"
+
+#: routes/dashboard.py:589
+msgid "Évolution par décennie"
+msgstr "Evolution by decade"
+
+#: routes/dashboard.py:594
+msgid "Artistes actifs"
+msgstr "Active artists"
+
+#: routes/dashboard.py:599
+msgid "Catalogue des artistes"
+msgstr "Artist catalogue"
+
+#: routes/dashboard.py:601
+msgid "H"
+msgstr "M"
+
+#: routes/dashboard.py:601
+msgid "F"
+msgstr "F"
+
+#: routes/dashboard.py:601
+msgid "G"
+msgstr "G"
+
+#: routes/dashboard.py:606 templates/public/artiste_detail.html:148
+msgid "présent"
+msgstr "present"
+
+#: routes/dashboard.py:609 templates/admin/artistes.html:52
+msgid "Période"
+msgstr "Period"
+
+#: routes/dashboard.py:619
+#, python-format
+msgid "Jackbeat — Patrimoine Musical Camerounais · Rapport du %(d)s · INF 232 EC2"
+msgstr "Jackbeat — Cameroonian Musical Heritage · Report of %(d)s · INF 232 EC2"
+
+#: routes/public.py:229 routes/public.py:245
+msgid "Commentaire soumis — il sera visible après modération."
+msgstr "Comment submitted — it will be visible after moderation."
+
+#: routes/public.py:234
+msgid "Veuillez entrer votre prénom."
+msgstr "Please enter your first name."
+
+#: routes/public.py:237
+msgid "Le commentaire est trop court."
+msgstr "The comment is too short."
+
+#: routes/public.py:241
+msgid "Vous avez déjà posté plusieurs commentaires ici."
+msgstr "You have already posted several comments here."
+
+#: routes/public.py:299 routes/public.py:328
+msgid "Merci ! Votre signalement sera traité rapidement."
+msgstr "Thank you! Your report will be handled shortly."
+
+#: routes/public.py:307
+msgid "Veuillez sélectionner une raison."
+msgstr "Please select a reason."
+
+#: routes/public.py:314
+msgid "Vous avez déjà signalé cette entrée plusieurs fois."
+msgstr "You have already reported this entry several times."
+
+#: security.py:255
+#, python-format
+msgid "Au moins %(n)d caractères."
+msgstr "At least %(n)d characters."
+
+#: security.py:259
+msgid "Au moins 3 types de caractères parmi : minuscules, majuscules, chiffres, symboles."
+msgstr "At least 3 character types among: lowercase, uppercase, digits, symbols."
+
+#: security.py:262
+msgid "Mot de passe trop courant."
+msgstr "Password is too common."
+
+#: security.py:264
+msgid "Ne doit pas contenir l'identifiant."
+msgstr "Must not contain the username."
+
+#: templates/_assets.html:26 templates/admin/dashboard.html:166
+#: templates/admin/signalements.html:58 templates/collecte/oeuvre.html:10
+#: templates/public/signaler.html:37
+msgid "Œuvre"
+msgstr "Work"
+
+#: templates/_assets.html:27 templates/public/artiste_detail.html:161
+msgid "Aimer"
+msgstr "Like"
+
+#: templates/_assets.html:27 templates/public/artiste_detail.html:161
+msgid "J'aime"
+msgstr "Liked"
+
+#: templates/_assets.html:28
+msgid "like"
+msgstr "like"
+
+#: templates/_assets.html:28
+msgid "likes"
+msgstr "likes"
+
+#: templates/_assets.html:29
+msgid "œuvre"
+msgstr "work"
+
+#: templates/_assets.html:29
+msgid "œuvres"
+msgstr "works"
+
+#: templates/_assets.html:30
+msgid "artiste"
+msgstr "artist"
+
+#: templates/_assets.html:30
+msgid "artistes"
+msgstr "artists"
+
+#: templates/_assets.html:31
+msgid "Aucun artiste encore archivé."
+msgstr "No artist archived yet."
+
+#: templates/_assets.html:31 templates/dashboard/carte.html:81
+msgid "Aucune donnée"
+msgstr "No data"
+
+#: templates/_assets.html:32 templates/base.html:99 templates/base.html:160
+#: templates/collecte/artiste.html:9 templates/collecte/index.html:2
+#: templates/collecte/oeuvre.html:9 templates/dashboard/chronologie.html:106
+#: templates/index.html:32
+msgid "Contribuer"
+msgstr "Contribute"
+
+#: templates/_assets.html:34
+msgid "Une erreur est survenue. Réessayez."
+msgstr "Something went wrong. Please try again."
+
+#: templates/_assets.html:34 templates/base.html:122
+#: templates/public/artiste_detail.html:312
+msgid "Fermer"
+msgstr "Close"
+
+#: templates/_assets.html:34 templates/dashboard/index.html:229
+msgid "Genre dominant"
+msgstr "Leading genre"
+
+#: templates/_macros.html:39
+msgid "Texte disponible en français uniquement"
+msgstr "Text available in French only"
+
+#: templates/_macros.html:39
+msgid "Texte disponible en anglais uniquement"
+msgstr "Text available in English only"
+
+#: templates/admin/2fa_setup.html:2 templates/admin/securite.html:39
+msgid "Activer la 2FA"
+msgstr "Enable 2FA"
+
+#: templates/admin/2fa_setup.html:3 templates/admin/base_admin.html:327
+#: templates/admin/codes_secours.html:3 templates/admin/securite.html:3
+#: templates/admin/securite.html:4 templates/admin/securite.html:6
+msgid "Sécurité du compte"
+msgstr "Account security"
+
+#: templates/admin/2fa_setup.html:5
+msgid "Activer la double authentification"
+msgstr "Enable two-factor authentication"
+
+#: templates/admin/2fa_setup.html:8
+msgid "Ouvrez votre application d'authentification et scannez ce QR code :"
+msgstr "Open your authenticator app and scan this QR code:"
+
+#: templates/admin/2fa_setup.html:14
+msgid "Ou saisissez cette clé manuellement :"
+msgstr "Or enter this key manually:"
+
+#: templates/admin/2fa_setup.html:18
+msgid "Saisissez le code à 6 chiffres affiché par l'application pour confirmer :"
+msgstr "Enter the 6-digit code shown by the app to confirm:"
+
+#: templates/admin/2fa_setup.html:22
+msgid "Code"
+msgstr "Code"
+
+#: templates/admin/2fa_setup.html:25
+msgid "Confirmer et activer"
+msgstr "Confirm and enable"
+
+#: templates/admin/_edit_buttons.html:3 templates/admin/signalements.html:122
+msgid "Enregistrer"
+msgstr "Save"
+
+#: templates/admin/_edit_buttons.html:7
+msgid "Enregistrer et publier"
+msgstr "Save and publish"
+
+#: templates/admin/_edit_buttons.html:10 templates/admin/signalements.html:123
+#: templates/collecte/artiste.html:59 templates/collecte/oeuvre.html:73
+#: templates/public/signaler.html:94
+msgid "Annuler"
+msgstr "Cancel"
+
+#: templates/admin/_historique.html:4
+msgid "Historique des modifications"
+msgstr "Change history"
+
+#: templates/admin/_journal_table.html:3
+msgid "Déconnexion"
+msgstr "Logout"
+
+#: templates/admin/_journal_table.html:3 templates/admin/login.html:8
+msgid "Connexion"
+msgstr "Login"
+
+#: templates/admin/_journal_table.html:4
+msgid "Approbation"
+msgstr "Approval"
+
+#: templates/admin/_journal_table.html:4
+msgid "Rejet"
+msgstr "Rejection"
+
+#: templates/admin/_journal_table.html:4
+msgid "Remise en attente"
+msgstr "Moved back to pending"
+
+#: templates/admin/_journal_table.html:5
+msgid "Modification"
+msgstr "Edit"
+
+#: templates/admin/_journal_table.html:5
+msgid "Suppression"
+msgstr "Deletion"
+
+#: templates/admin/_journal_table.html:5
+msgid "Fusion de doublons"
+msgstr "Duplicate merge"
+
+#: templates/admin/_journal_table.html:6
+msgid "Export CSV"
+msgstr "CSV export"
+
+#: templates/admin/_journal_table.html:6
+msgid "Signalement traité"
+msgstr "Report handled"
+
+#: templates/admin/_journal_table.html:7
+msgid "Commentaires approuvés"
+msgstr "Comments approved"
+
+#: templates/admin/_journal_table.html:7
+msgid "Commentaires supprimés"
+msgstr "Comments deleted"
+
+#: templates/admin/_journal_table.html:8
+msgid "Mot de passe changé"
+msgstr "Password changed"
+
+#: templates/admin/_journal_table.html:8
+msgid "2FA activée"
+msgstr "2FA enabled"
+
+#: templates/admin/_journal_table.html:8
+msgid "2FA désactivée"
+msgstr "2FA disabled"
+
+#: templates/admin/_journal_table.html:9
+msgid "Codes de secours régénérés"
+msgstr "Backup codes regenerated"
+
+#: templates/admin/_journal_table.html:9
+msgid "Code de secours utilisé"
+msgstr "Backup code used"
+
+#: templates/admin/_journal_table.html:12
+#: templates/admin/artiste_detail.html:94 templates/admin/artiste_edit.html:58
+#: templates/admin/dashboard.html:75
+msgid "Nom"
+msgstr "Name"
+
+#: templates/admin/_journal_table.html:13
+msgid "Biographie (FR)"
+msgstr "Biography (FR)"
+
+#: templates/admin/_journal_table.html:13
+msgid "Biographie (EN)"
+msgstr "Biography (EN)"
+
+#: templates/admin/_journal_table.html:13
+#: templates/admin/artiste_detail.html:95 templates/admin/artiste_edit.html:59
+msgid "Début"
+msgstr "Start"
+
+#: templates/admin/_journal_table.html:13
+#: templates/admin/artiste_detail.html:96 templates/admin/artiste_edit.html:60
+msgid "Fin"
+msgstr "End"
+
+#: templates/admin/_journal_table.html:14
+msgid "Site web"
+msgstr "Website"
+
+#: templates/admin/_journal_table.html:14
+#: templates/admin/artiste_detail.html:73
+msgid "Photo"
+msgstr "Photo"
+
+#: templates/admin/_journal_table.html:16
+msgid "Description (FR)"
+msgstr "Description (FR)"
+
+#: templates/admin/_journal_table.html:17
+msgid "Description (EN)"
+msgstr "Description (EN)"
+
+#: templates/admin/_journal_table.html:18
+msgid "Profil incomplet"
+msgstr "Incomplete profile"
+
+#: templates/admin/_journal_table.html:22
+msgid "Admin"
+msgstr "Admin"
+
+#: templates/admin/_journal_table.html:22
+msgid "Action"
+msgstr "Action"
+
+#: templates/admin/_journal_table.html:22 templates/admin/artistes.html:53
+#: templates/admin/commentaires.html:37 templates/admin/dashboard.html:75
+#: templates/admin/dashboard.html:106 templates/admin/dashboard.html:135
+#: templates/admin/dashboard.html:160 templates/admin/securite.html:47
+#: templates/admin/signalements.html:49
+msgid "Date"
+msgstr "Date"
+
+#: templates/admin/_journal_table.html:22 templates/admin/commentaires.html:36
+#: templates/admin/dashboard.html:160 templates/admin/signalements.html:48
+msgid "Cible"
+msgstr "Target"
+
+#: templates/admin/_journal_table.html:22 templates/public/signaler.html:78
+msgid "Détails"
+msgstr "Details"
+
+#: templates/admin/_journal_table.html:51
+msgid "Aucune entrée."
+msgstr "No entries."
+
+#: templates/admin/_soumission.html:7
+msgid "Contribution d'origine"
+msgstr "Original contribution"
+
+#: templates/admin/_soumission.html:10
+msgid "Ce que le contributeur a envoyé. Les champs modifiés depuis sont signalés."
+msgstr "What the contributor sent. Fields changed since then are flagged."
+
+#: templates/admin/_soumission.html:22
+msgid "corrigé"
+msgstr "corrected"
+
+#: templates/admin/artiste_detail.html:14 templates/admin/oeuvre_detail.html:14
+msgid "Retour à la liste"
+msgstr "Back to the list"
+
+#: templates/admin/artiste_detail.html:20
+#: templates/admin/oeuvre_detail.html:102
+msgid "Profil à compléter"
+msgstr "Profile to complete"
+
+#: templates/admin/artiste_detail.html:23 templates/admin/oeuvre_detail.html:26
+msgid "Voir la fiche publique"
+msgstr "View public page"
+
+#: templates/admin/artiste_detail.html:29
+#: templates/admin/artiste_detail.html:139 templates/admin/artiste_edit.html:3
+#: templates/admin/artiste_edit.html:7 templates/admin/artistes.html:76
+#: templates/admin/oeuvre_detail.html:33 templates/admin/oeuvre_detail.html:106
+#: templates/admin/oeuvre_edit.html:3 templates/admin/oeuvre_edit.html:7
+#: templates/admin/oeuvres.html:81
+msgid "Modifier"
+msgstr "Edit"
+
+#: templates/admin/artiste_detail.html:32 templates/admin/artistes.html:39
+#: templates/admin/artistes.html:78 templates/admin/commentaires.html:26
+#: templates/admin/commentaires.html:63 templates/admin/dashboard.html:88
+#: templates/admin/dashboard.html:118 templates/admin/dashboard.html:143
+#: templates/admin/oeuvre_detail.html:35 templates/admin/oeuvres.html:37
+#: templates/admin/oeuvres.html:83
+msgid "Approuver"
+msgstr "Approve"
+
+#: templates/admin/artiste_detail.html:35 templates/admin/artistes.html:40
+#: templates/admin/artistes.html:81 templates/admin/dashboard.html:90
+#: templates/admin/dashboard.html:119 templates/admin/oeuvre_detail.html:38
+#: templates/admin/oeuvres.html:38 templates/admin/oeuvres.html:86
+msgid "Rejeter"
+msgstr "Reject"
+
+#: templates/admin/artiste_detail.html:38 templates/admin/oeuvre_detail.html:41
+msgid "Remettre en attente"
+msgstr "Move back to pending"
+
+#: templates/admin/artiste_detail.html:40 templates/admin/artistes.html:43
+#: templates/admin/artistes.html:83 templates/admin/commentaires.html:28
+#: templates/admin/commentaires.html:65 templates/admin/dashboard.html:144
+#: templates/admin/oeuvre_detail.html:43 templates/admin/oeuvres.html:41
+#: templates/admin/oeuvres.html:88
+msgid "Supprimer"
+msgstr "Delete"
+
+#: templates/admin/artiste_detail.html:41
+msgid "Supprimer définitivement cet artiste et toutes ses œuvres ?"
+msgstr "Permanently delete this artist and all their works?"
+
+#: templates/admin/artiste_detail.html:48
+msgid "Cette fiche a été créée automatiquement lors de la soumission d'une œuvre : la région et le type sont provisoires. Vérifiez-les et enregistrez la fiche pour pouvoir la publier."
+msgstr "This profile was created automatically when a work was submitted: the region and type are placeholders. Check them and save the profile to be able to publish it."
+
+#: templates/admin/artiste_detail.html:56
+msgid "Doublon probable : une autre fiche porte le même nom."
+msgstr "Likely duplicate: another profile has the same name."
+
+#: templates/admin/artiste_detail.html:64
+msgid "Fiche artiste"
+msgstr "Artist profile"
+
+#: templates/admin/artiste_detail.html:66
+msgid "Nom d'artiste"
+msgstr "Artist name"
+
+#: templates/admin/artiste_detail.html:70
+msgid "Début de carrière"
+msgstr "Career start"
+
+#: templates/admin/artiste_detail.html:71
+msgid "Fin de carrière"
+msgstr "Career end"
+
+#: templates/admin/artiste_detail.html:71
+msgid "Encore actif"
+msgstr "Still active"
+
+#: templates/admin/artiste_detail.html:74 templates/admin/oeuvre_detail.html:61
+#: templates/public/artistes.html:71 templates/public/top_charts.html:120
+#: templates/public/top_charts.html:181
+msgid "Vues"
+msgstr "Views"
+
+#: templates/admin/artiste_detail.html:76
+msgid "Email soumetteur"
+msgstr "Submitter email"
+
+#: templates/admin/artiste_detail.html:77
+msgid "Créé le"
+msgstr "Created on"
+
+#: templates/admin/artiste_detail.html:78 templates/admin/oeuvre_detail.html:65
+msgid "Dernière modification"
+msgstr "Last modified"
+
+#: templates/admin/artiste_detail.html:96 templates/admin/artiste_edit.html:60
+#: templates/collecte/artiste.html:44
+msgid "Biographie"
+msgstr "Biography"
+
+#: templates/admin/artiste_detail.html:101
+msgid "Fusionner un doublon"
+msgstr "Merge a duplicate"
+
+#: templates/admin/artiste_detail.html:104
+msgid "Transfère toutes les œuvres, likes, commentaires et signalements de cette fiche vers la fiche choisie, puis supprime cette fiche."
+msgstr "Moves all works, likes, comments and reports from this profile to the chosen profile, then deletes this profile."
+
+#: templates/admin/artiste_detail.html:108
+msgid "Fiche de destination"
+msgstr "Target profile"
+
+#: templates/admin/artiste_detail.html:110
+msgid "— Fiche de destination —"
+msgstr "— Target profile —"
+
+#: templates/admin/artiste_detail.html:115
+#, python-format
+msgid "Fusionner « %(n)s » dans la fiche choisie ? Cette fiche sera supprimée."
+msgstr "Merge “%(n)s” into the chosen profile? This profile will be deleted."
+
+#: templates/admin/artiste_detail.html:116
+msgid "Fusionner"
+msgstr "Merge"
+
+#: templates/admin/artiste_detail.html:124
+msgid "Œuvres associées"
+msgstr "Linked works"
+
+#: templates/admin/artiste_detail.html:148
+msgid "Aucune œuvre associée."
+msgstr "No linked works."
+
+#: templates/admin/artiste_edit.html:12
+msgid "Modifier l'artiste"
+msgstr "Edit artist"
+
+#: templates/admin/artiste_edit.html:24
+msgid "Région et type provisoires : vérifiez-les. Enregistrer la fiche la marque comme vérifiée."
+msgstr "Placeholder region and type: check them. Saving the profile marks it as verified."
+
+#: templates/admin/artiste_edit.html:28 templates/collecte/artiste.html:25
+msgid "Informations principales"
+msgstr "Main information"
+
+#: templates/admin/artiste_edit.html:35
+msgid "Vide = encore actif"
+msgstr "Empty = still active"
+
+#: templates/admin/artiste_edit.html:38
+msgid "Biographie (bilingue)"
+msgstr "Biography (bilingual)"
+
+#: templates/admin/artiste_edit.html:42 templates/admin/oeuvre_edit.html:45
+msgid "Affichée aux visiteurs anglophones. Si vide, la version française est affichée avec une mention."
+msgstr "Shown to English-speaking visitors. If empty, the French version is shown with a notice."
+
+#: templates/admin/artiste_edit.html:45
+msgid "Liens"
+msgstr "Links"
+
+#: templates/admin/artiste_edit.html:47
+msgid "Adresse https d’une image libre de droits."
+msgstr "https address of a royalty-free image."
+
+#: templates/admin/artiste_edit.html:63 templates/admin/oeuvre_edit.html:67
+msgid "Contributeur"
+msgstr "Contributor"
+
+#: templates/admin/artistes.html:4 templates/admin/artistes.html:62
+#: templates/admin/dashboard.html:81 templates/admin/oeuvre_edit.html:30
+msgid "À compléter"
+msgstr "To complete"
+
+#: templates/admin/artistes.html:4 templates/admin/commentaires.html:13
+msgid "Approuvés"
+msgstr "Approved"
+
+#: templates/admin/artistes.html:4 templates/admin/signalements.html:37
+msgid "Rejetés"
+msgstr "Rejected"
+
+#: templates/admin/artistes.html:17
+msgid "Rechercher un artiste"
+msgstr "Search for an artist"
+
+#: templates/admin/artistes.html:18
+msgid "Rechercher un artiste..."
+msgstr "Search for an artist..."
+
+#: templates/admin/artistes.html:37 templates/admin/commentaires.html:24
+#: templates/admin/oeuvres.html:35
+msgid "Sélection :"
+msgstr "Selected:"
+
+#: templates/admin/artistes.html:42
+msgid "Supprimer définitivement les artistes sélectionnés et toutes leurs œuvres ?"
+msgstr "Permanently delete the selected artists and all their works?"
+
+#: templates/admin/artistes.html:51 templates/admin/commentaires.html:35
+#: templates/admin/oeuvres.html:49
+msgid "Tout sélectionner"
+msgstr "Select all"
+
+#: templates/admin/artistes.html:53 templates/admin/commentaires.html:37
+#: templates/admin/dashboard.html:75 templates/admin/dashboard.html:106
+#: templates/admin/dashboard.html:135 templates/admin/oeuvres.html:51
+#: templates/admin/signalements.html:49
+msgid "Actions"
+msgstr "Actions"
+
+#: templates/admin/artistes.html:70 templates/admin/oeuvre_detail.html:98
+msgid "actif"
+msgstr "active"
+
+#: templates/admin/artistes.html:75 templates/admin/oeuvres.html:80
+msgid "Voir"
+msgstr "View"
+
+#: templates/admin/artistes.html:84
+#, python-format
+msgid "Supprimer « %(n)s » définitivement, avec toutes ses œuvres ?"
+msgstr "Permanently delete “%(n)s” and all their works?"
+
+#: templates/admin/artistes.html:94
+#, python-format
+msgid "%(num)d artiste affiché"
+msgid_plural "%(num)d artistes affichés"
+msgstr[0] "%(num)d artist shown"
+msgstr[1] "%(num)d artists shown"
+
+#: templates/admin/artistes.html:100
+msgid "Aucun artiste dans cette catégorie"
+msgstr "No artists in this category"
+
+#: templates/admin/artistes.html:100 templates/admin/oeuvres.html:106
+#: templates/public/recherche.html:123
+#, python-format
+msgid "Aucun résultat pour « %(q)s »"
+msgstr "No results for “%(q)s”"
+
+#: templates/admin/base_admin.html:275
+msgid "Menu administrateur"
+msgstr "Admin menu"
+
+#: templates/admin/base_admin.html:282
+msgid "Modération"
+msgstr "Moderation"
+
+#: templates/admin/base_admin.html:300
+msgid "Communauté"
+msgstr "Community"
+
+#: templates/admin/base_admin.html:303 templates/admin/commentaires.html:3
+#: templates/admin/commentaires.html:4 templates/admin/commentaires.html:7
+#: templates/admin/dashboard.html:28 templates/admin/dashboard.html:49
+#: templates/admin/dashboard.html:132 templates/admin/journal.html:10
+#: templates/public/artiste_detail.html:254
+#: templates/public/oeuvre_detail.html:124
+msgid "Commentaires"
+msgstr "Comments"
+
+#: templates/admin/base_admin.html:309 templates/admin/dashboard.html:29
+#: templates/admin/dashboard.html:157 templates/admin/journal.html:10
+#: templates/admin/signalements.html:2 templates/admin/signalements.html:3
+msgid "Signalements"
+msgstr "Reports"
+
+#: templates/admin/base_admin.html:314
+msgid "Données"
+msgstr "Data"
+
+#: templates/admin/base_admin.html:316
+msgid "Export CSV complet"
+msgstr "Full CSV export"
+
+#: templates/admin/base_admin.html:319 templates/admin/journal.html:2
+#: templates/admin/journal.html:3 templates/admin/journal.html:6
+msgid "Journal d'audit"
+msgstr "Audit log"
+
+#: templates/admin/base_admin.html:322
+msgid "Voir les stats"
+msgstr "View statistics"
+
+#: templates/admin/base_admin.html:325
+msgid "Compte"
+msgstr "Account"
+
+#: templates/admin/base_admin.html:328
+msgid "Double authentification désactivée"
+msgstr "Two-factor authentication disabled"
+
+#: templates/admin/base_admin.html:331
+msgid "Voir le site public"
+msgstr "View public site"
+
+#: templates/admin/base_admin.html:338 templates/admin/base_admin.html:362
+msgid "Se déconnecter"
+msgstr "Log out"
+
+#: templates/admin/base_admin.html:346 templates/public/oeuvre_detail.html:34
+msgid "Fil d’Ariane"
+msgstr "Breadcrumb"
+
+#: templates/admin/base_admin.html:358
+msgid "Double authentification activée"
+msgstr "Two-factor authentication enabled"
+
+#: templates/admin/codes_secours.html:2 templates/admin/codes_secours.html:3
+msgid "Codes de secours"
+msgstr "Backup codes"
+
+#: templates/admin/codes_secours.html:5
+msgid "Vos codes de secours"
+msgstr "Your backup codes"
+
+#: templates/admin/codes_secours.html:9
+msgid "Notez-les et gardez-les en lieu sûr : ils ne seront plus jamais affichés. Chaque code permet une seule connexion si vous perdez votre téléphone."
+msgstr "Write them down and keep them somewhere safe: they will never be shown again. Each code allows a single login if you lose your phone."
+
+#: templates/admin/codes_secours.html:14
+msgid "Copier"
+msgstr "Copy"
+
+#: templates/admin/codes_secours.html:15
+msgid "J'ai noté mes codes"
+msgstr "I've saved my codes"
+
+#: templates/admin/commentaires.html:9
+#, python-format
+msgid "%(a)d en attente · %(t)d au total"
+msgstr "%(a)d pending · %(t)d in total"
+
+#: templates/admin/commentaires.html:13 templates/admin/signalements.html:37
+msgid "Tous"
+msgstr "All"
+
+#: templates/admin/commentaires.html:27
+msgid "Supprimer les commentaires sélectionnés ?"
+msgstr "Delete the selected comments?"
+
+#: templates/admin/commentaires.html:36 templates/admin/dashboard.html:135
+msgid "Auteur"
+msgstr "Author"
+
+#: templates/admin/commentaires.html:36
+#: templates/public/artiste_detail.html:281
+#: templates/public/oeuvre_detail.html:151
+msgid "Commentaire"
+msgstr "Comment"
+
+#: templates/admin/commentaires.html:66 templates/admin/dashboard.html:144
+msgid "Supprimer ce commentaire ?"
+msgstr "Delete this comment?"
+
+#: templates/admin/commentaires.html:78
+msgid "Aucun commentaire dans cette catégorie"
+msgstr "No comments in this category"
+
+#: templates/admin/dashboard.html:10
+#, python-format
+msgid "%(num)d activité cette semaine"
+msgid_plural "%(num)d activités cette semaine"
+msgstr[0] "%(num)d activity this week"
+msgstr[1] "%(num)d activities this week"
+
+#: templates/admin/dashboard.html:17
+msgid "La double authentification n'est pas activée sur votre compte."
+msgstr "Two-factor authentication is not enabled on your account."
+
+#: templates/admin/dashboard.html:18
+msgid "L'activer maintenant"
+msgstr "Enable it now"
+
+#: templates/admin/dashboard.html:22
+msgid "À modérer"
+msgstr "To moderate"
+
+#: templates/admin/dashboard.html:27
+msgid "Profils à compléter"
+msgstr "Profiles to complete"
+
+#: templates/admin/dashboard.html:43
+msgid "Archive publiée"
+msgstr "Published archive"
+
+#: templates/admin/dashboard.html:46
+msgid "Œuvres publiées"
+msgstr "Published works"
+
+#: templates/admin/dashboard.html:47
+msgid "Artistes publiés"
+msgstr "Published artists"
+
+#: templates/admin/dashboard.html:48
+msgid "Likes reçus"
+msgstr "Likes received"
+
+#: templates/admin/dashboard.html:50
+msgid "Activités/semaine"
+msgstr "Activity/week"
+
+#: templates/admin/dashboard.html:86 templates/admin/dashboard.html:117
+msgid "Vérifier / modifier"
+msgstr "Review / edit"
+
+#: templates/admin/dashboard.html:97 templates/admin/dashboard.html:151
+#: templates/admin/dashboard.html:176
+msgid "Voir tous"
+msgstr "View all"
+
+#: templates/admin/dashboard.html:126
+msgid "Voir toutes"
+msgstr "View all"
+
+#: templates/admin/dashboard.html:135
+msgid "Extrait"
+msgstr "Excerpt"
+
+#: templates/admin/dashboard.html:160 templates/admin/signalements.html:48
+msgid "Raison"
+msgstr "Reason"
+
+#: templates/admin/dashboard.html:170 templates/admin/signalements.html:82
+msgid "Traiter"
+msgstr "Handle"
+
+#: templates/admin/dashboard.html:183
+msgid "Tout est à jour !"
+msgstr "All caught up!"
+
+#: templates/admin/dashboard.html:184
+msgid "Aucune modération en attente."
+msgstr "Nothing awaiting moderation."
+
+#: templates/admin/dashboard.html:190
+msgid "Activité récente"
+msgstr "Recent activity"
+
+#: templates/admin/dashboard.html:193
+msgid "Voir tout le journal"
+msgstr "View the full log"
+
+#: templates/admin/journal.html:7
+msgid "Chaque action admin est tracée : qui, quoi, quand et le détail des modifications."
+msgstr "Every admin action is recorded: who, what, when, and the details of each change."
+
+#: templates/admin/journal.html:10
+msgid "Tout"
+msgstr "All"
+
+#: templates/admin/journal.html:10
+msgid "Comptes"
+msgstr "Accounts"
+
+#: templates/admin/journal.html:17 templates/public/artistes.html:82
+msgid "Pagination"
+msgstr "Pagination"
+
+#: templates/admin/login.html:17
+msgid "Espace Administrateur"
+msgstr "Administrator area"
+
+#: templates/admin/login.html:55
+msgid "Se connecter"
+msgstr "Log in"
+
+#: templates/admin/login.html:62
+msgid "Retour au site"
+msgstr "Back to the site"
+
+#: templates/admin/login_2fa.html:2
+msgid "Vérification en deux étapes"
+msgstr "Two-step verification"
+
+#: templates/admin/login_2fa.html:6
+msgid "Saisissez le code à 6 chiffres affiché dans votre application d'authentification, ou un code de secours."
+msgstr "Enter the 6-digit code shown in your authenticator app, or a backup code."
+
+#: templates/admin/login_2fa.html:17
+msgid "Vérifier"
+msgstr "Verify"
+
+#: templates/admin/login_2fa.html:21
+msgid "Recommencer la connexion"
+msgstr "Start login again"
+
+#: templates/admin/oeuvre_detail.html:28
+msgid "Invisible : l'artiste n'est pas encore publié"
+msgstr "Hidden: the artist is not published yet"
+
+#: templates/admin/oeuvre_detail.html:44
+msgid "Supprimer définitivement cette œuvre ?"
+msgstr "Permanently delete this work?"
+
+#: templates/admin/oeuvre_detail.html:51
+msgid "Fiche œuvre"
+msgstr "Work details"
+
+#: templates/admin/oeuvre_detail.html:56
+msgid "Genre musical"
+msgstr "Music genre"
+
+#: templates/admin/oeuvre_detail.html:58
+msgid "Année de sortie"
+msgstr "Release year"
+
+#: templates/admin/oeuvre_detail.html:64
+msgid "Date de soumission"
+msgstr "Submission date"
+
+#: templates/admin/oeuvre_detail.html:76
+msgid "Voir la vidéo"
+msgstr "Watch the video"
+
+#: templates/admin/oeuvre_detail.html:78
+msgid "Lien invalide :"
+msgstr "Invalid link:"
+
+#: templates/admin/oeuvre_detail.html:95
+msgid "Artiste associé"
+msgstr "Linked artist"
+
+#: templates/admin/oeuvre_detail.html:105
+msgid "Voir la fiche artiste"
+msgstr "View artist profile"
+
+#: templates/admin/oeuvre_detail.html:115 templates/admin/oeuvre_edit.html:64
+#: templates/admin/signalements.html:48
+msgid "Description"
+msgstr "Description"
+
+#: templates/admin/oeuvre_edit.html:12
+msgid "Modifier l'œuvre"
+msgstr "Edit work"
+
+#: templates/admin/oeuvre_edit.html:21 templates/collecte/oeuvre.html:25
+msgid "L'Œuvre"
+msgstr "The work"
+
+#: templates/admin/oeuvre_edit.html:26
+msgid "Rattacher l'œuvre à une autre fiche (ex : faute de frappe du contributeur)."
+msgstr "Link the work to another profile (e.g. contributor's typo)."
+
+#: templates/admin/oeuvre_edit.html:29
+msgid "Modifier la fiche de l'artiste"
+msgstr "Edit the artist's profile"
+
+#: templates/admin/oeuvre_edit.html:41
+msgid "Description (bilingue)"
+msgstr "Description (bilingual)"
+
+#: templates/admin/oeuvre_edit.html:48 templates/admin/oeuvres.html:62
+msgid "Vidéo"
+msgstr "Video"
+
+#: templates/admin/oeuvre_edit.html:49
+msgid "Seuls les liens YouTube sont acceptés."
+msgstr "Only YouTube links are accepted."
+
+#: templates/admin/oeuvres.html:4
+msgid "Approuvées"
+msgstr "Approved"
+
+#: templates/admin/oeuvres.html:4
+msgid "Rejetées"
+msgstr "Rejected"
+
+#: templates/admin/oeuvres.html:16
+msgid "Titre, genre..."
+msgstr "Title, genre..."
+
+#: templates/admin/oeuvres.html:40
+msgid "Supprimer définitivement les œuvres sélectionnées ?"
+msgstr "Permanently delete the selected works?"
+
+#: templates/admin/oeuvres.html:51
+msgid "Soumis"
+msgstr "Submitted"
+
+#: templates/admin/oeuvres.html:64
+msgid "Lien invalide"
+msgstr "Invalid link"
+
+#: templates/admin/oeuvres.html:89
+#, python-format
+msgid "Supprimer « %(t)s » définitivement ?"
+msgstr "Permanently delete “%(t)s”?"
+
+#: templates/admin/oeuvres.html:99
+#, python-format
+msgid "%(num)d œuvre affichée"
+msgid_plural "%(num)d œuvres affichées"
+msgstr[0] "%(num)d work shown"
+msgstr[1] "%(num)d works shown"
+
+#: templates/admin/oeuvres.html:100
+msgid "Exporter CSV"
+msgstr "Export CSV"
+
+#: templates/admin/oeuvres.html:106
+msgid "Aucune œuvre dans cette catégorie"
+msgstr "No works in this category"
+
+#: templates/admin/securite.html:11
+msgid "Double authentification (2FA)"
+msgstr "Two-factor authentication (2FA)"
+
+#: templates/admin/securite.html:13
+msgid "Activée"
+msgstr "Enabled"
+
+#: templates/admin/securite.html:15
+#, python-format
+msgid "%(num)d code de secours restant."
+msgid_plural "%(num)d codes de secours restants."
+msgstr[0] "%(num)d backup code left."
+msgstr[1] "%(num)d backup codes left."
+
+#: templates/admin/securite.html:19
+msgid "Les anciens codes de secours ne fonctionneront plus. Continuer ?"
+msgstr "Your old backup codes will stop working. Continue?"
+
+#: templates/admin/securite.html:20
+msgid "Générer de nouveaux codes de secours"
+msgstr "Generate new backup codes"
+
+#: templates/admin/securite.html:24
+msgid "Désactiver la double authentification"
+msgstr "Disable two-factor authentication"
+
+#: templates/admin/securite.html:31
+msgid "Désactiver"
+msgstr "Disable"
+
+#: templates/admin/securite.html:35
+msgid "Désactivée"
+msgstr "Disabled"
+
+#: templates/admin/securite.html:37
+msgid "Avec la double authentification, un mot de passe volé ne suffit plus : il faut aussi le code temporaire de votre téléphone (Google Authenticator, Aegis, 1Password, Microsoft Authenticator…)."
+msgstr "With two-factor authentication, a stolen password is no longer enough: the temporary code from your phone is also required (Google Authenticator, Aegis, 1Password, Microsoft Authenticator…)."
+
+#: templates/admin/securite.html:44
+msgid "Dernières connexions"
+msgstr "Recent logins"
+
+#: templates/admin/securite.html:45
+msgid "Mot de passe modifié le :"
+msgstr "Password last changed:"
+
+#: templates/admin/securite.html:47
+msgid "Résultat"
+msgstr "Result"
+
+#: templates/admin/securite.html:52
+msgid "Réussie"
+msgstr "Success"
+
+#: templates/admin/securite.html:52
+msgid "Échec"
+msgstr "Failed"
+
+#: templates/admin/securite.html:65
+msgid "Changer le mot de passe"
+msgstr "Change password"
+
+#: templates/admin/securite.html:68
+msgid "12 caractères minimum, avec au moins 3 types parmi : minuscules, majuscules, chiffres, symboles. Une phrase de passe longue est idéale."
+msgstr "At least 12 characters, with at least 3 types among: lowercase, uppercase, digits, symbols. A long passphrase is ideal."
+
+#: templates/admin/securite.html:71
+msgid "Mettre à jour"
+msgstr "Update"
+
+#: templates/admin/securite.html:72
+msgid "Toutes vos autres sessions ouvertes seront déconnectées."
+msgstr "All your other open sessions will be logged out."
+
+#: templates/admin/signalements.html:31
+msgid "Signalements d'erreurs"
+msgstr "Error reports"
+
+#: templates/admin/signalements.html:33
+#, python-format
+msgid "%(num)d nouveau"
+msgid_plural "%(num)d nouveaux"
+msgstr[0] "%(num)d new"
+msgstr[1] "%(num)d new"
+
+#: templates/admin/signalements.html:37
+msgid "Nouveaux"
+msgstr "New"
+
+#: templates/admin/signalements.html:37
+msgid "Résolus"
+msgstr "Resolved"
+
+#: templates/admin/signalements.html:48
+msgid "Contact"
+msgstr "Contact"
+
+#: templates/admin/signalements.html:75 templates/admin/signalements.html:77
+msgid "Corriger la fiche"
+msgstr "Fix the entry"
+
+#: templates/admin/signalements.html:94
+msgid "Aucun signalement ici"
+msgstr "No reports here"
+
+#: templates/admin/signalements.html:101
+msgid "Traiter le signalement"
+msgstr "Handle the report"
+
+#: templates/admin/signalements.html:107
+msgid "Nouveau statut"
+msgstr "New status"
+
+#: templates/admin/signalements.html:110
+msgid "En cours de traitement"
+msgstr "Being handled"
+
+#: templates/admin/signalements.html:111
+msgid "Résolu — erreur corrigée"
+msgstr "Resolved — error fixed"
+
+#: templates/admin/signalements.html:112
+msgid "Rejeté — non pertinent"
+msgstr "Rejected — not relevant"
+
+#: templates/admin/signalements.html:116
+msgid "Note interne (optionnel)"
+msgstr "Internal note (optional)"
+
+#: templates/admin/signalements.html:118
+msgid "Ex : Corrigé — l'année était bien 1973 selon Discogs."
+msgstr "E.g. Fixed — the year was indeed 1973 according to Discogs."
+
+#: templates/admin/signalements.html:119
+msgid "Visible uniquement par les admins."
+msgstr "Visible to admins only."
+
+#: templates/base.html:8
+msgid "Jackbeat — Recensement et analyse du patrimoine musical camerounais depuis l’indépendance."
+msgstr "Jackbeat — Documenting and analysing Cameroon's musical heritage since independence."
+
+#: templates/base.html:21
+msgid "Aller au contenu"
+msgstr "Skip to content"
+
+#: templates/base.html:24
+msgid "Navigation principale"
+msgstr "Main navigation"
+
+#: templates/base.html:32
+msgid "Ouvrir le menu"
+msgstr "Open menu"
+
+#: templates/admin/oeuvres.html:15 templates/base.html:41
+#: templates/public/recherche.html:107
+msgid "Rechercher"
+msgstr "Search"
+
+#: templates/base.html:43
+msgid "Artiste, chanson..."
+msgstr "Artist, song..."
+
+#: templates/base.html:53 templates/base.html:152 templates/index.html:2
+msgid "Accueil"
+msgstr "Home"
+
+#: templates/base.html:58 templates/public/oeuvre_detail.html:35
+msgid "Explorer"
+msgstr "Explore"
+
+#: templates/base.html:64
+msgid "Analyse"
+msgstr "Analysis"
+
+#: templates/admin/base_admin.html:285 templates/admin/dashboard.html:2
+#: templates/admin/dashboard.html:3 templates/admin/dashboard.html:8
+#: templates/base.html:68 templates/dashboard/index.html:133
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+#: templates/base.html:70 templates/dashboard/carte.html:2
+#: templates/dashboard/carte.html:43
+msgid "Carte du Cameroun"
+msgstr "Map of Cameroon"
+
+#: templates/base.html:72 templates/dashboard/chronologie.html:3
+#: templates/dashboard/index.html:144
+msgid "Chronologie"
+msgstr "Timeline"
+
+#: templates/base.html:75
+msgid "Télécharger PDF"
+msgstr "Download PDF"
+
+#: templates/base.html:81
+msgid "Top"
+msgstr "Top"
+
+#: templates/base.html:86 templates/base.html:156
+#: templates/notre_histoire.html:2
+msgid "Notre Histoire"
+msgstr "Our Story"
+
+#: templates/base.html:146
+msgid "Recenser, préserver et analyser le patrimoine musical camerounais depuis l'indépendance de 1960."
+msgstr "Documenting, preserving and analysing Cameroon's musical heritage since independence in 1960."
+
+#: templates/base.html:151
+msgid "Navigation"
+msgstr "Navigation"
+
+#: templates/base.html:153 templates/errors.html:11
+msgid "Explorer les artistes"
+msgstr "Explore artists"
+
+#: templates/base.html:154 templates/public/top_charts.html:2
+msgid "Top Charts"
+msgstr "Top Charts"
+
+#: templates/base.html:155
+msgid "Analyse & Stats"
+msgstr "Analysis & Stats"
+
+#: templates/base.html:161 templates/collecte/artiste.html:13
+#: templates/dashboard/carte.html:145 templates/index.html:151
+#: templates/notre_histoire.html:718 templates/public/recherche.html:129
+msgid "Ajouter un artiste"
+msgstr "Add an artist"
+
+#: templates/base.html:162 templates/collecte/oeuvre.html:13
+#: templates/index.html:154 templates/notre_histoire.html:721
+#: templates/public/artiste_detail.html:171 templates/public/recherche.html:132
+msgid "Ajouter une œuvre"
+msgstr "Add a work"
+
+#: templates/base.html:163
+msgid "Données ouvertes (CSV)"
+msgstr "Open data (CSV)"
+
+#: templates/admin/base_admin.html:278 templates/base.html:165
+msgid "Espace Admin"
+msgstr "Admin area"
+
+#: templates/base.html:172
+msgid "Fait avec ♥ pour la culture camerounaise"
+msgstr "Made with ♥ for Cameroonian culture"
+
+#: templates/collecte/artiste.html:3
+msgid "Ajouter un Artiste"
+msgstr "Add an Artist"
+
+#: templates/collecte/artiste.html:28
+msgid "Ex : Manu Dibango, Charlotte Dipanda, Les Têtes Brûlées..."
+msgstr "E.g. Manu Dibango, Charlotte Dipanda, Les Têtes Brûlées..."
+
+#: templates/collecte/artiste.html:31
+msgid "Vrai nom si l'artiste utilise un pseudonyme"
+msgstr "Real name if the artist uses a stage name"
+
+#: templates/collecte/artiste.html:32
+msgid "Laisser vide si le nom d'artiste est le vrai nom."
+msgstr "Leave empty if the artist's name is their real name."
+
+#: templates/collecte/artiste.html:38
+msgid "Période d'activité"
+msgstr "Active period"
+
+#: templates/collecte/artiste.html:40
+msgid "Ex : 1965"
+msgstr "E.g. 1965"
+
+#: templates/collecte/artiste.html:41
+msgid "Laisser vide si encore actif"
+msgstr "Leave empty if still active"
+
+#: templates/collecte/artiste.html:45
+msgid "Courte biographie, contexte, anecdotes..."
+msgstr "Short biography, context, anecdotes..."
+
+#: templates/collecte/artiste.html:46
+msgid "Vous pouvez écrire en français ou en anglais."
+msgstr "You can write in French or English."
+
+#: templates/collecte/artiste.html:48 templates/collecte/oeuvre.html:62
+msgid "Votre identité (optionnel)"
+msgstr "About you (optional)"
+
+#: templates/collecte/artiste.html:50 templates/collecte/oeuvre.html:64
+msgid "Votre prénom ou pseudo"
+msgstr "Your first name or nickname"
+
+#: templates/collecte/artiste.html:51 templates/collecte/oeuvre.html:65
+msgid "votre@email.com"
+msgstr "you@example.com"
+
+#: templates/collecte/artiste.html:52 templates/collecte/oeuvre.html:66
+msgid "Jamais publié. Sert uniquement à vous recontacter."
+msgstr "Never published. Only used to contact you."
+
+#: templates/collecte/artiste.html:57
+msgid "Soumettre l'artiste"
+msgstr "Submit the artist"
+
+#: templates/collecte/artiste.html:64
+msgid "La soumission sera examinée avant d'être publiée dans l'archive."
+msgstr "The submission will be reviewed before being published in the archive."
+
+#: templates/collecte/index.html:8
+msgid "Enrichir l'archive"
+msgstr "Grow the archive"
+
+#: templates/collecte/index.html:10
+msgid "Que souhaitez-vous"
+msgstr "What would you like"
+
+#: templates/collecte/index.html:10
+msgid "ajouter ?"
+msgstr "to add?"
+
+#: templates/collecte/index.html:13
+msgid "Chaque contribution est examinée avant publication pour garantir la qualité de l'archive."
+msgstr "Every contribution is reviewed before publication to ensure the quality of the archive."
+
+#: templates/collecte/index.html:24
+msgid "Un Artiste"
+msgstr "An Artist"
+
+#: templates/collecte/index.html:25
+msgid "Enregistrez un artiste ou groupe camerounais — nom, région, biographie, période d'activité."
+msgstr "Add a Cameroonian artist or group — name, region, biography, active period."
+
+#: templates/collecte/index.html:26 templates/collecte/index.html:34
+msgid "Commencer"
+msgstr "Start"
+
+#: templates/collecte/index.html:32
+msgid "Une Œuvre"
+msgstr "A Work"
+
+#: templates/collecte/index.html:33
+msgid "Ajoutez une chanson, un album ou un EP — titre, genre, langue, année de sortie, distinctions."
+msgstr "Add a song, an album or an EP — title, genre, language, release year, awards."
+
+#: templates/collecte/index.html:42
+msgid "Toutes les soumissions sont modérées avant publication. Vos informations de contact sont optionnelles."
+msgstr "All submissions are moderated before publication. Your contact details are optional."
+
+#: templates/collecte/merci.html:2
+msgid "Merci pour votre contribution"
+msgstr "Thank you for your contribution"
+
+#: templates/collecte/merci.html:9
+msgid "Merci pour votre"
+msgstr "Thank you for your"
+
+#: templates/collecte/merci.html:9
+msgid "contribution !"
+msgstr "contribution!"
+
+#: templates/collecte/merci.html:12
+msgid "Votre soumission a bien été reçue. Elle sera examinée par notre équipe et publiée dans l'archive une fois validée."
+msgstr "Your submission has been received. Our team will review it and publish it in the archive once validated."
+
+#: templates/collecte/merci.html:19
+msgid "Délai de validation habituel :"
+msgstr "Usual review time:"
+
+#: templates/collecte/merci.html:19
+msgid "24 à 48 heures"
+msgstr "24 to 48 hours"
+
+#: templates/collecte/merci.html:25
+msgid "Ajouter une autre entrée"
+msgstr "Add another entry"
+
+#: templates/collecte/oeuvre.html:3
+msgid "Ajouter une Œuvre"
+msgstr "Add a Work"
+
+#: templates/collecte/oeuvre.html:27
+msgid "Ex : Soul Makossa, Ndo Kolo, Kotto Bass..."
+msgstr "E.g. Soul Makossa, Ndo Kolo, Kotto Bass..."
+
+#: templates/collecte/oeuvre.html:29
+msgid "Ex : 1972"
+msgstr "E.g. 1972"
+
+#: templates/collecte/oeuvre.html:32
+msgid "L'Artiste"
+msgstr "The artist"
+
+#: templates/collecte/oeuvre.html:35
+msgid "Nom exact de l'artiste ou du groupe"
+msgstr "Exact name of the artist or group"
+
+#: templates/collecte/oeuvre.html:38
+msgid "Si l'artiste n'est pas encore dans l'archive, il sera créé automatiquement en attente de validation. Dans ce cas, indiquez si possible sa région et son type ci-dessous."
+msgstr "If the artist isn't in the archive yet, they will be created automatically, pending validation. In that case, please give their region and type below if you can."
+
+#: templates/collecte/oeuvre.html:45
+msgid "Caractéristiques musicales"
+msgstr "Musical characteristics"
+
+#: templates/collecte/oeuvre.html:52
+msgid "Distinctions & Liens"
+msgstr "Awards & Links"
+
+#: templates/collecte/oeuvre.html:54
+msgid "Ex : Billboard Hot 100, Prix RFI Musique..."
+msgstr "E.g. Billboard Hot 100, Prix RFI Musique..."
+
+#: templates/collecte/oeuvre.html:55
+msgid "Contexte, anecdote, histoire de cette œuvre..."
+msgstr "Context, anecdote, story behind this work..."
+
+#: templates/collecte/oeuvre.html:58
+msgid "Lien vers un enregistrement officiel ou une vidéo YouTube."
+msgstr "Link to an official recording or a YouTube video."
+
+#: templates/collecte/oeuvre.html:71
+msgid "Soumettre l'œuvre"
+msgstr "Submit the work"
+
+#: templates/dashboard/carte.html:41
+msgid "Analyse géographique"
+msgstr "Geographic analysis"
+
+#: templates/dashboard/carte.html:46 templates/dashboard/chronologie.html:67
+#: templates/dashboard/chronologie.html:74 templates/dashboard/index.html:138
+#: templates/public/artiste_detail.html:151
+#: templates/public/artiste_detail.html:199 templates/public/recherche.html:167
+#: templates/public/top_charts.html:178
+#, python-format
+msgid "%(num)d œuvre"
+msgid_plural "%(num)d œuvres"
+msgstr[0] "%(num)d work"
+msgstr[1] "%(num)d works"
+
+#: templates/dashboard/carte.html:46 templates/public/artistes.html:26
+#, python-format
+msgid "%(num)d artiste archivé"
+msgid_plural "%(num)d artistes archivés"
+msgstr[0] "%(num)d archived artist"
+msgstr[1] "%(num)d archived artists"
+
+#: templates/dashboard/carte.html:57
+msgid "Carte des régions du Cameroun"
+msgstr "Map of the regions of Cameroon"
+
+#: templates/dashboard/carte.html:65
+msgid "N-O"
+msgstr "N-W"
+
+#: templates/dashboard/carte.html:69
+msgid "S-O"
+msgstr "S-W"
+
+#: templates/dashboard/carte.html:82
+msgid "1 artiste"
+msgstr "1 artist"
+
+#: templates/dashboard/carte.html:83
+msgid "2–3 artistes"
+msgstr "2–3 artists"
+
+#: templates/dashboard/carte.html:84
+msgid "4+ artistes"
+msgstr "4+ artists"
+
+#: templates/dashboard/carte.html:92
+msgid "Cliquez sur une région"
+msgstr "Click on a region"
+
+#: templates/dashboard/carte.html:93
+msgid "pour voir les artistes et œuvres archivés."
+msgstr "to see its archived artists and works."
+
+#: templates/dashboard/carte.html:96
+msgid "Voir la chronologie"
+msgstr "View the timeline"
+
+#: templates/dashboard/carte.html:99
+msgid "Télécharger rapport PDF"
+msgstr "Download PDF report"
+
+#: templates/dashboard/carte.html:119 templates/dashboard/index.html:175
+msgid "Toutes les régions"
+msgstr "All regions"
+
+#: templates/dashboard/carte.html:133 templates/public/top_charts.html:129
+#: templates/public/top_charts.html:187
+msgid "Pas encore de données"
+msgstr "No data yet"
+
+#: templates/dashboard/carte.html:142
+msgid "Plusieurs régions ne sont pas encore représentées. Enrichissez la carte !"
+msgstr "Several regions are not represented yet. Help fill in the map!"
+
+#: templates/dashboard/chronologie.html:37 templates/dashboard/index.html:278
+msgid "Évolution temporelle"
+msgstr "Evolution over time"
+
+#: templates/dashboard/chronologie.html:39
+msgid "Chronologie musicale"
+msgstr "Musical timeline"
+
+#: templates/dashboard/chronologie.html:41
+#, python-format
+msgid "%(num)d œuvre archivée"
+msgid_plural "%(num)d œuvres archivées"
+msgstr[0] "%(num)d archived work"
+msgstr[1] "%(num)d archived works"
+
+#: templates/dashboard/chronologie.html:48
+msgid "Décennies"
+msgstr "Decades"
+
+#: templates/dashboard/chronologie.html:49
+msgid "Années couvertes"
+msgstr "Years covered"
+
+#: templates/dashboard/chronologie.html:50
+msgid "Vidéos dispo"
+msgstr "Videos available"
+
+#: templates/dashboard/chronologie.html:53
+msgid "Productions par année et genre"
+msgstr "Releases by year and genre"
+
+#: templates/dashboard/chronologie.html:59
+msgid "Décennie par décennie"
+msgstr "Decade by decade"
+
+#: templates/dashboard/chronologie.html:73 templates/dashboard/index.html:138
+#, python-format
+msgid "%(num)d artiste"
+msgid_plural "%(num)d artistes"
+msgstr[0] "%(num)d artist"
+msgstr[1] "%(num)d artists"
+
+#: templates/dashboard/chronologie.html:90 templates/public/recherche.html:204
+msgid "Vidéo disponible"
+msgstr "Video available"
+
+#: templates/dashboard/chronologie.html:99
+msgid "Aujourd'hui & demain"
+msgstr "Today & tomorrow"
+
+#: templates/dashboard/chronologie.html:100
+msgid "Archive en cours"
+msgstr "Archive in progress"
+
+#: templates/dashboard/chronologie.html:105
+msgid "La prochaine entrée pourrait être la vôtre !"
+msgstr "The next entry could be yours!"
+
+#: templates/dashboard/chronologie.html:115
+msgid "Aller à une décennie"
+msgstr "Jump to a decade"
+
+#: templates/dashboard/chronologie.html:124
+msgid "Export"
+msgstr "Export"
+
+#: templates/dashboard/chronologie.html:126
+msgid "Rapport PDF complet"
+msgstr "Full PDF report"
+
+#: templates/dashboard/chronologie.html:128
+msgid "Genres, langues, régions, décennies et catalogue complet."
+msgstr "Genres, languages, regions, decades and the full catalogue."
+
+#: templates/dashboard/chronologie.html:131
+msgid "Télécharger le PDF"
+msgstr "Download the PDF"
+
+#: templates/dashboard/chronologie.html:136
+msgid "Voir la carte"
+msgstr "View the map"
+
+#: templates/dashboard/chronologie.html:137
+msgid "Répartition géographique par région."
+msgstr "Geographic breakdown by region."
+
+#: templates/dashboard/chronologie.html:139
+msgid "Ouvrir la carte"
+msgstr "Open the map"
+
+#: templates/dashboard/index.html:3
+msgid "Analyse & Statistiques"
+msgstr "Analysis & Statistics"
+
+#: templates/dashboard/index.html:131
+msgid "Analyse descriptive · Archive Jackbeat"
+msgstr "Descriptive analysis · Jackbeat archive"
+
+#: templates/dashboard/index.html:141
+msgid "Carte"
+msgstr "Map"
+
+#: templates/dashboard/index.html:164
+msgid "Filtrer par"
+msgstr "Filter by"
+
+#: templates/dashboard/index.html:168
+msgid "Tous les genres"
+msgstr "All genres"
+
+#: templates/dashboard/index.html:182
+msgid "Toutes les langues"
+msgstr "All languages"
+
+#: templates/dashboard/index.html:189
+msgid "Toutes les décennies"
+msgstr "All decades"
+
+#: templates/dashboard/index.html:194
+msgid "Filtrer"
+msgstr "Filter"
+
+#: templates/dashboard/index.html:198
+msgid "Réinitialiser"
+msgstr "Reset"
+
+#: templates/dashboard/index.html:200
+msgid "Filtre actif"
+msgstr "Filter active"
+
+#: templates/dashboard/index.html:209
+msgid "Aucune donnée pour ce filtre"
+msgstr "No data for this filter"
+
+#: templates/dashboard/index.html:210
+msgid "Essayez de modifier ou réinitialiser les filtres."
+msgstr "Try changing or resetting the filters."
+
+#: templates/dashboard/index.html:212
+msgid "Voir toutes les données"
+msgstr "View all data"
+
+#: templates/dashboard/index.html:230
+#, python-format
+msgid "%(p)s%% des œuvres"
+msgstr "%(p)s%% of works"
+
+#: templates/dashboard/index.html:234
+msgid "Décennie la plus productive"
+msgstr "Most productive decade"
+
+#: templates/dashboard/index.html:238
+msgid "Rayonnement ≥ continental"
+msgstr "Reach ≥ continental"
+
+#: templates/dashboard/index.html:242
+msgid "Distinctions / Prix"
+msgstr "Awards / Distinctions"
+
+#: templates/dashboard/index.html:247
+msgid "Période :"
+msgstr "Period:"
+
+#: templates/dashboard/index.html:250
+msgid "Langue dominante :"
+msgstr "Leading language:"
+
+#: templates/dashboard/index.html:253
+msgid "Région leader :"
+msgstr "Leading region:"
+
+#: templates/dashboard/index.html:256
+#, python-format
+msgid "%(g)d genres · %(l)d langues · %(r)d régions"
+msgstr "%(g)d genres · %(l)d languages · %(r)d regions"
+
+#: templates/dashboard/index.html:270
+msgid "Composition du répertoire"
+msgstr "Repertoire composition"
+
+#: templates/dashboard/index.html:280
+msgid "Sorties par année"
+msgstr "Releases per year"
+
+#: templates/dashboard/index.html:286
+msgid "Croisement Genres × Décennies"
+msgstr "Genres × Decades"
+
+#: templates/dashboard/index.html:288
+msgid "Heatmap — intensité de production"
+msgstr "Heatmap — release intensity"
+
+#: templates/dashboard/index.html:295
+msgid "Données brutes"
+msgstr "Raw data"
+
+#: templates/dashboard/index.html:295
+msgid "50 dernières"
+msgstr "latest 50"
+
+#: templates/dashboard/index.html:298
+msgid "Rechercher dans le tableau"
+msgstr "Search the table"
+
+#: templates/dashboard/index.html:299
+msgid "Rechercher dans le tableau..."
+msgstr "Search the table..."
+
+#: templates/dashboard/index.html:325
+#, python-format
+msgid "%(num)d entrée affichée"
+msgid_plural "%(num)d entrées affichées"
+msgstr[0] "%(num)d entry shown"
+msgstr[1] "%(num)d entries shown"
+
+#: templates/dashboard/index.html:327
+msgid "Télécharger tout en CSV"
+msgstr "Download everything as CSV"
+
+#: templates/collecte/merci.html:28 templates/errors.html:10
+msgid "Retour à l'accueil"
+msgstr "Back to home"
+
+#: templates/index.html:11
+msgid "Cameroun · 1960 — Aujourd'hui"
+msgstr "Cameroon · 1960 — Today"
+
+#: templates/index.html:28
+msgid "Jackbeat recense, préserve et analyse les artistes et œuvres musicales du Cameroun depuis l'indépendance. Contribuez à sauvegarder cette mémoire collective."
+msgstr "Jackbeat documents, preserves and analyses Cameroon's artists and musical works since independence. Help safeguard this collective memory."
+
+#: templates/index.html:35
+msgid "Voir les statistiques"
+msgstr "View statistics"
+
+#: templates/index.html:55
+msgid "Artistes recensés"
+msgstr "Artists listed"
+
+#: templates/index.html:64
+msgid "Genres couverts"
+msgstr "Genres covered"
+
+#: templates/index.html:87
+msgid "Dernières entrées"
+msgstr "Latest entries"
+
+#: templates/index.html:89
+msgid "Récemment ajoutées à l'archive"
+msgstr "Recently added to the archive"
+
+#: templates/index.html:92
+msgid "Voir tout"
+msgstr "View all"
+
+#: templates/index.html:120 templates/public/artiste_detail.html:207
+#: templates/public/artiste_detail.html:217
+#: templates/public/oeuvre_detail.html:47
+#: templates/public/oeuvre_detail.html:52
+msgid "Écouter"
+msgstr "Listen"
+
+#: templates/index.html:131
+msgid "Aucune œuvre validée pour l'instant."
+msgstr "No validated works yet."
+
+#: templates/index.html:132
+msgid "Soyez le premier à contribuer !"
+msgstr "Be the first to contribute!"
+
+#: templates/index.html:145
+msgid "Vous connaissez une chanson camerounaise ?"
+msgstr "Do you know a Cameroonian song?"
+
+#: templates/index.html:147
+msgid "Chaque contribution enrichit cette archive vivante. Artiste, chanson, album — partagez ce que vous savez."
+msgstr "Every contribution enriches this living archive. Artist, song, album — share what you know."
+
+#: templates/notre_histoire.html:380
+msgid "L'histoire derrière le projet"
+msgstr "The story behind the project"
+
+#: templates/notre_histoire.html:395
+msgid "Jackbeat est plus qu'un travail pratique universitaire. C'est une réponse à une question simple : <em>« Et si on préservait la musique camerounaise avant qu'elle disparaisse ? »</em>"
+msgstr "Jackbeat is more than a university assignment. It is an answer to a simple question: <em>“What if we preserved Cameroonian music before it disappears?”</em>"
+
+#: templates/notre_histoire.html:415
+msgid "01 — L'étincelle"
+msgstr "01 — The spark"
+
+#: templates/notre_histoire.html:416
+msgid "Un épisode de <span style=\"color:var(--gold);\">Scorpion</span>,<br>un frère, une idée."
+msgstr "An episode of <span style=\"color:var(--gold);\">Scorpion</span>,<br>a brother, an idea."
+
+#: templates/notre_histoire.html:420
+msgid "Tout commence un soir ordinaire. Mon petit frère <strong>Jack</strong> me fait écouter un passage de la <strong>première saison de la série américaine Scorpion</strong> — une série inspirée de l'histoire vraie de Walter O'Brien, ce génie irlandais qui a monté une équipe de surdoués pour résoudre les problèmes les plus complexes du monde en utilisant la technologie car je lui avait demandé de l'inspiration pour un projet de classe."
+msgstr "It all starts on an ordinary evening. My little brother <strong>Jack</strong> plays me a scene from the <strong>first season of the American series Scorpion</strong> — a show inspired by the true story of Walter O'Brien, the Irish genius who put together a team of prodigies to solve the world's most complex problems with technology — because I had asked him for inspiration for a class project."
+
+#: templates/notre_histoire.html:430
+msgid "Dans cet épisode, l'idée centrale est simple mais puissante : <em>utiliser l'intelligence et la technologie pour créer de meilleurs tubes.</em> Jack, passionné et curieux comme toujours, me demande après l'écoute :"
+msgstr "In that episode, the central idea is simple but powerful: <em>using intelligence and technology to create better hits.</em> Jack, passionate and curious as always, asks me afterwards:"
+
+#: templates/notre_histoire.html:439
+msgid "« Et si tu faisait une chose similaire, sauvegarder les tubes/musique mais pour la musique camerounaise ou africaine? Qui est en train de garder une trace de tout ça ? »"
+msgstr "“What if you did something similar — saving the hits and the music, but for Cameroonian or African music? Who is keeping track of all of it?”"
+
+#: templates/notre_histoire.html:442
+msgid "— Jack, l'étincelle de Jackbeat"
+msgstr "— Jack, the spark behind Jackbeat"
+
+#: templates/notre_histoire.html:447
+msgid "Cette question a tout changé. Elle était à la fois simple et vertigineuse. Le Makossa de Manu Dibango, le Bikutsi des Têtes Brûlées, la voix d'Anne-Marie Nzié, le Jazz de Richard Bona… tout ce patrimoine existe, mais <strong>où est-il vraiment documenté, structuré, analysé ?</strong>"
+msgstr "That question changed everything. It was both simple and dizzying. Manu Dibango's Makossa, the Bikutsi of Les Têtes Brûlées, the voice of Anne-Marie Nzié, Richard Bona's jazz… all this heritage exists, but <strong>where is it really documented, structured, analysed?</strong>"
+
+#: templates/notre_histoire.html:455
+msgid "C'est ce soir-là que Jackbeat est né. Pas dans un laboratoire, pas dans une réunion de projet — mais dans une conversation entre deux frères, autour d'une série télévisée et d'une musique qui nous appartient."
+msgstr "That was the evening Jackbeat was born. Not in a lab, not in a project meeting — but in a conversation between two brothers, over a TV series and a music that belongs to us."
+
+#: templates/notre_histoire.html:467
+msgid "Pour Jack"
+msgstr "For Jack"
+
+#: templates/notre_histoire.html:468
+msgid "L'inspirateur · Le catalyseur · Le frère"
+msgstr "The inspiration · The catalyst · The brother"
+
+#: templates/notre_histoire.html:470
+msgid "Ce projet porte ton prénom parce que sans toi, il n'existerait tout simplement pas. Ta curiosité, ton regard sur les choses, et cet épisode de Scorpion que tu m'as partagé ont allumé une étincelle qui est devenue Jackbeat."
+msgstr "This project bears your name because without you, it simply would not exist. Your curiosity, the way you see things, and that episode of Scorpion you shared with me lit a spark that became Jackbeat."
+
+#: templates/notre_histoire.html:477
+msgid "Tu m'as rappelé que les meilleures idées naissent souvent dans les conversations les plus simples. Merci, petit frère."
+msgstr "You reminded me that the best ideas are often born in the simplest conversations. Thank you, little brother."
+
+#: templates/notre_histoire.html:483
+msgid "« Jackbeat vous est dédié, Jack. Chaque rythme archivé porte un peu de toi. »"
+msgstr "“Jackbeat is dedicated to you, Jack. Every archived rhythm carries a little bit of you.”"
+
+#: templates/notre_histoire.html:497
+msgid "02 — Le constat"
+msgstr "02 — The observation"
+
+#: templates/notre_histoire.html:498
+msgid "Un patrimoine<br>immense,<br><span style=\"color:var(--red);\">fragilisé.</span>"
+msgstr "A vast<br>heritage,<br><span style=\"color:var(--red);\">at risk.</span>"
+
+#: templates/notre_histoire.html:502
+msgid "Genres à préserver"
+msgstr "Genres to preserve"
+
+#: templates/notre_histoire.html:516
+msgid "Traditionnel"
+msgstr "Traditional"
+
+#: templates/notre_histoire.html:528
+msgid "Le Cameroun est souvent appelé <strong>« l'Afrique en miniature »</strong> — dix régions, plus de 250 langues, et une richesse musicale qui reflète toute cette diversité. Des sons nés dans les forêts de l'Est jusqu'aux rythmes marins du Littoral, en passant par les griots du Grand Nord."
+msgstr "Cameroon is often called <strong>“Africa in miniature”</strong> — ten regions, more than 250 languages, and a musical wealth that reflects all of that diversity. From the sounds born in the forests of the East to the seaside rhythms of the Littoral, by way of the griots of the Far North."
+
+#: templates/notre_histoire.html:536
+msgid "Pourtant, combien d'artistes des années 60, 70, 80 sont-ils en train de tomber dans l'oubli ? Combien de chansons iconiques n'ont aucune fiche documentée, aucun contexte préservé, aucune analyse accessible ?"
+msgstr "And yet, how many artists from the '60s, '70s and '80s are fading into oblivion? How many iconic songs have no documented record, no preserved context, no accessible analysis?"
+
+#: templates/notre_histoire.html:543
+msgid "Il ne s'agit pas seulement de nostalgie. Il s'agit de <em>mémoire collective</em>, d'identité culturelle, et de la responsabilité que nous avons envers les générations qui viendront après nous et qui voudront savoir d'où elles viennent musicalement."
+msgstr "This isn't just nostalgia. It is about <em>collective memory</em>, cultural identity, and the responsibility we have towards the generations who will come after us and will want to know where they come from musically."
+
+#: templates/notre_histoire.html:550
+msgid "Jackbeat est notre réponse à ce constat."
+msgstr "Jackbeat is our answer."
+
+#: templates/notre_histoire.html:563
+msgid "03 — Chronologie"
+msgstr "03 — Timeline"
+
+#: templates/notre_histoire.html:564
+msgid "Comment le projet<br>a <span style=\"color:var(--gold);\">pris forme.</span>"
+msgstr "How the project<br><span style=\"color:var(--gold);\">took shape.</span>"
+
+#: templates/notre_histoire.html:566
+msgid "De l'idée brute née d'une conversation à une application déployée en ligne — voici les grandes étapes du projet."
+msgstr "From a raw idea born in a conversation to an application deployed online — here are the key milestones of the project."
+
+#: templates/notre_histoire.html:576
+msgid "Étape 0 — L'idée"
+msgstr "Step 0 — The idea"
+
+#: templates/notre_histoire.html:576
+msgid "🎧 La conversation avec Jack"
+msgstr "🎧 The conversation with Jack"
+
+#: templates/notre_histoire.html:577
+msgid "Un épisode de Scorpion, une question posée par un petit frère curieux, et une idée qui commence à germer : créer une archive numérique de la musique camerounaise."
+msgstr "An episode of Scorpion, a question from a curious little brother, and an idea that starts to take root: creating a digital archive of Cameroonian music."
+
+#: templates/notre_histoire.html:578
+msgid "Étape 1 — Structure"
+msgstr "Step 1 — Structure"
+
+#: templates/notre_histoire.html:578
+msgid "🏗️ Architecture de l'application"
+msgstr "🏗️ Application architecture"
+
+#: templates/notre_histoire.html:579
+msgid "Mise en place du projet Flask, conception de la base de données (artistes, œuvres, admin), structure MVC avec blueprints, configuration multi-environnements."
+msgstr "Setting up the Flask project, designing the database (artists, works, admin), MVC structure with blueprints, multi-environment configuration."
+
+#: templates/notre_histoire.html:580
+msgid "Étape 2 — Interface"
+msgstr "Step 2 — Interface"
+
+#: templates/notre_histoire.html:580
+msgid "🎨 Design & formulaires de collecte"
+msgstr "🎨 Design & submission forms"
+
+#: templates/notre_histoire.html:581
+msgid "Création du design éditorial aux couleurs camerounaises 🟢🔴🟡, formulaires publics de soumission d'artistes et d'œuvres, système de modération admin."
+msgstr "An editorial design in Cameroon’s colours 🟢🔴🟡, public forms to submit artists and works, and an admin moderation system."
+
+#: templates/notre_histoire.html:582
+msgid "Étape 3 — Analyse"
+msgstr "Step 3 — Analysis"
+
+#: templates/notre_histoire.html:582
+msgid "📊 Dashboard d'analyse descriptive"
+msgstr "📊 Descriptive analytics dashboard"
+
+#: templates/notre_histoire.html:583
+msgid "8 graphiques Plotly interactifs, filtres dynamiques par genre / région / langue / décennie, indicateurs clés, heatmap et tableau de données triable."
+msgstr "8 interactive Plotly charts, dynamic filters by genre / region / language / decade, key indicators, a heatmap and a sortable data table."
+
+#: templates/notre_histoire.html:584
+msgid "Étape 4 — Histoire"
+msgstr "Step 4 — Story"
+
+#: templates/notre_histoire.html:584
+msgid "📖 Cette page — Notre Histoire"
+msgstr "📖 This page — Our Story"
+
+#: templates/notre_histoire.html:585
+msgid "La mémoire du projet elle-même : pourquoi Jackbeat existe, qui l'a inspiré, quelle mission il porte au-delà du cadre académique."
+msgstr "The memory of the project itself: why Jackbeat exists, who inspired it, and the mission it carries beyond the academic setting."
+
+#: templates/notre_histoire.html:586
+msgid "Étape 5 → 7 — Déploiement"
+msgstr "Steps 5 → 7 — Deployment"
+
+#: templates/notre_histoire.html:586
+msgid "🚀 Ouverture au public"
+msgstr "🚀 Opening to the public"
+
+#: templates/notre_histoire.html:587
+msgid "Interface admin de modération, déploiement sur serveur en ligne, ouverture des contributions publiques pour que Jackbeat vive vraiment au-delà du TP."
+msgstr "An admin moderation interface, deployment to an online server, and public contributions so that Jackbeat truly lives on beyond the assignment."
+
+#: templates/notre_histoire.html:588
+msgid "Étape 8 — Bilinguisme & sécurité"
+msgstr "Step 8 — Bilingualism & security"
+
+#: templates/notre_histoire.html:588
+msgid "🌍 Jackbeat en français et en anglais"
+msgstr "🌍 Jackbeat in French and English"
+
+#: templates/notre_histoire.html:589
+msgid "Site entièrement bilingue, sécurité renforcée (double authentification, protection CSRF et XSS, journal d’audit) et outils d’édition des contributions pour les administrateurs."
+msgstr "A fully bilingual site, hardened security (two-factor authentication, CSRF and XSS protection, audit log) and contribution-editing tools for administrators."
+
+#: templates/notre_histoire.html:607
+msgid "04 — Mission & Valeurs"
+msgstr "04 — Mission & Values"
+
+#: templates/notre_histoire.html:609
+msgid "Ce que Jackbeat veut <span style=\"color:var(--gold);\">accomplir.</span>"
+msgstr "What Jackbeat sets out to <span style=\"color:var(--gold);\">achieve.</span>"
+
+#: templates/notre_histoire.html:615
+msgid "Recenser"
+msgstr "Document"
+
+#: templates/notre_histoire.html:616
+msgid "Constituer une base de données structurée de tous les artistes et œuvres musicales camerounais depuis l'indépendance de 1960."
+msgstr "Build a structured database of all Cameroonian artists and musical works since independence in 1960."
+
+#: templates/notre_histoire.html:617
+msgid "Analyser"
+msgstr "Analyse"
+
+#: templates/notre_histoire.html:618
+msgid "Produire des analyses descriptives rigoureuses : évolutions temporelles, répartitions géographiques, diversité linguistique, rayonnement international."
+msgstr "Produce rigorous descriptive analyses: trends over time, geographic distribution, linguistic diversity, international reach."
+
+#: templates/notre_histoire.html:619
+msgid "Partager"
+msgstr "Share"
+
+#: templates/notre_histoire.html:620
+msgid "Rendre ce patrimoine librement accessible — chercheurs, étudiants, journalistes, passionnés de culture, et diaspora camerounaise du monde entier."
+msgstr "Make this heritage freely accessible — to researchers, students, journalists, culture lovers, and the Cameroonian diaspora around the world."
+
+#: templates/notre_histoire.html:621
+msgid "Préserver"
+msgstr "Preserve"
+
+#: templates/notre_histoire.html:622
+msgid "Créer une archive numérique vivante et pérenne qui résiste au temps, nourrie par la communauté, pour les générations futures."
+msgstr "Create a living, lasting digital archive that stands the test of time, fed by the community, for future generations."
+
+#: templates/notre_histoire.html:642
+msgid "05 — Contexte académique"
+msgstr "05 — Academic context"
+
+#: templates/notre_histoire.html:643
+msgid "Un TP qui<br>dépasse le <span style=\"color:var(--green-l);\">cadre.</span>"
+msgstr "An assignment that<br>goes <span style=\"color:var(--green-l);\">beyond.</span>"
+
+#: templates/notre_histoire.html:646
+msgid "Jackbeat a été développé dans le cadre du <strong>TP INF 232 EC2</strong> (Analyse de données) à l'université, un travail pratique portant sur le développement d'une application de collecte et d'analyse descriptive des données, intégrant des notions de régression, classification et réduction de dimensionnalité."
+msgstr "Jackbeat was developed as part of the <strong>INF 232 EC2 practical assignment</strong> (Data Analysis) at university — a project to build an application for collecting data and producing descriptive analyses, drawing on regression, classification and dimensionality reduction."
+
+#: templates/notre_histoire.html:655
+msgid "Mais dès le départ, l'ambition était de ne pas s'arrêter à la note. <em>Pourquoi développer quelque chose d'utile seulement pour un professeur, quand on peut le développer pour tout le monde ?</em>"
+msgstr "But from the start, the ambition was not to stop at the grade. <em>Why build something useful only for a professor, when you can build it for everyone?</em>"
+
+#: templates/notre_histoire.html:662
+msgid "Jackbeat est donc conçu pour rester en ligne, pour accepter des contributions du public, et pour grandir au fil du temps — bien après la remise du TP."
+msgstr "So Jackbeat is designed to stay online, to accept contributions from the public, and to keep growing over time — long after the assignment was handed in."
+
+#: templates/notre_histoire.html:674
+msgid "Fiche technique du projet"
+msgstr "Project fact sheet"
+
+#: templates/notre_histoire.html:677
+msgid "Cours"
+msgstr "Course"
+
+#: templates/notre_histoire.html:677
+msgid "INF 232 EC2 — Analyse de données"
+msgstr "INF 232 EC2 — Data Analysis"
+
+#: templates/notre_histoire.html:678
+msgid "Application web de collecte & analyse"
+msgstr "Web application for data collection & analysis"
+
+#: templates/notre_histoire.html:679
+msgid "Backend"
+msgstr "Backend"
+
+#: templates/notre_histoire.html:680
+msgid "Visualisation"
+msgstr "Visualisation"
+
+#: templates/notre_histoire.html:681
+msgid "Frontend"
+msgstr "Frontend"
+
+#: templates/notre_histoire.html:682
+msgid "Base de données"
+msgstr "Database"
+
+#: templates/notre_histoire.html:682
+msgid "SQLite (dev) · PostgreSQL (prod)"
+msgstr "SQLite (dev) · PostgreSQL (prod)"
+
+#: templates/notre_histoire.html:683
+msgid "Langues"
+msgstr "Languages"
+
+#: templates/notre_histoire.html:683
+msgid "Français · Anglais (Flask-Babel)"
+msgstr "French · English (Flask-Babel)"
+
+#: templates/notre_histoire.html:684
+msgid "Déploiement"
+msgstr "Deployment"
+
+#: templates/notre_histoire.html:684
+msgid "Render.com (serveur cloud gratuit)"
+msgstr "Render.com (free cloud hosting)"
+
+#: templates/notre_histoire.html:706
+msgid "L'archive vous appartient."
+msgstr "The archive belongs to you."
+
+#: templates/notre_histoire.html:710
+msgid "Jackbeat grandit avec chaque contribution. Si vous connaissez un artiste, une chanson, un album camerounais — partagez-le. Ensemble, nous bâtissons la mémoire musicale de notre pays."
+msgstr "Jackbeat grows with every contribution. If you know a Cameroonian artist, song or album — share it. Together, we are building our country's musical memory."
+
+#: templates/notre_histoire.html:724
+msgid "Explorer l'archive"
+msgstr "Explore the archive"
+
+#: templates/public/artiste_detail.html:142
+msgid "Nom réel :"
+msgstr "Real name:"
+
+#: templates/public/artiste_detail.html:152
+#: templates/public/oeuvre_detail.html:100
+#, python-format
+msgid "%(num)d vue"
+msgid_plural "%(num)d vues"
+msgstr[0] "%(num)d view"
+msgstr[1] "%(num)d views"
+
+#: templates/public/artiste_detail.html:153
+#: templates/public/oeuvre_detail.html:97
+msgid "like(s)"
+msgstr "like(s)"
+
+#: templates/public/artiste_detail.html:175 templates/public/signaler.html:2
+#: templates/public/signaler.html:29
+msgid "Signaler une erreur"
+msgstr "Report an error"
+
+#: templates/public/artiste_detail.html:197
+msgid "Discographie"
+msgstr "Discography"
+
+#: templates/public/artiste_detail.html:236
+msgid "Fiche détaillée"
+msgstr "Details"
+
+#: templates/public/artiste_detail.html:245
+msgid "Aucune œuvre archivée"
+msgstr "No archived works"
+
+#: templates/public/artiste_detail.html:246
+msgid "Ajouter la première œuvre"
+msgstr "Add the first work"
+
+#: templates/public/artiste_detail.html:268
+msgid "Soyez le premier à commenter !"
+msgstr "Be the first to comment!"
+
+#: templates/public/artiste_detail.html:272
+msgid "Laisser un commentaire"
+msgstr "Leave a comment"
+
+#: templates/public/artiste_detail.html:277
+#: templates/public/oeuvre_detail.html:147
+msgid "Votre prénom"
+msgstr "Your first name"
+
+#: templates/public/artiste_detail.html:278
+#: templates/public/oeuvre_detail.html:148
+msgid "Votre prénom *"
+msgstr "Your first name *"
+
+#: templates/public/artiste_detail.html:282
+msgid "Votre commentaire sur cet artiste..."
+msgstr "Your comment about this artist..."
+
+#: templates/public/artiste_detail.html:285
+#: templates/public/oeuvre_detail.html:156
+msgid "Publier"
+msgstr "Post"
+
+#: templates/public/artiste_detail.html:287
+msgid "Les commentaires sont modérés avant publication."
+msgstr "Comments are moderated before publication."
+
+#: templates/public/artiste_detail.html:294
+msgid "De la même région"
+msgstr "From the same region"
+
+#: templates/public/artiste_detail.html:309
+msgid "Lecteur vidéo"
+msgstr "Video player"
+
+#: templates/public/artistes.html:2 templates/public/artistes.html:24
+msgid "Les Artistes"
+msgstr "Artists"
+
+#: templates/public/artistes.html:22
+msgid "Patrimoine Camerounais"
+msgstr "Cameroonian Heritage"
+
+#: templates/public/artistes.html:34
+msgid "Région :"
+msgstr "Region:"
+
+#: templates/public/artistes.html:35
+msgid "Toutes"
+msgstr "All"
+
+#: templates/public/artistes.html:43
+msgid "Trier :"
+msgstr "Sort:"
+
+#: templates/public/artistes.html:44
+msgid "A–Z"
+msgstr "A–Z"
+
+#: templates/public/artistes.html:44
+msgid "Populaires"
+msgstr "Popular"
+
+#: templates/public/artistes.html:44
+msgid "Récents"
+msgstr "Recent"
+
+#: templates/public/artistes.html:72 templates/public/top_charts.html:151
+msgid "Likes"
+msgstr "Likes"
+
+#: templates/public/artistes.html:83
+msgid "Page précédente"
+msgstr "Previous page"
+
+#: templates/public/artistes.html:85
+msgid "Page suivante"
+msgstr "Next page"
+
+#: templates/public/artistes.html:89
+msgid "Aucun artiste trouvé"
+msgstr "No artists found"
+
+#: templates/public/oeuvre_detail.html:58
+msgid "Pas de vidéo disponible pour cette œuvre."
+msgstr "No video available for this work."
+
+#: templates/public/oeuvre_detail.html:59
+msgid "Proposer un lien YouTube"
+msgstr "Suggest a YouTube link"
+
+#: templates/public/oeuvre_detail.html:103
+msgid "Signaler"
+msgstr "Report"
+
+#: templates/public/oeuvre_detail.html:137
+msgid "Aucun commentaire pour l'instant. Partagez votre souvenir lié à cette chanson !"
+msgstr "No comments yet. Share a memory of this song!"
+
+#: templates/public/oeuvre_detail.html:141
+msgid "Laisser un souvenir"
+msgstr "Share a memory"
+
+#: templates/public/oeuvre_detail.html:152
+msgid "Ce que cette chanson vous évoque..."
+msgstr "What this song means to you..."
+
+#: templates/public/oeuvre_detail.html:158
+msgid "Modéré avant publication."
+msgstr "Moderated before publication."
+
+#: templates/public/oeuvre_detail.html:166
+#, python-format
+msgid "Autres œuvres de %(nom)s"
+msgstr "Other works by %(nom)s"
+
+#: templates/public/oeuvre_detail.html:185
+msgid "Dans le même genre"
+msgstr "In the same genre"
+
+#: templates/public/recherche.html:2
+msgid "Recherche"
+msgstr "Search"
+
+#: templates/public/recherche.html:94
+msgid "Résultats de recherche"
+msgstr "Search results"
+
+#: templates/public/recherche.html:96
+#, python-format
+msgid "%(num)d résultat pour"
+msgid_plural "%(num)d résultats pour"
+msgstr[0] "%(num)d result for"
+msgstr[1] "%(num)d results for"
+
+#: templates/public/recherche.html:101
+msgid "Rechercher dans l'archive"
+msgstr "Search the archive"
+
+#: templates/public/recherche.html:109
+msgid "Artiste, chanson, genre, région..."
+msgstr "Artist, song, genre, region..."
+
+#: templates/public/recherche.html:111
+msgid "Chercher"
+msgstr "Search"
+
+#: templates/public/recherche.html:125
+msgid "Essayez un autre terme, ou contribuez en ajoutant cet artiste ou cette œuvre."
+msgstr "Try another term, or contribute by adding this artist or work."
+
+#: templates/public/recherche.html:139
+msgid "Explorez le patrimoine musical camerounais :"
+msgstr "Explore Cameroon's musical heritage:"
+
+#: templates/public/signaler.html:25
+msgid "Retour à la fiche"
+msgstr "Back to the page"
+
+#: templates/public/signaler.html:27
+msgid "Signalement d'erreur"
+msgstr "Error report"
+
+#: templates/public/signaler.html:52
+msgid "Quelle est l'erreur ?"
+msgstr "What's wrong?"
+
+#: templates/public/signaler.html:55
+msgid "Nom, bio, région, langue…"
+msgstr "Name, bio, region, language…"
+
+#: templates/public/signaler.html:56
+msgid "Miniature YouTube incorrecte ou lien cassé"
+msgstr "Wrong YouTube thumbnail or broken link"
+
+#: templates/public/signaler.html:57
+msgid "Cette entrée existe déjà dans l'archive"
+msgstr "This entry already exists in the archive"
+
+#: templates/public/signaler.html:58
+msgid "Contenu offensant ou non-approprié"
+msgstr "Offensive or inappropriate content"
+
+#: templates/public/signaler.html:59
+msgid "L'année de sortie est erronée"
+msgstr "The release year is wrong"
+
+#: templates/public/signaler.html:60
+msgid "Autre type d'erreur"
+msgstr "Another kind of error"
+
+#: templates/public/signaler.html:76
+msgid "Détails (optionnel)"
+msgstr "Details (optional)"
+
+#: templates/public/signaler.html:80
+msgid "Décrivez l’erreur, précisez la bonne information et sa source si possible…"
+msgstr "Describe the error, give the correct information and its source if possible…"
+
+#: templates/public/signaler.html:82
+msgid "Max 800 caractères."
+msgstr "Max 800 characters."
+
+#: templates/public/signaler.html:87
+msgid "pour être informé de la correction"
+msgstr "to be told when it is fixed"
+
+#: templates/public/signaler.html:92
+msgid "Envoyer le signalement"
+msgstr "Send report"
+
+#: templates/public/signaler.html:98
+msgid "Votre signalement est anonyme. Aucune donnée personnelle n'est requise."
+msgstr "Your report is anonymous. No personal data is required."
+
+#: templates/public/top_charts.html:82
+msgid "Patrimoine · Classements"
+msgstr "Heritage · Rankings"
+
+#: templates/public/top_charts.html:86
+msgid "Les artistes et œuvres les plus populaires de l'archive."
+msgstr "The most popular artists and works in the archive."
+
+#: templates/public/top_charts.html:95
+msgid "Œuvres les plus vues"
+msgstr "Most viewed works"
+
+#: templates/public/top_charts.html:98
+msgid "Œuvres les plus aimées"
+msgstr "Most liked works"
+
+#: templates/public/top_charts.html:101
+msgid "Artistes populaires"
+msgstr "Popular artists"
+
+#: templates/public/top_charts.html:130
+msgid "Les classements se construisent à mesure que les visiteurs explorent l'archive."
+msgstr "Rankings build up as visitors explore the archive."
+
+#: templates/public/top_charts.html:157
+msgid "Aucun like encore"
+msgstr "No likes yet"
+
+#: templates/public/top_charts.html:158
+msgid "Soyez le premier à aimer une œuvre !"
+msgstr "Be the first to like a work!"
+
+#: templates/public/top_charts.html:159
+msgid "Explorer les œuvres"
+msgstr "Explore the works"
+
+#: templates/public/top_charts.html:195
+msgid "Ces classements évoluent en temps réel selon les vues et les likes des visiteurs."
+msgstr "These rankings update in real time based on visitors' views and likes."
+
+#: templates/public/top_charts.html:198
+msgid "Explorer tout le catalogue"
+msgstr "Explore the full catalogue"
+

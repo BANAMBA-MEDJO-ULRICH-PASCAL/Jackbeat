@@ -1,113 +1,142 @@
 {% extends "admin/base_admin.html" %}
+{% from "_macros.html" import post_button with context %}
 {% block title %}{{ artiste.nom }}{% endblock %}
 {% block breadcrumb %}
-  <span class="sep">/</span><a href="{{ url_for('admin_bp.artistes') }}">Artistes</a>
+  <span class="sep">/</span><a href="{{ url_for('admin_bp.artistes') }}">{{ _('Artistes') }}</a>
   <span class="sep">/</span><span class="current">{{ artiste.nom }}</span>
 {% endblock %}
-{% set pending_artistes_count = 0 %}{% set pending_oeuvres_count = 0 %}
 
 {% block admin_content %}
-
-<!-- En-tête -->
 <div class="adm-section-header">
   <div>
     <div style="font-size:.75rem;color:var(--text-dim);margin-bottom:.3rem;">
-      <a href="{{ url_for('admin_bp.artistes') }}" style="color:var(--text-dim);">
-        <i class="bi bi-arrow-left me-1"></i>Retour à la liste
+      <a href="{{ url_for('admin_bp.artistes', statut=artiste.statut) }}" style="color:var(--text-dim);">
+        <i class="bi bi-arrow-left me-1"></i>{{ _('Retour à la liste') }}
       </a>
     </div>
     <h1 style="margin:0;">{{ artiste.nom }}</h1>
-    <span class="status-pill {{ artiste.statut }}" style="margin-top:.4rem;display:inline-flex;">
-      ● {{ artiste.statut.replace('_',' ').title() }}
-    </span>
-  </div>
-  <div class="d-flex gap-2 flex-wrap">
-    <a href="{{ url_for('admin_bp.artiste_edit', id=artiste.id) }}" class="adm-btn edit">
-      <i class="bi bi-pencil"></i> Modifier
-    </a>
-    {% if artiste.statut != 'approuve' %}
-      <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='approuver') }}"
-         class="adm-btn approve"><i class="bi bi-check-lg"></i> Approuver</a>
-    {% endif %}
-    {% if artiste.statut != 'rejete' %}
-      <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='rejeter') }}"
-         class="adm-btn reject"><i class="bi bi-x-lg"></i> Rejeter</a>
-    {% endif %}
-    {% if artiste.statut != 'en_attente' %}
-      <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='remettre_attente') }}"
-         class="adm-btn edit"><i class="bi bi-arrow-counterclockwise"></i> Remettre en attente</a>
-    {% endif %}
-    <a href="{{ url_for('admin_bp.action_artiste', id=artiste.id, action='supprimer') }}"
-       class="adm-btn delete"
-       onclick="return confirm('Supprimer définitivement cet artiste et toutes ses œuvres ?')">
-      <i class="bi bi-trash"></i> Supprimer
-    </a>
-  </div>
-</div>
-
-<div class="row g-4">
-  <!-- Infos artiste -->
-  <div class="col-lg-5">
-    <div class="detail-card">
-      <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
-                  color:var(--green-l);margin-bottom:1rem;">Fiche artiste</div>
-      {% for label, val in [
-        ('Nom d\'artiste',  artiste.nom),
-        ('Nom réel',        artiste.nom_reel or '—'),
-        ('Région',          artiste.region_origine),
-        ('Type',            artiste.type_artiste),
-        ('Début de carrière', artiste.annee_debut or '—'),
-        ('Fin de carrière', artiste.annee_fin or 'Encore actif'),
-        ('Soumis par',      artiste.soumis_par or '—'),
-        ('Email soumetteur',artiste.soumis_email or '—'),
-        ('Créé le',         artiste.created_at.strftime('%d/%m/%Y à %H:%M')),
-      ] %}
-        <div class="detail-field">
-          <div class="detail-label">{{ label }}</div>
-          <div class="detail-val">{{ val }}</div>
-        </div>
-      {% endfor %}
-      {% if artiste.biographie %}
-        <div class="detail-field" style="flex-direction:column;gap:.5rem;">
-          <div class="detail-label">Biographie</div>
-          <div class="detail-val" style="line-height:1.7;color:var(--text-mid);">
-            {{ artiste.biographie }}
-          </div>
-        </div>
+    <div class="d-flex gap-2 align-items-center flex-wrap" style="margin-top:.4rem;">
+      <span class="status-pill {{ artiste.statut }}">● {{ artiste.statut|libelle('statut') }}</span>
+      {% if artiste.profil_incomplet %}<span class="status-pill rejete">{{ _('Profil à compléter') }}</span>{% endif %}
+      {% if artiste.statut == 'approuve' %}
+        <a href="{{ url_for('public_bp.artiste_detail', id=artiste.id) }}" target="_blank" rel="noopener" style="font-size:.78rem;">
+          <i class="bi bi-box-arrow-up-right me-1"></i>{{ _('Voir la fiche publique') }}</a>
       {% endif %}
     </div>
   </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a href="{{ url_for('admin_bp.artiste_edit', id=artiste.id) }}" class="adm-btn edit">
+      <i class="bi bi-pencil"></i> {{ _('Modifier') }}
+    </a>
+    {% if artiste.statut != 'approuve' and not artiste.profil_incomplet %}
+      {{ post_button(url_for('admin_bp.action_artiste', id=artiste.id, action='approuver'), _('Approuver'), 'adm-btn approve', 'bi-check-lg') }}
+    {% endif %}
+    {% if artiste.statut != 'rejete' %}
+      {{ post_button(url_for('admin_bp.action_artiste', id=artiste.id, action='rejeter'), _('Rejeter'), 'adm-btn reject', 'bi-x-lg') }}
+    {% endif %}
+    {% if artiste.statut != 'en_attente' %}
+      {{ post_button(url_for('admin_bp.action_artiste', id=artiste.id, action='remettre_attente'), _('Remettre en attente'), 'adm-btn edit', 'bi-arrow-counterclockwise') }}
+    {% endif %}
+    {{ post_button(url_for('admin_bp.action_artiste', id=artiste.id, action='supprimer'), _('Supprimer'), 'adm-btn delete', 'bi-trash',
+                   confirm=_('Supprimer définitivement cet artiste et toutes ses œuvres ?')) }}
+  </div>
+</div>
 
-  <!-- Œuvres associées -->
+{% if artiste.profil_incomplet %}
+  <div class="adm-flash warning mb-3">
+    <i class="bi bi-person-exclamation"></i>
+    <span>{{ _("Cette fiche a été créée automatiquement lors de la soumission d'une œuvre : la région et le type sont provisoires. Vérifiez-les et enregistrez la fiche pour pouvoir la publier.") }}
+      <a href="{{ url_for('admin_bp.artiste_edit', id=artiste.id) }}">{{ _('Compléter la fiche') }}</a></span>
+  </div>
+{% endif %}
+
+{% if doublons %}
+  <div class="adm-flash info mb-3">
+    <i class="bi bi-files"></i>
+    <span>{{ _('Doublon probable : une autre fiche porte le même nom.') }}
+      {% for d in doublons %}<a href="{{ url_for('admin_bp.artiste_detail', id=d.id) }}">#{{ d.id }} {{ d.nom }}</a> ({{ d.statut|libelle('statut') }}){% if not loop.last %}, {% endif %}{% endfor %}</span>
+  </div>
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="detail-card mb-3">
+      <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green-l);margin-bottom:1rem;">{{ _('Fiche artiste') }}</div>
+      {% for label, val in [
+        (_("Nom d'artiste"),  artiste.nom),
+        (_('Nom réel'),        artiste.nom_reel or '—'),
+        (_('Région'),          artiste.region_origine|libelle('region')),
+        (_('Type'),            artiste.type_artiste|libelle('type_artiste')),
+        (_('Début de carrière'), artiste.annee_debut or '—'),
+        (_('Fin de carrière'), artiste.annee_fin or _('Encore actif')),
+        (_('Site officiel'),   artiste.site_web or '—'),
+        (_('Photo'),           artiste.photo_url or '—'),
+        (_('Vues'),            artiste.nb_vues or 0),
+        (_('Soumis par'),      artiste.soumis_par or '—'),
+        (_('Email soumetteur'), artiste.soumis_email or '—'),
+        (_('Créé le'),         artiste.created_at|date_longue),
+        (_('Dernière modification'), artiste.updated_at|date_longue if artiste.updated_at else '—'),
+      ] %}
+        <div class="detail-field">
+          <div class="detail-label">{{ label }}</div>
+          <div class="detail-val" style="word-break:break-word;">{{ val }}</div>
+        </div>
+      {% endfor %}
+      {% for label, bio in [(_('Biographie (français)'), artiste.biographie), (_('Biographie (anglais)'), artiste.biographie_en)] %}
+        <div class="detail-field" style="flex-direction:column;gap:.5rem;">
+          <div class="detail-label">{{ label }}</div>
+          <div class="detail-val" style="line-height:1.7;color:var(--text-mid);white-space:pre-line;">{{ bio or '—' }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% set obj = artiste %}
+    {% set champs = [('nom', _('Nom'), None), ('nom_reel', _('Nom réel'), None), ('region_origine', _('Région'), 'region'),
+                     ('type_artiste', _('Type'), 'type_artiste'), ('annee_debut', _('Début'), None),
+                     ('annee_fin', _('Fin'), None), ('biographie', _('Biographie'), None)] %}
+    {% include "admin/_soumission.html" %}
+
+    <div class="detail-card">
+      <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--green-l);margin-bottom:.75rem;">
+        <i class="bi bi-intersect me-1"></i>{{ _('Fusionner un doublon') }}
+      </div>
+      <p style="font-size:.8rem;color:var(--text-dim);">
+        {{ _('Transfère toutes les œuvres, likes, commentaires et signalements de cette fiche vers la fiche choisie, puis supprime cette fiche.') }}
+      </p>
+      <form method="POST" action="{{ url_for('admin_bp.fusionner_artiste', id=artiste.id) }}" class="d-flex gap-2 flex-wrap">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label for="cible_id" class="visually-hidden">{{ _('Fiche de destination') }}</label>
+        <select name="cible_id" id="cible_id" class="form-select form-select-sm" style="max-width:260px;" required>
+          <option value="">{{ _('— Fiche de destination —') }}</option>
+          {% for a in fusion_options %}
+            <option value="{{ a.id }}">{{ a.nom }} (#{{ a.id }}{% if a.statut != 'approuve' %}, {{ a.statut|libelle('statut') }}{% endif %})</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="adm-btn edit" data-confirm="{{ _('Fusionner « %(n)s » dans la fiche choisie ? Cette fiche sera supprimée.', n=artiste.nom) }}">
+          <i class="bi bi-intersect"></i> {{ _('Fusionner') }}
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div class="col-lg-7">
-    <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
-                color:var(--text-dim);margin-bottom:.75rem;">
-      Œuvres associées ({{ oeuvres|length }})
+    <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.75rem;">
+      {{ _('Œuvres associées') }} ({{ oeuvres|length }})
     </div>
     {% if oeuvres %}
       <div class="adm-table-wrap">
         <table class="adm-table">
-          <thead>
-            <tr><th>Titre</th><th>Genre</th><th>Langue</th><th>Année</th><th>Statut</th><th></th></tr>
-          </thead>
+          <thead><tr><th>{{ _('Titre') }}</th><th>{{ _('Genre') }}</th><th>{{ _('Langue') }}</th><th>{{ _('Année') }}</th><th>{{ _('Statut') }}</th><th></th></tr></thead>
           <tbody>
             {% for o in oeuvres %}
             <tr>
+              <td><a href="{{ url_for('admin_bp.oeuvre_detail', id=o.id) }}" style="color:var(--text);font-weight:500;text-decoration:none;">{{ o.titre }}</a></td>
+              <td><span class="card-genre-badge" style="font-size:.68rem;">{{ o.genre_musical|libelle('genre') }}</span></td>
+              <td style="font-size:.8rem;color:var(--text-dim);">{{ o.langue|libelle('langue') }}</td>
+              <td style="font-family:var(--font-mono);font-size:.78rem;color:var(--text-dim);">{{ o.annee_sortie }}</td>
+              <td><span class="status-pill {{ o.statut }}" style="font-size:.65rem;">{{ o.statut|libelle('statut') }}</span></td>
               <td>
-                <a href="{{ url_for('admin_bp.oeuvre_detail', id=o.id) }}"
-                   style="color:var(--text);font-weight:500;text-decoration:none;">{{ o.titre }}</a>
-              </td>
-              <td><span class="card-genre-badge" style="font-size:.68rem;">{{ o.genre_musical }}</span></td>
-              <td style="font-size:.8rem;color:var(--text-dim);">{{ o.langue }}</td>
-              <td style="font-family:var(--font-mono);font-size:.78rem;color:var(--text-dim);">
-                {{ o.annee_sortie }}
-              </td>
-              <td><span class="status-pill {{ o.statut }}" style="font-size:.65rem;">{{ o.statut }}</span></td>
-              <td>
-                {% if o.statut != 'approuve' %}
-                  <a href="{{ url_for('admin_bp.action_oeuvre', id=o.id, action='approuver') }}"
-                     class="adm-btn approve" style="padding:.2rem .55rem;font-size:.7rem;">✓</a>
-                {% endif %}
+                <a href="{{ url_for('admin_bp.oeuvre_edit', id=o.id) }}" class="adm-btn edit" style="padding:.2rem .55rem;font-size:.7rem;" title="{{ _('Modifier') }}"><i class="bi bi-pencil"></i></a>
               </td>
             </tr>
             {% endfor %}
@@ -116,10 +145,11 @@
       </div>
     {% else %}
       <div class="detail-card text-center py-3">
-        <p style="color:var(--text-dim);margin:0;font-size:.88rem;">Aucune œuvre associée.</p>
+        <p style="color:var(--text-dim);margin:0;font-size:.88rem;">{{ _('Aucune œuvre associée.') }}</p>
       </div>
     {% endif %}
+
+    {% include "admin/_historique.html" %}
   </div>
 </div>
-
 {% endblock %}

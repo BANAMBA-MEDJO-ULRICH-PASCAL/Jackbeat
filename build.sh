@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+# ════════════════════════════════════════════════
+#  JACKBEAT — Script de build (Render.com)
+# ════════════════════════════════════════════════
 set -o errexit
 
 echo "📦 Mise à jour de pip..."
@@ -6,38 +10,14 @@ pip install --upgrade pip --quiet
 echo "📦 Installation des dépendances..."
 pip install -r requirements.txt --quiet
 
-echo "🗄️  Migration + initialisation base de données..."
-python -c "
-from app import create_app
-from models import db
-app = create_app('production')
-with app.app_context():
-    # Créer les nouvelles tables
-    db.create_all()
-    
-    # Migration douce — ajouter colonnes si elles n'existent pas
-    conn = db.engine.raw_connection()
-    cur  = conn.cursor()
-    migrations = [
-        ('artistes', 'photo_url', 'VARCHAR(500)'),
-        ('artistes', 'site_web',  'VARCHAR(300)'),
-        ('artistes', 'nb_vues',   'INTEGER DEFAULT 0'),
-        ('oeuvres',  'nb_vues',   'INTEGER DEFAULT 0'),
-    ]
-    for table, col, typ in migrations:
-        try:
-            cur.execute(f'ALTER TABLE {table} ADD COLUMN {col} {typ}')
-        except Exception:
-            pass  # Colonne déjà présente
-    conn.commit()
-    conn.close()
-    print('✅ Base de données migrée')
-"
+echo "🌍 Compilation des traductions (FR / EN)..."
+pybabel compile -d translations --statistics
 
-echo "🌱 Données de démonstration (synchronisation)..."
-python -c "
-import seed_data
-seed_data.seed()
-"
+echo "🗄️  Migration de la base de données..."
+# create_app() met le schéma à jour (colonnes manquantes ajoutées, idempotent)
+python -c "from app import create_app; create_app(); print('✅ Base de données migrée')"
 
-echo "✅ Build Jackbeat Phase 1 terminé !"
+echo "🌱 Données de démonstration (ajout des entrées manquantes uniquement)..."
+python seed_data.py
+
+echo "✅ Build Jackbeat terminé !"

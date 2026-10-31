@@ -1,0 +1,23 @@
+{% extends "admin/login.html" %}
+{% block title %}{{ _('Vérification en deux étapes') }}{% endblock %}
+{% block form %}
+<p style="font-size:.88rem;color:var(--text-mid);text-align:center;">
+  <i class="bi bi-shield-lock me-1" style="color:var(--green);"></i>
+  {{ _("Saisissez le code à 6 chiffres affiché dans votre application d'authentification, ou un code de secours.") }}
+</p>
+<form method="POST" autocomplete="off">
+  {{ form.csrf_token }}
+  <div class="mb-4">
+    <label class="form-label" for="code">{{ _('Code de vérification') }}</label>
+    <input type="text" id="code" name="code" class="form-control text-center" required autofocus
+           inputmode="numeric" autocomplete="one-time-code" maxlength="20"
+           style="font-family:var(--font-mono);font-size:1.4rem;letter-spacing:.3em;">
+  </div>
+  <button type="submit" class="btn btn-jb-gold w-100">
+    <i class="bi bi-check2-circle me-2"></i>{{ _('Vérifier') }}
+  </button>
+</form>
+<div class="text-center mt-3">
+  <a href="{{ url_for('admin_bp.login') }}" style="font-size:.8rem;color:var(--text-dim);">{{ _('Recommencer la connexion') }}</a>
+</div>
+{% endblock %}

@@ -344,3 +344,109 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 @media (max-width: 991px) { .hero { padding:5rem 0 3.5rem; } .hero h1 { font-size:clamp(2.4rem,7vw,3.5rem); } .jb-form-card { padding:1.75rem; } .jb-footer { margin-top:4rem; } }
 @media (max-width: 767px) { .hero { padding:3.5rem 0 3rem; } .hero h1 { font-size:2.2rem; } .hero-sub { font-size:.98rem; } .section-title { font-size:1.6rem; } .stat-number { font-size:2.4rem; } .btn-jb-gold,.btn-jb-green,.btn-jb-outline { padding:.55rem 1.3rem; font-size:.78rem; } .jb-form-card { padding:1.25rem; } .jb-footer { padding:2.5rem 0 1.5rem; margin-top:3rem; } .collecte-choice-card { padding:2rem 1.5rem; } }
 ::selection { background:rgba(0,122,94,.15); color:var(--text); }
+
+/* ════════════════════════════════════════════════════════════
+   v4 — Utilitaires (remplacent les gestionnaires JS inline,
+   interdits par la Content Security Policy)
+   ════════════════════════════════════════════════════════════ */
+.hover-lift { transition: transform .2s, border-color .2s; }
+.hover-lift:hover { transform: translateY(-3px); border-color: rgba(0,122,94,.25) !important; }
+
+.chip-link {
+  display: inline-block; padding: .4rem 1rem; background: var(--bg-3);
+  border: 1.5px solid var(--bdr); border-radius: 50px; font-size: .85rem;
+  color: var(--text-mid); text-decoration: none; transition: all .2s;
+}
+.chip-link:hover { border-color: var(--green); color: var(--green); }
+
+.link-flag {
+  font-size: .78rem; color: var(--text-dim); display: inline-flex; align-items: center; gap: .3rem;
+  padding: .3rem .75rem; border: 1.5px solid var(--bdr); border-radius: 50px;
+  text-decoration: none; transition: all .2s;
+}
+.link-flag:hover { border-color: var(--red); color: var(--red); }
+.link-back { display: inline-flex; align-items: center; gap: .4rem; color: var(--text-dim);
+  font-size: .85rem; text-decoration: none; margin-bottom: 1.5rem; transition: color .2s; }
+.link-back:hover { color: var(--green); }
+
+/* Menu déroulant « Analyse » */
+.jb-dd-menu { background: var(--bg); border: 1.5px solid var(--bdr); border-radius: var(--r);
+  box-shadow: var(--shadow-lg); min-width: 210px; padding: .5rem; }
+.jb-dd-item { color: var(--text-mid); font-size: .85rem; border-radius: var(--r-sm);
+  padding: .45rem .85rem; display: flex; align-items: center; gap: .6rem; }
+.jb-dd-item i { color: var(--green); width: 16px; }
+.jb-dd-item:hover, .jb-dd-item:focus { background: var(--green-tint); color: var(--green); }
+.jb-dd-item.danger i { color: var(--red); }
+.jb-dd-item.danger:hover, .jb-dd-item.danger:focus { background: var(--red-pale); color: var(--red); }
+
+/* Recherche de la barre de navigation */
+.nav-search-wrap { position: relative; }
+.nav-search-wrap .bi-search { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: .85rem; pointer-events: none; }
+.nav-search-input { background: var(--bg-3); border: 1.5px solid var(--bdr); border-radius: 50px;
+  padding: .45rem .9rem .45rem 2.2rem; font-size: .84rem; color: var(--text); width: 220px;
+  transition: width .3s, border-color .2s, box-shadow .2s; outline: none; }
+.nav-search-input:focus { width: 280px; border-color: var(--green); box-shadow: 0 0 0 3px rgba(0,122,94,.1); }
+.search-suggestions { display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  min-width: 300px; background: var(--card); border: 1.5px solid var(--bdr); border-radius: var(--r);
+  box-shadow: var(--shadow-lg); z-index: 2000; overflow: hidden; }
+.search-suggestions.open { display: block; }
+.suggestion-item { display: flex; align-items: center; gap: .75rem; padding: .65rem 1rem;
+  text-decoration: none; border-bottom: 1px solid var(--bdr); color: var(--text); }
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover, .suggestion-item:focus { background: var(--bg-2); color: var(--text); }
+.suggestion-thumb { width: 42px; height: 30px; object-fit: cover; border-radius: 4px; flex-shrink: 0;
+  background: var(--green-pale); display: flex; align-items: center; justify-content: center; }
+.suggestion-label { font-size: .85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.suggestion-sub { font-size: .73rem; color: var(--text-dim); }
+.suggestion-type { margin-left: auto; font-size: .68rem; padding: .1rem .5rem; border-radius: 50px;
+  white-space: nowrap; flex-shrink: 0; background: var(--gold-tint); color: #7a5c00; }
+.suggestion-type.artiste { background: var(--green-pale); color: var(--green); }
+
+/* Sélecteur de langue */
+.lang-switch { display: inline-flex; border: 1.5px solid var(--bdr); border-radius: 50px; overflow: hidden; }
+.lang-switch a { font-size: .72rem; font-weight: 700; letter-spacing: .08em; padding: .3rem .6rem;
+  color: var(--text-dim); text-decoration: none; }
+.lang-switch a.active { background: var(--green); color: #fff; }
+.lang-switch a:not(.active):hover { background: var(--green-tint); color: var(--green); }
+
+/* Contenu disponible dans une seule langue */
+.content-lang-note { display: inline-block; font-size: .7rem; letter-spacing: .05em; color: var(--text-dim);
+  background: var(--bg-3); border-radius: 50px; padding: .05rem .55rem; margin-bottom: .4rem; }
+
+/* Champ pot de miel anti-robots (invisible pour les humains) */
+.hp-field { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
+
+/* Vignette de secours quand une image ne charge pas */
+.thumb-fallback { display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+/* Cartes de raison (signalement) — état sélectionné sans JS */
+.raison-card:has(input:checked) { border-color: var(--red); background: var(--red-pale); }
+.raison-card:has(input:checked) .raison-radio { border-color: var(--red); background: var(--red); }
+.raison-card:has(input:focus-visible) { outline: 2px solid var(--red); outline-offset: 2px; }
+
+/* Bouton « lien » dans un formulaire (actions POST d'aspect lien) */
+.btn-linklike { background: none; border: 0; padding: 0; color: var(--green); font: inherit; cursor: pointer; }
+.btn-linklike:hover { color: var(--green-l); text-decoration: underline; }
+form.inline-form { display: inline; }
+
+/* Différences (historique admin) */
+.diff-old { color: var(--red); text-decoration: line-through; opacity: .8; }
+.diff-new { color: var(--green); font-weight: 600; }
+
+/* Accessibilité : focus clavier visible */
+a:focus-visible, button:focus-visible, .form-control:focus-visible, .form-select:focus-visible {
+  outline: 2px solid var(--green); outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* Flèche des listes déroulantes (effacée par le raccourci « background » ci-dessus) */
+.form-select {
+  background-image: var(--bs-form-select-bg-img);
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  background-size: 16px 12px;
+  padding-right: 2.25rem;
+}

@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Ajouter un Artiste{% endblock %}
+{% from "_macros.html" import field, honeypot with context %}
+{% block title %}{{ _('Ajouter un Artiste') }}{% endblock %}
 
 {% block content %}
 <section class="collecte-hero">
   <div class="container">
     <div class="hero-eyebrow justify-content-center">
-      <a href="{{ url_for('collecte_bp.index') }}" style="color:var(--text-dim);">Contribuer</a>
-      <i class="bi bi-chevron-right mx-2" style="font-size:0.7rem;"></i> Artiste
+      <a href="{{ url_for('collecte_bp.index') }}" style="color:var(--text-dim);">{{ _('Contribuer') }}</a>
+      <i class="bi bi-chevron-right mx-2" style="font-size:0.7rem;"></i> {{ _('Artiste') }}
     </div>
     <h1 style="font-family:var(--font-display);font-size:clamp(1.8rem,4vw,3rem);font-weight:900;">
-      <span style="color:var(--gold);">Ajouter</span> un artiste
+      {{ _('Ajouter un artiste') }}
     </h1>
   </div>
 </section>
@@ -17,85 +18,51 @@
 <section class="py-5">
   <div class="container" style="max-width:680px;">
     <form method="POST" class="needs-validation" novalidate>
-      {{ form.hidden_tag() }}
+      {{ form.csrf_token }}
+      {{ honeypot() }}
       <div class="jb-form-card">
 
-        <!-- Infos principales -->
-        <div class="form-section-title">Informations principales</div>
+        <div class="form-section-title">{{ _('Informations principales') }}</div>
         <div class="row g-3">
           <div class="col-12">
-            {{ form.nom.label(class="form-label") }}
-            {{ form.nom(class="form-control" + (" is-invalid" if form.nom.errors else ""),
-                        placeholder="Ex: Manu Dibango, Charlotte Dipanda, Les Têtes Brûlées...") }}
-            {% for e in form.nom.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+            {{ field(form.nom, _('Ex : Manu Dibango, Charlotte Dipanda, Les Têtes Brûlées...')) }}
           </div>
           <div class="col-12">
-            {{ form.nom_reel.label(class="form-label") }}
-            {{ form.nom_reel(class="form-control", placeholder="Vrai nom si l'artiste utilise un pseudonyme") }}
-            <div class="form-text">Laisser vide si le nom d'artiste est le vrai nom.</div>
+            {{ field(form.nom_reel, _("Vrai nom si l'artiste utilise un pseudonyme"),
+                     help=_("Laisser vide si le nom d'artiste est le vrai nom.")) }}
           </div>
-          <div class="col-md-6">
-            {{ form.region_origine.label(class="form-label") }}
-            {{ form.region_origine(class="form-select" + (" is-invalid" if form.region_origine.errors else "")) }}
-            {% for e in form.region_origine.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
-          </div>
-          <div class="col-md-6">
-            {{ form.type_artiste.label(class="form-label") }}
-            {{ form.type_artiste(class="form-select" + (" is-invalid" if form.type_artiste.errors else "")) }}
-            {% for e in form.type_artiste.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
-          </div>
+          <div class="col-md-6">{{ field(form.region_origine, select=True) }}</div>
+          <div class="col-md-6">{{ field(form.type_artiste, select=True) }}</div>
         </div>
 
-        <!-- Période -->
-        <div class="form-section-title">Période d'activité</div>
+        <div class="form-section-title">{{ _("Période d'activité") }}</div>
         <div class="row g-3">
-          <div class="col-md-6">
-            {{ form.annee_debut.label(class="form-label") }}
-            {{ form.annee_debut(class="form-control" + (" is-invalid" if form.annee_debut.errors else ""),
-                                placeholder="Ex: 1965") }}
-            {% for e in form.annee_debut.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
-          </div>
-          <div class="col-md-6">
-            {{ form.annee_fin.label(class="form-label") }}
-            {{ form.annee_fin(class="form-control" + (" is-invalid" if form.annee_fin.errors else ""),
-                              placeholder="Laisser vide si encore actif") }}
-            {% for e in form.annee_fin.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
-          </div>
+          <div class="col-md-6">{{ field(form.annee_debut, _('Ex : 1965')) }}</div>
+          <div class="col-md-6">{{ field(form.annee_fin, _('Laisser vide si encore actif')) }}</div>
         </div>
 
-        <!-- Biographie -->
-        <div class="form-section-title">Biographie</div>
-        {{ form.biographie.label(class="form-label") }}
-        {{ form.biographie(class="form-control", rows=4,
-                           placeholder="Courte biographie, contexte, anecdotes...") }}
+        <div class="form-section-title">{{ _('Biographie') }}</div>
+        {{ field(form.biographie, _('Courte biographie, contexte, anecdotes...'), rows=4,
+                 help=_('Vous pouvez écrire en français ou en anglais.')) }}
 
-        <!-- Soumetteur -->
-        <div class="form-section-title">Votre identité (optionnel)</div>
+        <div class="form-section-title">{{ _('Votre identité (optionnel)') }}</div>
         <div class="row g-3">
-          <div class="col-md-6">
-            {{ form.soumis_par.label(class="form-label") }}
-            {{ form.soumis_par(class="form-control", placeholder="Votre prénom ou pseudo") }}
-          </div>
-          <div class="col-md-6">
-            {{ form.soumis_email.label(class="form-label") }}
-            {{ form.soumis_email(class="form-control" + (" is-invalid" if form.soumis_email.errors else ""),
-                                  placeholder="votre@email.com") }}
-            {% for e in form.soumis_email.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
-          </div>
+          <div class="col-md-6">{{ field(form.soumis_par, _('Votre prénom ou pseudo')) }}</div>
+          <div class="col-md-6">{{ field(form.soumis_email, _('votre@email.com'),
+                                         help=_('Jamais publié. Sert uniquement à vous recontacter.')) }}</div>
         </div>
 
         <div class="d-flex gap-3 mt-4 flex-wrap">
           <button type="submit" class="btn btn-jb-gold">
-            <i class="bi bi-send me-2"></i>Soumettre l'artiste
+            <i class="bi bi-send me-2"></i>{{ _("Soumettre l'artiste") }}
           </button>
-          <a href="{{ url_for('collecte_bp.index') }}" class="btn btn-jb-outline">Annuler</a>
+          <a href="{{ url_for('collecte_bp.index') }}" class="btn btn-jb-outline">{{ _('Annuler') }}</a>
         </div>
 
         <p class="mt-3" style="font-size:0.78rem;color:var(--text-dim);">
           <i class="bi bi-info-circle me-1"></i>
-          La soumission sera examinée avant d'être publiée dans l'archive.
+          {{ _("La soumission sera examinée avant d'être publiée dans l'archive.") }}
         </p>
-
       </div>
     </form>
   </div>
