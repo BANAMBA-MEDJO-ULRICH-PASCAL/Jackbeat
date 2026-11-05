@@ -1,0 +1,50 @@
+{# Champ de formulaire WTForms avec label, erreurs et aide #}
+{% macro field(f, placeholder=None, help=None, select=False, rows=None) %}
+  {{ f.label(class="form-label") }}
+  {% set cls = ("form-select" if select else "form-control") + (" is-invalid" if f.errors else "") %}
+  {% if rows %}
+    {{ f(class=cls, placeholder=placeholder or '', rows=rows) }}
+  {% elif placeholder %}
+    {{ f(class=cls, placeholder=placeholder) }}
+  {% else %}
+    {{ f(class=cls) }}
+  {% endif %}
+  {% for e in f.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+  {% if help %}<div class="form-text">{{ help }}</div>{% endif %}
+{% endmacro %}
+
+{# Champ pot de miel (invisible) — les robots le remplissent, les humains non #}
+{% macro honeypot(f=None) %}
+  <div class="hp-field" aria-hidden="true">
+    <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+  </div>
+{% endmacro %}
+
+{# Petit bouton POST (action admin) avec confirmation optionnelle #}
+{% macro post_button(url, label, cls='adm-btn', icon=None, confirm=None, title=None) %}
+  <form method="POST" action="{{ url }}" class="inline-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="next" value="{{ request.full_path }}">
+    <button type="submit" class="{{ cls }}" {% if confirm %}data-confirm="{{ confirm }}"{% endif %}
+            {% if title %}title="{{ title }}" aria-label="{{ title }}"{% endif %}>
+      {% if icon %}<i class="bi {{ icon }}"></i>{% endif %}{% if label %} {{ label }}{% endif %}
+    </button>
+  </form>
+{% endmacro %}
+
+{# Texte disponible dans une seule langue : le signaler #}
+{% macro lang_note(text_lang) %}
+  {% if text_lang and text_lang != lang %}
+    <span class="content-lang-note" lang="{{ text_lang }}">
+      {% if text_lang == 'fr' %}{{ _('Texte disponible en français uniquement') }}{% else %}{{ _('Texte disponible en anglais uniquement') }}{% endif %}
+    </span>
+  {% endif %}
+{% endmacro %}
+
+{# Bouton d'action dans un formulaire existant (évite les formulaires imbriqués) #}
+{% macro row_button(url, cls, icon, title, confirm=None, label=None) %}
+  <button type="submit" formaction="{{ url }}" formmethod="post" formnovalidate class="{{ cls }}"
+          title="{{ title }}" aria-label="{{ title }}" {% if confirm %}data-confirm="{{ confirm }}"{% endif %}>
+    <i class="bi {{ icon }}"></i>{% if label %} {{ label }}{% endif %}
+  </button>
+{% endmacro %}

@@ -1,0 +1,9 @@
+{% if historique %}
+<div class="mt-4">
+  <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.6rem;">
+    <i class="bi bi-clock-history me-1"></i>{{ _('Historique des modifications') }}
+  </div>
+  {% set rows = historique %}
+  {% include "admin/_journal_table.html" %}
+</div>
+{% endif %}

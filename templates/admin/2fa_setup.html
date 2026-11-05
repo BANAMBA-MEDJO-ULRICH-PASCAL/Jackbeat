@@ -1,0 +1,28 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ _('Activer la 2FA') }}{% endblock %}
+{% block breadcrumb %}<span class="sep">/</span><a href="{{ url_for('admin_bp.securite') }}">{{ _('Sécurité du compte') }}</a><span class="sep">/</span><span class="current">2FA</span>{% endblock %}
+{% block admin_content %}
+<div class="adm-section-header"><h1>{{ _('Activer la double authentification') }}</h1></div>
+<div class="adm-form-card" style="max-width:640px;">
+  <ol style="font-size:.9rem;color:var(--text-mid);line-height:1.8;">
+    <li>{{ _("Ouvrez votre application d'authentification et scannez ce QR code :") }}</li>
+  </ol>
+  {% if qr_svg %}
+    <div style="background:#fff;display:inline-block;padding:.5rem;border-radius:8px;border:1px solid var(--bdr);" aria-label="QR code">{{ qr_svg }}</div>
+  {% endif %}
+  <p style="font-size:.8rem;color:var(--text-dim);margin-top:.75rem;">
+    {{ _('Ou saisissez cette clé manuellement :') }}
+    <code style="font-size:.95rem;letter-spacing:.08em;user-select:all;">{{ secret }}</code>
+  </p>
+  <ol start="2" style="font-size:.9rem;color:var(--text-mid);line-height:1.8;">
+    <li>{{ _("Saisissez le code à 6 chiffres affiché par l'application pour confirmer :") }}</li>
+  </ol>
+  <form method="POST" class="d-flex gap-2 align-items-start flex-wrap" autocomplete="off">
+    {{ form.csrf_token }}
+    <label for="code" class="visually-hidden">{{ _('Code') }}</label>
+    <input type="text" id="code" name="code" class="form-control" style="max-width:180px;font-family:var(--font-mono);font-size:1.2rem;letter-spacing:.25em;"
+           inputmode="numeric" autocomplete="one-time-code" maxlength="6" required autofocus>
+    <button type="submit" class="btn btn-jb-gold"><i class="bi bi-shield-check me-1"></i>{{ _('Confirmer et activer') }}</button>
+  </form>
+</div>
+{% endblock %}

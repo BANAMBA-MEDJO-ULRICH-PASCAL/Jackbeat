@@ -1,32 +1,46 @@
 """
 routes/public.py — Exploration publique : artistes, œuvres, recherche,
-                   lecteur YouTube, likes, commentaires.
+                   lecteur YouTube, likes, commentaires, signalements.
 """
-import hashlib, re
+import re
+
 from flask import (Blueprint, render_template, redirect, url_for,
-                   request, jsonify, abort, flash)
-from models import db, Artiste, Oeuvre, Like, Commentaire
+                   request, jsonify, abort, flash, session, g)
+from flask_babel import gettext as _
 from sqlalchemy import func, or_
+
+from models import (db, Artiste, Oeuvre, Like, Commentaire, Signalement,
+                    RAISONS_SIGNALEMENT, libelle)
+from security import ip_hash, rate_limit
 
 public_bp = Blueprint('public_bp', __name__)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-def get_ip_hash(req):
-    """Retourne un hash SHA-256 de l'IP du visiteur (anonymisation RGPD)."""
-    ip = req.headers.get('X-Forwarded-For', req.remote_addr or '0.0.0.0')
-    ip = ip.split(',')[0].strip()
-    return hashlib.sha256(ip.encode()).hexdigest()
-
-
 def sanitize(text, max_len=500):
-    """Nettoie et tronque un texte saisi par l'utilisateur."""
+    """Nettoie et tronque un texte saisi par l'utilisateur (l'échappement HTML
+    est de toute façon garanti par Jinja à l'affichage)."""
     if not text:
         return ''
-    # Supprimer les balises HTML basiques
     text = re.sub(r'<[^>]+>', '', text)
+    text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)   # caractères de contrôle
     return text.strip()[:max_len]
+
+
+def compter_vue(kind, obj):
+    """Une vue par visiteur (session) et par fiche — limite le gonflement artificiel."""
+    key = f'{kind}{obj.id}'
+    vues = session.get('vues', [])
+    if key in vues:
+        return
+    obj.nb_vues = (obj.nb_vues or 0) + 1
+    db.session.commit()
+    session['vues'] = (vues + [key])[-60:]
+
+
+def escape_like(term):
+    return term.replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
 
 
 # ── CATALOGUE ARTISTES ────────────────────────────────────────────────────────
@@ -36,15 +50,12 @@ def artistes():
     """Liste paginée de tous les artistes approuvés."""
     page    = request.args.get('page',   1,   type=int)
     region  = request.args.get('region', '')
-    genre   = request.args.get('genre',  '')
     tri     = request.args.get('tri',    'nom')   # nom | vues | recent
 
     q = Artiste.query.filter_by(statut='approuve')
-
     if region:
         q = q.filter(Artiste.region_origine == region)
 
-    # Tri
     if tri == 'vues':
         q = q.order_by(Artiste.nb_vues.desc())
     elif tri == 'recent':
@@ -54,17 +65,14 @@ def artistes():
 
     artistes_page = q.paginate(page=page, per_page=12, error_out=False)
 
-    # Données pour les filtres
     regions = [r[0] for r in db.session.query(Artiste.region_origine)
                .filter_by(statut='approuve').distinct().order_by(Artiste.region_origine)]
-
-    # Statistiques rapides
     total = Artiste.query.filter_by(statut='approuve').count()
 
     return render_template('public/artistes.html',
                            artistes=artistes_page,
                            regions=regions,
-                           actifs=dict(region=region, genre=genre, tri=tri),
+                           actifs=dict(region=region, tri=tri),
                            total=total)
 
 
@@ -73,37 +81,26 @@ def artistes():
 @public_bp.route('/artiste/<int:id>')
 @public_bp.route('/artiste/<int:id>/<slug>')
 def artiste_detail(id, slug=None):
-    """Page publique complète d'un artiste."""
     artiste = Artiste.query.filter_by(id=id, statut='approuve').first_or_404()
-
-    # Incrémenter les vues
-    artiste.nb_vues = (artiste.nb_vues or 0) + 1
-    db.session.commit()
+    compter_vue('a', artiste)
 
     oeuvres      = artiste.oeuvres_approuvees
     commentaires = (Commentaire.query
                     .filter_by(artiste_id=id, approuve=True)
                     .order_by(Commentaire.created_at.desc())
                     .limit(20).all())
-
-    # L'utilisateur a-t-il déjà liké cet artiste ?
-    ip_hash    = get_ip_hash(request)
-    deja_like  = Like.query.filter_by(artiste_id=id, ip_hash=ip_hash).first() is not None
-
-    # Artistes similaires (même région, autre artiste)
+    deja_like  = Like.query.filter_by(artiste_id=id, ip_hash=ip_hash()).first() is not None
     similaires = (Artiste.query
                   .filter_by(statut='approuve', region_origine=artiste.region_origine)
                   .filter(Artiste.id != artiste.id)
                   .order_by(func.random())
                   .limit(4).all())
+    bio, bio_lang = artiste.biographie_pour(g.lang)
 
     return render_template('public/artiste_detail.html',
-                           artiste=artiste,
-                           oeuvres=oeuvres,
-                           commentaires=commentaires,
-                           deja_like=deja_like,
-                           similaires=similaires,
-                           nb_likes=artiste.nb_likes)
+                           artiste=artiste, oeuvres=oeuvres, commentaires=commentaires,
+                           deja_like=deja_like, similaires=similaires,
+                           nb_likes=artiste.nb_likes, bio=bio, bio_lang=bio_lang)
 
 
 # ── FICHE ŒUVRE ───────────────────────────────────────────────────────────────
@@ -111,170 +108,115 @@ def artiste_detail(id, slug=None):
 @public_bp.route('/oeuvre/<int:id>')
 @public_bp.route('/oeuvre/<int:id>/<slug>')
 def oeuvre_detail(id, slug=None):
-    """Page publique complète d'une œuvre avec lecteur YouTube."""
-    oeuvre = Oeuvre.query.filter_by(id=id, statut='approuve').first_or_404()
-
-    # Incrémenter les vues
-    oeuvre.nb_vues = (oeuvre.nb_vues or 0) + 1
-    db.session.commit()
+    oeuvre = Oeuvre.publiees().filter(Oeuvre.id == id).first_or_404()
+    compter_vue('o', oeuvre)
 
     commentaires = (Commentaire.query
                     .filter_by(oeuvre_id=id, approuve=True)
                     .order_by(Commentaire.created_at.desc())
                     .limit(20).all())
-
-    ip_hash   = get_ip_hash(request)
-    deja_like = Like.query.filter_by(oeuvre_id=id, ip_hash=ip_hash).first() is not None
-
-    # Autres œuvres du même artiste
-    autres_oeuvres = (Oeuvre.query
-                      .filter_by(artiste_id=oeuvre.artiste_id, statut='approuve')
-                      .filter(Oeuvre.id != oeuvre.id)
+    deja_like = Like.query.filter_by(oeuvre_id=id, ip_hash=ip_hash()).first() is not None
+    autres_oeuvres = (Oeuvre.publiees()
+                      .filter(Oeuvre.artiste_id == oeuvre.artiste_id, Oeuvre.id != oeuvre.id)
                       .order_by(Oeuvre.annee_sortie.desc())
                       .limit(5).all())
-
-    # Œuvres du même genre
-    meme_genre = (Oeuvre.query
-                  .filter_by(genre_musical=oeuvre.genre_musical, statut='approuve')
-                  .filter(Oeuvre.id != oeuvre.id)
+    meme_genre = (Oeuvre.publiees()
+                  .filter(Oeuvre.genre_musical == oeuvre.genre_musical, Oeuvre.id != oeuvre.id)
                   .order_by(func.random())
                   .limit(4).all())
+    desc, desc_lang = oeuvre.description_pour(g.lang)
 
     return render_template('public/oeuvre_detail.html',
-                           oeuvre=oeuvre,
-                           commentaires=commentaires,
-                           deja_like=deja_like,
-                           autres_oeuvres=autres_oeuvres,
-                           meme_genre=meme_genre,
-                           nb_likes=oeuvre.nb_likes)
+                           oeuvre=oeuvre, commentaires=commentaires, deja_like=deja_like,
+                           autres_oeuvres=autres_oeuvres, meme_genre=meme_genre,
+                           nb_likes=oeuvre.nb_likes, desc=desc, desc_lang=desc_lang)
 
 
 # ── RECHERCHE GLOBALE ─────────────────────────────────────────────────────────
 
+def _rechercher(q, limite_a, limite_o, plein_texte=True):
+    terme = f'%{escape_like(q)}%'
+    champs_a = [Artiste.nom.ilike(terme, escape='\\'), Artiste.nom_reel.ilike(terme, escape='\\')]
+    champs_o = [Oeuvre.titre.ilike(terme, escape='\\')]
+    if plein_texte:
+        champs_a += [Artiste.biographie.ilike(terme, escape='\\'),
+                     Artiste.biographie_en.ilike(terme, escape='\\'),
+                     Artiste.region_origine.ilike(terme, escape='\\')]
+        champs_o += [Oeuvre.genre_musical.ilike(terme, escape='\\'),
+                     Oeuvre.description.ilike(terme, escape='\\'),
+                     Oeuvre.description_en.ilike(terme, escape='\\'),
+                     Oeuvre.distinction.ilike(terme, escape='\\')]
+    artistes_res = (Artiste.query.filter_by(statut='approuve').filter(or_(*champs_a))
+                    .order_by(Artiste.nb_vues.desc()).limit(limite_a).all())
+    oeuvres_res = (Oeuvre.publiees().filter(or_(*champs_o))
+                   .order_by(Oeuvre.nb_vues.desc()).limit(limite_o).all())
+    return artistes_res, oeuvres_res
+
+
 @public_bp.route('/recherche')
 def recherche():
-    """Recherche plein texte sur artistes et œuvres."""
-    q    = sanitize(request.args.get('q', ''), 100)
-    page = request.args.get('page', 1, type=int)
-
+    q = sanitize(request.args.get('q', ''), 100)
     if not q or len(q) < 2:
-        return render_template('public/recherche.html',
-                               query='', artistes=[], oeuvres=[], total=0)
-
-    terme = f'%{q}%'
-
-    artistes_res = (Artiste.query
-                    .filter_by(statut='approuve')
-                    .filter(or_(
-                        Artiste.nom.ilike(terme),
-                        Artiste.nom_reel.ilike(terme),
-                        Artiste.biographie.ilike(terme),
-                    ))
-                    .order_by(Artiste.nb_vues.desc())
-                    .limit(8).all())
-
-    oeuvres_res = (Oeuvre.query
-                   .filter_by(statut='approuve')
-                   .filter(or_(
-                       Oeuvre.titre.ilike(terme),
-                       Oeuvre.genre_musical.ilike(terme),
-                       Oeuvre.description.ilike(terme),
-                       Oeuvre.distinction.ilike(terme),
-                   ))
-                   .order_by(Oeuvre.nb_vues.desc())
-                   .limit(12).all())
-
-    total = len(artistes_res) + len(oeuvres_res)
-
-    return render_template('public/recherche.html',
-                           query=q,
-                           artistes=artistes_res,
-                           oeuvres=oeuvres_res,
-                           total=total)
+        return render_template('public/recherche.html', query='', artistes=[], oeuvres=[], total=0)
+    artistes_res, oeuvres_res = _rechercher(q, 8, 12)
+    return render_template('public/recherche.html', query=q, artistes=artistes_res,
+                           oeuvres=oeuvres_res, total=len(artistes_res) + len(oeuvres_res))
 
 
 @public_bp.route('/recherche/suggestions')
+@rate_limit(120, 60, methods=('GET',))
 def recherche_suggestions():
-    """API JSON — suggestions instantanées pour la barre de recherche."""
+    """API JSON — suggestions instantanées (le client les insère en texte, jamais en HTML)."""
     q = sanitize(request.args.get('q', ''), 60)
     if not q or len(q) < 2:
         return jsonify([])
-
-    terme = f'%{q}%'
-
-    artistes = (Artiste.query
-                .filter_by(statut='approuve')
-                .filter(Artiste.nom.ilike(terme))
-                .limit(4).all())
-
-    oeuvres = (Oeuvre.query
-               .filter_by(statut='approuve')
-               .filter(Oeuvre.titre.ilike(terme))
-               .limit(4).all())
-
-    results = []
-    for a in artistes:
-        results.append({
-            'type':  'artiste',
-            'id':    a.id,
-            'label': a.nom,
-            'sub':   a.region_origine,
-            'url':   url_for('public_bp.artiste_detail', id=a.id),
-        })
-    for o in oeuvres:
-        results.append({
-            'type':  'oeuvre',
-            'id':    o.id,
-            'label': o.titre,
-            'sub':   f'{o.artiste.nom if o.artiste else ""} · {o.annee_sortie}',
-            'url':   url_for('public_bp.oeuvre_detail', id=o.id),
-            'thumb': o.youtube_thumb,
-        })
-
+    artistes_res, oeuvres_res = _rechercher(q, 4, 4, plein_texte=False)
+    results = [{
+        'type': 'artiste', 'label': a.nom, 'sub': libelle('region', a.region_origine),
+        'url': url_for('public_bp.artiste_detail', id=a.id),
+    } for a in artistes_res]
+    results += [{
+        'type': 'oeuvre', 'label': o.titre,
+        'sub': f'{o.artiste.nom if o.artiste else ""} · {o.annee_sortie}',
+        'url': url_for('public_bp.oeuvre_detail', id=o.id), 'thumb': o.youtube_thumb,
+    } for o in oeuvres_res]
     return jsonify(results)
 
 
 # ── LIKES ─────────────────────────────────────────────────────────────────────
 
-@public_bp.route('/like/oeuvre/<int:id>', methods=['POST'])
-def like_oeuvre(id):
-    """Toggle like sur une œuvre — 1 like par IP."""
-    oeuvre = Oeuvre.query.filter_by(id=id, statut='approuve').first_or_404()
-    ip_hash = get_ip_hash(request)
-
-    existing = Like.query.filter_by(oeuvre_id=id, ip_hash=ip_hash).first()
+def _toggle_like(**cible):
+    h = ip_hash()
+    existing = Like.query.filter_by(ip_hash=h, **cible).first()
     if existing:
         db.session.delete(existing)
         liked = False
     else:
-        db.session.add(Like(oeuvre_id=id, ip_hash=ip_hash))
+        db.session.add(Like(ip_hash=h, **cible))
         liked = True
+    try:
+        db.session.commit()
+    except Exception:          # double clic simultané → contrainte d'unicité
+        db.session.rollback()
+        liked = True
+    return liked, Like.query.filter_by(**cible).count()
 
-    db.session.commit()
-    nb = Like.query.filter_by(oeuvre_id=id).count()
 
+@public_bp.route('/like/oeuvre/<int:id>', methods=['POST'])
+@rate_limit(60, 60, scope='like')
+def like_oeuvre(id):
+    Oeuvre.publiees().filter(Oeuvre.id == id).first_or_404()
+    liked, nb = _toggle_like(oeuvre_id=id)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({'liked': liked, 'nb': nb})
     return redirect(url_for('public_bp.oeuvre_detail', id=id))
 
 
 @public_bp.route('/like/artiste/<int:id>', methods=['POST'])
+@rate_limit(60, 60, scope='like')
 def like_artiste(id):
-    """Toggle like sur un artiste — 1 like par IP."""
-    artiste = Artiste.query.filter_by(id=id, statut='approuve').first_or_404()
-    ip_hash = get_ip_hash(request)
-
-    existing = Like.query.filter_by(artiste_id=id, ip_hash=ip_hash).first()
-    if existing:
-        db.session.delete(existing)
-        liked = False
-    else:
-        db.session.add(Like(artiste_id=id, ip_hash=ip_hash))
-        liked = True
-
-    db.session.commit()
-    nb = Like.query.filter_by(artiste_id=id).count()
-
+    Artiste.query.filter_by(id=id, statut='approuve').first_or_404()
+    liked, nb = _toggle_like(artiste_id=id)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({'liked': liked, 'nb': nb})
     return redirect(url_for('public_bp.artiste_detail', id=id))
@@ -282,137 +224,109 @@ def like_artiste(id):
 
 # ── COMMENTAIRES ──────────────────────────────────────────────────────────────
 
-@public_bp.route('/commenter/oeuvre/<int:id>', methods=['POST'])
-def commenter_oeuvre(id):
-    """Soumettre un commentaire sur une œuvre."""
-    oeuvre = Oeuvre.query.filter_by(id=id, statut='approuve').first_or_404()
-
+def _commenter(retour, **cible):
+    if request.form.get('website'):             # pot de miel anti-robots
+        flash(_('Commentaire soumis — il sera visible après modération.'), 'success')
+        return redirect(retour)
     auteur = sanitize(request.form.get('auteur', ''), 80)
-    texte  = sanitize(request.form.get('texte', ''),  500)
-
-    if not auteur or len(auteur) < 2:
-        flash('Veuillez entrer votre prénom.', 'warning')
-        return redirect(url_for('public_bp.oeuvre_detail', id=id))
-
-    if not texte or len(texte) < 5:
-        flash('Le commentaire est trop court.', 'warning')
-        return redirect(url_for('public_bp.oeuvre_detail', id=id))
-
-    # Anti-spam : max 3 commentaires par IP par œuvre
-    ip_hash = get_ip_hash(request)
-    nb_spam = Commentaire.query.filter_by(oeuvre_id=id, ip_hash=ip_hash).count()
-    if nb_spam >= 3:
-        flash('Vous avez déjà posté plusieurs commentaires sur cette œuvre.', 'warning')
-        return redirect(url_for('public_bp.oeuvre_detail', id=id))
-
-    c = Commentaire(oeuvre_id=id, auteur=auteur, texte=texte,
-                    ip_hash=ip_hash, approuve=False)
-    db.session.add(c)
+    texte  = sanitize(request.form.get('texte', ''),  1000)
+    if len(auteur) < 2:
+        flash(_('Veuillez entrer votre prénom.'), 'warning')
+        return redirect(retour)
+    if len(texte) < 5:
+        flash(_('Le commentaire est trop court.'), 'warning')
+        return redirect(retour)
+    h = ip_hash()
+    if Commentaire.query.filter_by(ip_hash=h, **cible).count() >= 3:
+        flash(_('Vous avez déjà posté plusieurs commentaires ici.'), 'warning')
+        return redirect(retour)
+    db.session.add(Commentaire(auteur=auteur, texte=texte, ip_hash=h, approuve=False, **cible))
     db.session.commit()
-    flash('✅ Commentaire soumis — il sera visible après modération.', 'success')
-    return redirect(url_for('public_bp.oeuvre_detail', id=id))
+    flash(_('Commentaire soumis — il sera visible après modération.'), 'success')
+    return redirect(retour)
+
+
+@public_bp.route('/commenter/oeuvre/<int:id>', methods=['POST'])
+@rate_limit(5, 600, scope='commentaire')
+def commenter_oeuvre(id):
+    Oeuvre.publiees().filter(Oeuvre.id == id).first_or_404()
+    return _commenter(url_for('public_bp.oeuvre_detail', id=id), oeuvre_id=id)
 
 
 @public_bp.route('/commenter/artiste/<int:id>', methods=['POST'])
+@rate_limit(5, 600, scope='commentaire')
 def commenter_artiste(id):
-    """Soumettre un commentaire sur un artiste."""
-    artiste = Artiste.query.filter_by(id=id, statut='approuve').first_or_404()
-
-    auteur = sanitize(request.form.get('auteur', ''), 80)
-    texte  = sanitize(request.form.get('texte',  ''), 500)
-
-    if not auteur or len(auteur) < 2 or not texte or len(texte) < 5:
-        flash('Veuillez remplir tous les champs correctement.', 'warning')
-        return redirect(url_for('public_bp.artiste_detail', id=id))
-
-    ip_hash = get_ip_hash(request)
-    nb_spam = Commentaire.query.filter_by(artiste_id=id, ip_hash=ip_hash).count()
-    if nb_spam >= 3:
-        flash('Vous avez déjà posté plusieurs commentaires.', 'warning')
-        return redirect(url_for('public_bp.artiste_detail', id=id))
-
-    c = Commentaire(artiste_id=id, auteur=auteur, texte=texte,
-                    ip_hash=ip_hash, approuve=False)
-    db.session.add(c)
-    db.session.commit()
-    flash('✅ Commentaire soumis — il sera visible après modération.', 'success')
-    return redirect(url_for('public_bp.artiste_detail', id=id))
+    Artiste.query.filter_by(id=id, statut='approuve').first_or_404()
+    return _commenter(url_for('public_bp.artiste_detail', id=id), artiste_id=id)
 
 
 # ── TOP CHARTS ────────────────────────────────────────────────────────────────
 
 @public_bp.route('/top')
 def top_charts():
-    """Page Top — œuvres et artistes les plus populaires."""
-    top_oeuvres_vues = (Oeuvre.query.filter_by(statut='approuve')
-                        .order_by(Oeuvre.nb_vues.desc()).limit(10).all())
+    top_oeuvres_vues = Oeuvre.publiees().order_by(Oeuvre.nb_vues.desc()).limit(10).all()
     top_oeuvres_likes = (db.session.query(Oeuvre, func.count(Like.id).label('nb'))
                          .join(Like, Like.oeuvre_id == Oeuvre.id)
-                         .filter(Oeuvre.statut == 'approuve')
+                         .join(Artiste, Artiste.id == Oeuvre.artiste_id)
+                         .filter(Oeuvre.statut == 'approuve', Artiste.statut == 'approuve')
                          .group_by(Oeuvre.id)
                          .order_by(func.count(Like.id).desc())
                          .limit(10).all())
     top_artistes = (Artiste.query.filter_by(statut='approuve')
                     .order_by(Artiste.nb_vues.desc()).limit(8).all())
-
     return render_template('public/top_charts.html',
                            top_oeuvres_vues=top_oeuvres_vues,
                            top_oeuvres_likes=top_oeuvres_likes,
                            top_artistes=top_artistes)
 
 
-# ════════════════════════════════════════════════
-#  SIGNALEMENTS (Phase 2)
-# ════════════════════════════════════════════════
-
-from models import Signalement, RAISONS_SIGNALEMENT
+# ── SIGNALEMENTS ──────────────────────────────────────────────────────────────
 
 @public_bp.route('/signaler/<cible_type>/<int:id>', methods=['GET', 'POST'])
+@rate_limit(10, 3600, scope='signalement')
 def signaler(cible_type, id):
     if cible_type not in ('artiste', 'oeuvre'):
         abort(404)
-
     if cible_type == 'artiste':
         cible = Artiste.query.filter_by(id=id, statut='approuve').first_or_404()
         retour_url = url_for('public_bp.artiste_detail', id=id)
     else:
-        cible = Oeuvre.query.filter_by(id=id, statut='approuve').first_or_404()
+        cible = Oeuvre.publiees().filter(Oeuvre.id == id).first_or_404()
         retour_url = url_for('public_bp.oeuvre_detail', id=id)
 
     if request.method == 'POST':
+        if request.form.get('website'):
+            flash(_('Merci ! Votre signalement sera traité rapidement.'), 'success')
+            return redirect(retour_url)
         raison      = request.form.get('raison', '').strip()
         description = sanitize(request.form.get('description', ''), 800)
         email       = sanitize(request.form.get('email', ''), 150)
-        ip_hash     = get_ip_hash(request)
+        h           = ip_hash()
 
-        if not raison or raison not in [r[0] for r in RAISONS_SIGNALEMENT]:
-            flash('Veuillez sélectionner une raison.', 'warning')
-            return redirect(request.url)
+        if raison not in [r[0] for r in RAISONS_SIGNALEMENT]:
+            flash(_('Veuillez sélectionner une raison.'), 'warning')
+            return redirect(request.path)
+        if email and not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+', email):
+            email = ''
 
-        # Anti-spam : max 3 signalements par IP par cible
-        filtre = dict(ip_hash=ip_hash,
-                      **(dict(artiste_id=id) if cible_type=='artiste' else dict(oeuvre_id=id)))
+        filtre = dict(ip_hash=h, **({'artiste_id': id} if cible_type == 'artiste' else {'oeuvre_id': id}))
         if Signalement.query.filter_by(**filtre).count() >= 3:
-            flash('Vous avez déjà signalé cette entrée plusieurs fois.', 'warning')
+            flash(_('Vous avez déjà signalé cette entrée plusieurs fois.'), 'warning')
             return redirect(retour_url)
 
-        s = Signalement(
+        db.session.add(Signalement(
             cible_type    = cible_type,
             artiste_id    = id if cible_type == 'artiste' else None,
             oeuvre_id     = id if cible_type == 'oeuvre'  else None,
             raison        = raison,
             description   = description or None,
             email_contact = email or None,
-            ip_hash       = ip_hash,
+            ip_hash       = h,
             statut        = 'nouveau',
-        )
-        db.session.add(s)
+        ))
         db.session.commit()
-        flash('✅ Merci ! Votre signalement sera traité rapidement.', 'success')
+        flash(_('Merci ! Votre signalement sera traité rapidement.'), 'success')
         return redirect(retour_url)
 
-    return render_template('public/signaler.html',
-                           cible=cible,
-                           cible_type=cible_type,
-                           raisons=RAISONS_SIGNALEMENT,
-                           retour_url=retour_url)
+    return render_template('public/signaler.html', cible=cible, cible_type=cible_type,
+                           raisons=RAISONS_SIGNALEMENT, retour_url=retour_url)

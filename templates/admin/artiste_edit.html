@@ -1,74 +1,69 @@
 {% extends "admin/base_admin.html" %}
-{% block title %}Modifier — {{ artiste.nom }}{% endblock %}
+{% from "_macros.html" import field with context %}
+{% block title %}{{ _('Modifier') }} — {{ artiste.nom }}{% endblock %}
 {% block breadcrumb %}
-  <span class="sep">/</span><a href="{{ url_for('admin_bp.artistes') }}">Artistes</a>
-  <span class="sep">/</span>
-  <a href="{{ url_for('admin_bp.artiste_detail', id=artiste.id) }}">{{ artiste.nom }}</a>
-  <span class="sep">/</span><span class="current">Modifier</span>
+  <span class="sep">/</span><a href="{{ url_for('admin_bp.artistes') }}">{{ _('Artistes') }}</a>
+  <span class="sep">/</span><a href="{{ url_for('admin_bp.artiste_detail', id=artiste.id) }}">{{ artiste.nom }}</a>
+  <span class="sep">/</span><span class="current">{{ _('Modifier') }}</span>
 {% endblock %}
-{% set pending_artistes_count = 0 %}{% set pending_oeuvres_count = 0 %}
 
 {% block admin_content %}
 <div class="adm-section-header">
-  <h1>Modifier l'artiste</h1>
+  <h1>{{ _("Modifier l'artiste") }}</h1>
+  <span class="status-pill {{ artiste.statut }}">● {{ artiste.statut|libelle('statut') }}</span>
 </div>
 
-<div style="max-width:640px;">
-  <form method="POST">
+<div class="row g-4">
+  <div class="col-xl-7">
+    <form method="POST" novalidate>
+      {{ form.csrf_token }}
+      <div class="adm-form-card">
+        {% if artiste.profil_incomplet %}
+          <div class="adm-flash warning mb-3">
+            <i class="bi bi-person-exclamation"></i>
+            <span>{{ _('Région et type provisoires : vérifiez-les. Enregistrer la fiche la marque comme vérifiée.') }}</span>
+          </div>
+        {% endif %}
 
-    <div class="adm-form-card">
+        <div class="adm-form-section">{{ _('Informations principales') }}</div>
+        <div class="row g-3">
+          <div class="col-12">{{ field(form.nom) }}</div>
+          <div class="col-12">{{ field(form.nom_reel) }}</div>
+          <div class="col-md-6">{{ field(form.region_origine, select=True) }}</div>
+          <div class="col-md-6">{{ field(form.type_artiste, select=True) }}</div>
+          <div class="col-md-6">{{ field(form.annee_debut) }}</div>
+          <div class="col-md-6">{{ field(form.annee_fin, _('Vide = encore actif')) }}</div>
+        </div>
 
-      <div class="adm-form-section">Informations principales</div>
-      <div class="row g-3">
-        <div class="col-12">
-          <label class="form-label">Nom d'artiste *</label>
-          <input type="text" name="nom" value="{{ artiste.nom }}" class="form-control" required>
+        <div class="adm-form-section">{{ _('Biographie (bilingue)') }}</div>
+        <div class="row g-3">
+          <div class="col-12">{{ field(form.biographie, rows=5) }}</div>
+          <div class="col-12">{{ field(form.biographie_en, rows=5,
+                help=_("Affichée aux visiteurs anglophones. Si vide, la version française est affichée avec une mention.")) }}</div>
         </div>
-        <div class="col-12">
-          <label class="form-label">Nom réel</label>
-          <input type="text" name="nom_reel" value="{{ artiste.nom_reel or '' }}" class="form-control">
+
+        <div class="adm-form-section">{{ _('Liens') }}</div>
+        <div class="row g-3">
+          <div class="col-12">{{ field(form.photo_url, 'https://…', help=_('Adresse https d’une image libre de droits.')) }}</div>
+          <div class="col-12">{{ field(form.site_web, 'https://…') }}</div>
         </div>
-        <div class="col-md-6">
-          <label class="form-label">Région d'origine *</label>
-          <select name="region_origine" class="form-select" required>
-            {% for val, lbl in regions %}
-              <option value="{{ val }}" {% if artiste.region_origine == val %}selected{% endif %}>{{ lbl }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Type *</label>
-          <select name="type_artiste" class="form-select" required>
-            {% for val, lbl in [('Soliste_H','Solo Homme'),('Soliste_F','Solo Femme'),('Groupe','Groupe')] %}
-              <option value="{{ val }}" {% if artiste.type_artiste == val %}selected{% endif %}>{{ lbl }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Année de début</label>
-          <input type="number" name="annee_debut" value="{{ artiste.annee_debut or '' }}"
-                 class="form-control" min="1900" max="2030">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Année de fin</label>
-          <input type="number" name="annee_fin" value="{{ artiste.annee_fin or '' }}"
-                 class="form-control" min="1900" max="2030" placeholder="Vide = encore actif">
-        </div>
-        <div class="col-12">
-          <label class="form-label">Biographie</label>
-          <textarea name="biographie" class="form-control" rows="4">{{ artiste.biographie or '' }}</textarea>
-        </div>
+
+        {% set obj = artiste %}{% set cancel_url = url_for('admin_bp.artiste_detail', id=artiste.id) %}
+        {% include "admin/_edit_buttons.html" %}
       </div>
-
-      <div class="d-flex gap-2 mt-4">
-        <button type="submit" class="btn btn-jb-gold">
-          <i class="bi bi-check-lg me-1"></i>Enregistrer
-        </button>
-        <a href="{{ url_for('admin_bp.artiste_detail', id=artiste.id) }}" class="btn btn-jb-outline">
-          Annuler
-        </a>
-      </div>
+    </form>
+  </div>
+  <div class="col-xl-5">
+    {% set obj = artiste %}
+    {% set champs = [('nom', _('Nom'), None), ('nom_reel', _('Nom réel'), None), ('region_origine', _('Région'), 'region'),
+                     ('type_artiste', _('Type'), 'type_artiste'), ('annee_debut', _('Début'), None),
+                     ('annee_fin', _('Fin'), None), ('biographie', _('Biographie'), None)] %}
+    {% include "admin/_soumission.html" %}
+    <div class="detail-card">
+      <div style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.5rem;">{{ _('Contributeur') }}</div>
+      <div style="font-size:.85rem;">{{ artiste.soumis_par or '—' }} {% if artiste.soumis_email %}· {{ artiste.soumis_email }}{% endif %}</div>
+      <div style="font-size:.75rem;color:var(--text-dim);">{{ artiste.created_at|date_longue }}</div>
     </div>
-  </form>
+  </div>
 </div>
 {% endblock %}

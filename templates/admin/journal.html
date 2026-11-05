@@ -1,0 +1,23 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ _("Journal d'audit") }}{% endblock %}
+{% block breadcrumb %}<span class="sep">/</span><span class="current">{{ _("Journal d'audit") }}</span>{% endblock %}
+{% block admin_content %}
+<div class="adm-section-header">
+  <h1>{{ _("Journal d'audit") }}</h1>
+  <div style="font-size:.78rem;color:var(--text-dim);">{{ _('Chaque action admin est tracée : qui, quoi, quand et le détail des modifications.') }}</div>
+</div>
+<div class="adm-tabs mb-3">
+  {% for val, lbl in [('', _('Tout')), ('artiste', _('Artistes')), ('oeuvre', _('Œuvres')), ('commentaire', _('Commentaires')), ('signalement', _('Signalements')), ('admin', _('Comptes'))] %}
+    <a href="{{ url_for('admin_bp.journal', cible=val or None) }}" class="adm-tab {% if cible == val %}active{% endif %}">{{ lbl }}</a>
+  {% endfor %}
+</div>
+{% set rows = entrees.items %}
+{% include "admin/_journal_table.html" %}
+{% if entrees.pages > 1 %}
+  <nav class="d-flex justify-content-center gap-2 mt-3" aria-label="{{ _('Pagination') }}">
+    {% if entrees.has_prev %}<a class="adm-btn view" href="{{ url_for('admin_bp.journal', page=entrees.prev_num, cible=cible or None) }}"><i class="bi bi-chevron-left"></i></a>{% endif %}
+    <span style="font-size:.85rem;color:var(--text-dim);padding:.3rem .8rem;">{{ entrees.page }} / {{ entrees.pages }}</span>
+    {% if entrees.has_next %}<a class="adm-btn view" href="{{ url_for('admin_bp.journal', page=entrees.next_num, cible=cible or None) }}"><i class="bi bi-chevron-right"></i></a>{% endif %}
+  </nav>
+{% endif %}
+{% endblock %}

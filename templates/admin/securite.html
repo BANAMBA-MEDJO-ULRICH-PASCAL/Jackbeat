@@ -1,0 +1,76 @@
+{% extends "admin/base_admin.html" %}
+{% from "_macros.html" import field with context %}
+{% block title %}{{ _('Sécurité du compte') }}{% endblock %}
+{% block breadcrumb %}<span class="sep">/</span><span class="current">{{ _('Sécurité du compte') }}</span>{% endblock %}
+{% block admin_content %}
+<div class="adm-section-header"><h1>{{ _('Sécurité du compte') }}</h1></div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="adm-form-card mb-4">
+      <div class="adm-form-section"><i class="bi bi-shield-lock me-1"></i>{{ _('Double authentification (2FA)') }}</div>
+      {% if current_user.totp_enabled %}
+        <p style="color:var(--green);font-weight:600;"><i class="bi bi-check-circle-fill me-1"></i>{{ _('Activée') }}</p>
+        <p style="font-size:.85rem;color:var(--text-mid);">
+          {{ ngettext('%(num)d code de secours restant.', '%(num)d codes de secours restants.', nb_codes) }}
+        </p>
+        <form method="POST" action="{{ url_for('admin_bp.regenerer_codes') }}" class="mb-3">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-jb-outline btn-sm" data-confirm="{{ _('Les anciens codes de secours ne fonctionneront plus. Continuer ?') }}">
+            <i class="bi bi-arrow-repeat me-1"></i>{{ _('Générer de nouveaux codes de secours') }}
+          </button>
+        </form>
+        <details>
+          <summary style="font-size:.85rem;color:var(--red);cursor:pointer;">{{ _('Désactiver la double authentification') }}</summary>
+          <form method="POST" action="{{ url_for('admin_bp.desactiver_2fa') }}" class="mt-2">
+            {{ disable_form.csrf_token }}
+            <div class="mb-2">{{ field(disable_form.password) }}</div>
+            <div class="form-check mb-2">
+              {{ disable_form.confirm(class="form-check-input") }} {{ disable_form.confirm.label(class="form-check-label") }}
+            </div>
+            <button type="submit" class="btn btn-sm btn-outline-danger">{{ _('Désactiver') }}</button>
+          </form>
+        </details>
+      {% else %}
+        <p style="color:var(--red);font-weight:600;"><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ _('Désactivée') }}</p>
+        <p style="font-size:.85rem;color:var(--text-mid);">
+          {{ _("Avec la double authentification, un mot de passe volé ne suffit plus : il faut aussi le code temporaire de votre téléphone (Google Authenticator, Aegis, 1Password, Microsoft Authenticator…).") }}
+        </p>
+        <a href="{{ url_for('admin_bp.activer_2fa') }}" class="btn btn-jb-gold btn-sm"><i class="bi bi-shield-plus me-1"></i>{{ _('Activer la 2FA') }}</a>
+      {% endif %}
+    </div>
+
+    <div class="adm-form-card">
+      <div class="adm-form-section"><i class="bi bi-clock-history me-1"></i>{{ _('Dernières connexions') }}</div>
+      <p style="font-size:.8rem;color:var(--text-dim);">{{ _('Mot de passe modifié le :') }} {{ current_user.password_changed_at|date_longue if current_user.password_changed_at else '—' }}</p>
+      <table class="adm-table">
+        <thead><tr><th>{{ _('Date') }}</th><th>{{ _('Résultat') }}</th></tr></thead>
+        <tbody>
+          {% for t in tentatives %}
+            <tr>
+              <td style="font-size:.8rem;">{{ t.created_at.strftime('%Y-%m-%d %H:%M') }} UTC</td>
+              <td>{% if t.success %}<span class="status-badge approuve">● {{ _('Réussie') }}</span>{% else %}<span class="status-badge rejete">● {{ _('Échec') }}</span>{% endif %}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="2" style="color:var(--text-dim);">—</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <form method="POST" action="{{ url_for('admin_bp.changer_mot_de_passe') }}" class="adm-form-card" autocomplete="off">
+      {{ pwd_form.csrf_token }}
+      <div class="adm-form-section"><i class="bi bi-key me-1"></i>{{ _('Changer le mot de passe') }}</div>
+      <div class="mb-3">{{ pwd_form.current_password.label(class="form-label") }}{{ pwd_form.current_password(class="form-control", autocomplete="current-password") }}</div>
+      <div class="mb-3">{{ pwd_form.new_password.label(class="form-label") }}{{ pwd_form.new_password(class="form-control", autocomplete="new-password", minlength=12) }}
+        <div class="form-text">{{ _('12 caractères minimum, avec au moins 3 types parmi : minuscules, majuscules, chiffres, symboles. Une phrase de passe longue est idéale.') }}</div>
+      </div>
+      <div class="mb-3">{{ pwd_form.confirm.label(class="form-label") }}{{ pwd_form.confirm(class="form-control", autocomplete="new-password") }}</div>
+      <button type="submit" class="btn btn-jb-gold"><i class="bi bi-check-lg me-1"></i>{{ _('Mettre à jour') }}</button>
+      <p class="mt-2" style="font-size:.75rem;color:var(--text-dim);">{{ _('Toutes vos autres sessions ouvertes seront déconnectées.') }}</p>
+    </form>
+  </div>
+</div>
+{% endblock %}

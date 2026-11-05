@@ -1,0 +1,61 @@
+{# Tableau d'entrées du journal d'audit. Attend `rows` (liste d'AuditLog). #}
+{% set labels_actions = {
+  'connexion': _('Connexion'), 'deconnexion': _('Déconnexion'),
+  'approuver': _('Approbation'), 'rejeter': _('Rejet'), 'remettre_attente': _('Remise en attente'),
+  'modification': _('Modification'), 'suppression': _('Suppression'), 'fusion': _('Fusion de doublons'),
+  'export_csv': _('Export CSV'), 'signalement': _('Signalement traité'),
+  'commentaires_approuver': _('Commentaires approuvés'), 'commentaires_supprimer': _('Commentaires supprimés'),
+  'mot_de_passe_change': _('Mot de passe changé'), '2fa_activee': _('2FA activée'), '2fa_desactivee': _('2FA désactivée'),
+  'codes_secours_regeneres': _('Codes de secours régénérés'), 'code_secours_utilise': _('Code de secours utilisé'),
+} %}
+{% set labels_champs = {
+  'nom': _('Nom'), 'nom_reel': _('Nom réel'), 'region_origine': _('Région'), 'type_artiste': _('Type'),
+  'annee_debut': _('Début'), 'annee_fin': _('Fin'), 'biographie': _('Biographie (FR)'), 'biographie_en': _('Biographie (EN)'),
+  'photo_url': _('Photo'), 'site_web': _('Site web'), 'titre': _('Titre'), 'artiste_id': _('Artiste'),
+  'type_oeuvre': _('Type'), 'genre_musical': _('Genre'), 'langue': _('Langue'), 'annee_sortie': _('Année'),
+  'popularite': _('Popularité'), 'distinction': _('Distinction'), 'description': _('Description (FR)'),
+  'description_en': _('Description (EN)'), 'lien_youtube': _('Lien YouTube'), 'statut': _('Statut'),
+  'profil_incomplet': _('Profil incomplet'),
+} %}
+<div class="adm-table-wrap">
+  <table class="adm-table">
+    <thead><tr><th>{{ _('Date') }}</th><th>{{ _('Admin') }}</th><th>{{ _('Action') }}</th><th>{{ _('Cible') }}</th><th>{{ _('Détails') }}</th></tr></thead>
+    <tbody>
+      {% for e in rows %}
+      <tr>
+        <td style="font-size:.74rem;color:var(--text-dim);white-space:nowrap;">{{ e.created_at.strftime('%Y-%m-%d %H:%M') }} UTC</td>
+        <td style="font-size:.82rem;">{{ e.admin_username or '—' }}</td>
+        <td style="font-size:.82rem;font-weight:600;">{{ labels_actions.get(e.action, e.action) }}</td>
+        <td style="font-size:.82rem;">
+          {% if e.cible_type == 'artiste' and e.cible_id %}
+            <a href="{{ url_for('admin_bp.artiste_detail', id=e.cible_id) }}">{{ e.cible_nom or ('#' ~ e.cible_id) }}</a>
+          {% elif e.cible_type == 'oeuvre' and e.cible_id %}
+            <a href="{{ url_for('admin_bp.oeuvre_detail', id=e.cible_id) }}">{{ e.cible_nom or ('#' ~ e.cible_id) }}</a>
+          {% else %}{{ e.cible_nom or e.cible_type or '—' }}{% endif %}
+        </td>
+        <td style="font-size:.76rem;color:var(--text-mid);max-width:420px;">
+          {% for champ, val in e.details_dict.items() %}
+            <div>
+              <strong>{{ labels_champs.get(champ, champ) }}</strong> :
+              {% set categories = {'statut': 'statut', 'region_origine': 'region', 'type_artiste': 'type_artiste',
+                                   'type_oeuvre': 'type_oeuvre', 'genre_musical': 'genre', 'langue': 'langue',
+                                   'popularite': 'popularite'} %}
+              {% if val is sequence and val is not string and val|length == 2 %}
+                {% set cat = categories.get(champ) if e.cible_type != 'signalement' else 'statut_signalement' %}
+                {% set v0 = (val[0]|libelle(cat) if cat else val[0]) if val[0] not in [none, ''] else '∅' %}
+                {% set v1 = (val[1]|libelle(cat) if cat else val[1]) if val[1] not in [none, ''] else '∅' %}
+                <span class="diff-old">{{ v0|string|truncate(80, True, '…') }}</span>
+                → <span class="diff-new">{{ v1|string|truncate(80, True, '…') }}</span>
+              {% else %}
+                {{ val|string|truncate(120, True, '…') }}
+              {% endif %}
+            </div>
+          {% endfor %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center;color:var(--text-dim);">{{ _('Aucune entrée.') }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

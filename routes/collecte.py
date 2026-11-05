@@ -1,79 +1,22 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from models import db, Artiste, Oeuvre, REGIONS_CAMEROUN, GENRES_MUSICAUX, LANGUES, POPULARITES
-from wtforms import StringField, SelectField, IntegerField, TextAreaField, validators
-from flask_wtf import FlaskForm
+import json
+
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_babel import gettext as _
+
+from forms import ArtisteForm, OeuvreForm
+from models import db, Artiste, Oeuvre
+from security import rate_limit
 
 collecte_bp = Blueprint('collecte_bp', __name__)
 
-
-# ─────────────────────────────────────────────
-#  FORMULAIRES WTForms
-# ─────────────────────────────────────────────
-
-class ArtisteForm(FlaskForm):
-    nom = StringField('Nom d\'artiste / Pseudonyme *',
-                      [validators.DataRequired(message='Ce champ est obligatoire.'),
-                       validators.Length(min=2, max=150)])
-    nom_reel = StringField('Nom réel (optionnel)', [validators.Optional(), validators.Length(max=150)])
-    region_origine = SelectField('Région d\'origine *',
-                                 choices=[('', '— Choisir une région —')] + list(REGIONS_CAMEROUN),
-                                 validators=[validators.DataRequired()])
-    type_artiste = SelectField('Type *',
-                               choices=[('', '— Choisir —'),
-                                        ('Soliste_H', 'Artiste Solo (Homme)'),
-                                        ('Soliste_F', 'Artiste Solo (Femme)'),
-                                        ('Groupe', 'Groupe / Band')],
-                               validators=[validators.DataRequired()])
-    annee_debut = IntegerField('Année de début de carrière',
-                               [validators.Optional(),
-                                validators.NumberRange(min=1900, max=2030)])
-    annee_fin = IntegerField('Année de fin (laisser vide si encore actif)',
-                             [validators.Optional(),
-                              validators.NumberRange(min=1900, max=2030)])
-    biographie = TextAreaField('Biographie / Note (optionnel)',
-                               [validators.Optional(), validators.Length(max=1000)])
-    soumis_par = StringField('Votre nom (optionnel)', [validators.Optional(), validators.Length(max=100)])
-    soumis_email = StringField('Votre email (optionnel)',
-                               [validators.Optional(), validators.Email()])
+# Limite anti-abus : 10 soumissions / heure / IP
+LIMITE_SOUMISSIONS = dict(limit=10, period=3600, scope='soumission')
 
 
-class OeuvreForm(FlaskForm):
-    titre = StringField('Titre de l\'œuvre *',
-                        [validators.DataRequired(message='Le titre est obligatoire.'),
-                         validators.Length(min=1, max=200)])
-    artiste_nom = StringField('Nom de l\'artiste *',
-                              [validators.DataRequired(), validators.Length(min=2, max=150)])
-    type_oeuvre = SelectField('Type d\'œuvre *',
-                              choices=[('Chanson', 'Chanson'), ('Album', 'Album'),
-                                       ('EP', 'EP'), ('Live', 'Live / Concert')],
-                              validators=[validators.DataRequired()])
-    genre_musical = SelectField('Genre musical *',
-                                choices=[('', '— Choisir un genre —')] + list(GENRES_MUSICAUX),
-                                validators=[validators.DataRequired()])
-    langue = SelectField('Langue principale *',
-                         choices=[('', '— Choisir une langue —')] + list(LANGUES),
-                         validators=[validators.DataRequired()])
-    annee_sortie = IntegerField('Année de sortie *',
-                                [validators.DataRequired(),
-                                 validators.NumberRange(min=1960, max=2030,
-                                                        message='Année entre 1960 et 2030')])
-    popularite = SelectField('Niveau de popularité',
-                             choices=[('', '— Optionnel —')] + list(POPULARITES),
-                             validators=[validators.Optional()])
-    distinction = StringField('Distinction / Prix (optionnel)',
-                              [validators.Optional(), validators.Length(max=200)])
-    description = TextAreaField('Description (optionnel)',
-                                [validators.Optional(), validators.Length(max=500)])
-    lien_youtube = StringField('Lien YouTube (optionnel)',
-                               [validators.Optional(), validators.Length(max=300)])
-    soumis_par = StringField('Votre nom (optionnel)', [validators.Optional(), validators.Length(max=100)])
-    soumis_email = StringField('Votre email (optionnel)',
-                               [validators.Optional(), validators.Email()])
+def _snapshot(form, champs):
+    """Copie figée de ce que le contributeur a envoyé (visible par l'admin)."""
+    return json.dumps({c: getattr(form, c).data for c in champs}, ensure_ascii=False, default=str)
 
-
-# ─────────────────────────────────────────────
-#  ROUTES
-# ─────────────────────────────────────────────
 
 @collecte_bp.route('/')
 def index():
@@ -81,12 +24,17 @@ def index():
 
 
 @collecte_bp.route('/artiste', methods=['GET', 'POST'])
+@rate_limit(**LIMITE_SOUMISSIONS)
 def soumettre_artiste():
     form = ArtisteForm()
     if form.validate_on_submit():
+        if form.is_bot():
+            return redirect(url_for('collecte_bp.merci'))
+        champs = ('nom', 'nom_reel', 'region_origine', 'type_artiste',
+                  'annee_debut', 'annee_fin', 'biographie')
         artiste = Artiste(
-            nom=form.nom.data.strip(),
-            nom_reel=form.nom_reel.data.strip() if form.nom_reel.data else None,
+            nom=form.nom.data,
+            nom_reel=form.nom_reel.data,
             region_origine=form.region_origine.data,
             type_artiste=form.type_artiste.data,
             annee_debut=form.annee_debut.data,
@@ -94,56 +42,74 @@ def soumettre_artiste():
             biographie=form.biographie.data,
             soumis_par=form.soumis_par.data,
             soumis_email=form.soumis_email.data,
-            statut='en_attente'
+            donnees_soumises=_snapshot(form, champs),
+            statut='en_attente',
         )
         db.session.add(artiste)
         db.session.commit()
-        flash('✅ Artiste soumis avec succès ! Il sera visible après validation.', 'success')
+        flash(_('Artiste soumis avec succès ! Il sera visible après validation.'), 'success')
         return redirect(url_for('collecte_bp.merci'))
     return render_template('collecte/artiste.html', form=form)
 
 
 @collecte_bp.route('/oeuvre', methods=['GET', 'POST'])
+@rate_limit(**LIMITE_SOUMISSIONS)
 def soumettre_oeuvre():
     form = OeuvreForm()
     if form.validate_on_submit():
-        # Chercher ou créer l'artiste
-        artiste_nom = form.artiste_nom.data.strip()
-        artiste = Artiste.query.filter(
-            db.func.lower(Artiste.nom) == artiste_nom.lower(),
-            Artiste.statut == 'approuve'
-        ).first()
+        if form.is_bot():
+            return redirect(url_for('collecte_bp.merci'))
+
+        # Chercher l'artiste (insensible à la casse) parmi les fiches non rejetées,
+        # en privilégiant une fiche déjà approuvée — évite les doublons en attente.
+        artiste_nom = form.artiste_nom.data
+        artiste = (Artiste.query
+                   .filter(db.func.lower(Artiste.nom) == artiste_nom.lower(),
+                           Artiste.statut != 'rejete')
+                   .order_by(db.case((Artiste.statut == 'approuve', 0), else_=1), Artiste.id)
+                   .first())
 
         if not artiste:
-            # Créer un artiste temporaire en attente
+            region = form.artiste_region.data or None
+            type_a = form.artiste_type.data or None
             artiste = Artiste(
                 nom=artiste_nom,
-                region_origine='Centre',   # Valeur par défaut temporaire
-                type_artiste='Soliste_H',
+                # Valeurs provisoires si le contributeur ne les connaît pas :
+                # la fiche est marquée « à compléter » et n'est jamais publiée
+                # automatiquement tant que l'admin ne l'a pas vérifiée.
+                region_origine=region or 'Centre',
+                type_artiste=type_a or 'Soliste_H',
+                profil_incomplet=not (region and type_a),
                 statut='en_attente',
-                soumis_par=form.soumis_par.data
+                soumis_par=form.soumis_par.data,
+                soumis_email=form.soumis_email.data,
+                donnees_soumises=json.dumps({'nom': artiste_nom, 'region_origine': region,
+                                             'type_artiste': type_a}, ensure_ascii=False),
             )
             db.session.add(artiste)
             db.session.flush()
 
+        champs = ('titre', 'artiste_nom', 'type_oeuvre', 'genre_musical', 'langue', 'annee_sortie',
+                  'popularite', 'distinction', 'description', 'lien_youtube')
         oeuvre = Oeuvre(
-            titre=form.titre.data.strip(),
+            titre=form.titre.data,
             artiste_id=artiste.id,
             type_oeuvre=form.type_oeuvre.data,
             genre_musical=form.genre_musical.data,
             langue=form.langue.data,
             annee_sortie=form.annee_sortie.data,
-            popularite=form.popularite.data if form.popularite.data else None,
+            popularite=form.popularite.data or None,
             distinction=form.distinction.data,
             description=form.description.data,
             lien_youtube=form.lien_youtube.data,
             soumis_par=form.soumis_par.data,
             soumis_email=form.soumis_email.data,
-            statut='en_attente'
+            donnees_soumises=_snapshot(form, champs),
+            statut='en_attente',
         )
         db.session.add(oeuvre)
         db.session.commit()
-        flash('✅ Œuvre soumise avec succès ! Elle sera visible après validation.', 'success')
+        flash(_('Œuvre soumise avec succès ! Elle sera visible après validation.'), 'success')
         return redirect(url_for('collecte_bp.merci'))
     return render_template('collecte/oeuvre.html', form=form)
 

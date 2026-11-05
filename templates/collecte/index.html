@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Contribuer{% endblock %}
+{% block title %}{{ _('Contribuer') }}{% endblock %}
 
 {% block content %}
 
 <div class="collecte-hero">
   <div class="container">
-    <div class="hero-eyebrow justify-content-center">Enrichir l'archive</div>
+    <div class="hero-eyebrow justify-content-center">{{ _("Enrichir l'archive") }}</div>
     <h1 style="font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);font-weight:900;margin-bottom:1rem;">
-      Que souhaitez-vous<br><span style="color:var(--gold);">ajouter ?</span>
+      {{ _('Que souhaitez-vous') }}<br><span style="color:var(--gold);">{{ _('ajouter ?') }}</span>
     </h1>
     <p style="color:var(--text-mid);max-width:500px;margin:0 auto;">
-      Chaque contribution est examinée avant publication pour garantir la qualité de l'archive.
+      {{ _("Chaque contribution est examinée avant publication pour garantir la qualité de l'archive.") }}
     </p>
   </div>
 </div>
@@ -20,18 +20,18 @@
     <div class="row g-4">
       <div class="col-md-6 fade-up fade-up-1">
         <a href="{{ url_for('collecte_bp.soumettre_artiste') }}" class="collecte-choice-card">
-          <span class="choice-icon">🎤</span>
-          <h3>Un Artiste</h3>
-          <p>Enregistrez un artiste ou groupe camerounais — nom, région, biographie, période d'activité.</p>
-          <div class="mt-3 btn btn-jb-gold btn-sm">Commencer <i class="bi bi-arrow-right ms-1"></i></div>
+          <span class="choice-icon" aria-hidden="true">🎤</span>
+          <h3>{{ _('Un Artiste') }}</h3>
+          <p>{{ _("Enregistrez un artiste ou groupe camerounais — nom, région, biographie, période d'activité.") }}</p>
+          <div class="mt-3 btn btn-jb-gold btn-sm">{{ _('Commencer') }} <i class="bi bi-arrow-right ms-1"></i></div>
         </a>
       </div>
       <div class="col-md-6 fade-up fade-up-2">
         <a href="{{ url_for('collecte_bp.soumettre_oeuvre') }}" class="collecte-choice-card">
-          <span class="choice-icon">🎵</span>
-          <h3>Une Œuvre</h3>
-          <p>Ajoutez une chanson, un album ou un EP — titre, genre, langue, année de sortie, distinctions.</p>
-          <div class="mt-3 btn btn-jb-green btn-sm">Commencer <i class="bi bi-arrow-right ms-1"></i></div>
+          <span class="choice-icon" aria-hidden="true">🎵</span>
+          <h3>{{ _('Une Œuvre') }}</h3>
+          <p>{{ _('Ajoutez une chanson, un album ou un EP — titre, genre, langue, année de sortie, distinctions.') }}</p>
+          <div class="mt-3 btn btn-jb-green btn-sm">{{ _('Commencer') }} <i class="bi bi-arrow-right ms-1"></i></div>
         </a>
       </div>
     </div>
@@ -39,8 +39,7 @@
     <div class="text-center mt-4 fade-up fade-up-3">
       <p style="font-size:0.83rem;color:var(--text-dim);">
         <i class="bi bi-shield-check me-1" style="color:var(--green-l);"></i>
-        Toutes les soumissions sont modérées avant publication.
-        Vos informations de contact sont optionnelles.
+        {{ _('Toutes les soumissions sont modérées avant publication. Vos informations de contact sont optionnelles.') }}
       </p>
     </div>
   </div>

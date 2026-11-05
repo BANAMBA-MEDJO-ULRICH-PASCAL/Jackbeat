@@ -37,3 +37,7 @@ build/
 # Coverage
 htmlcov/
 .coverage
+
+# Tests & traductions générées
+.pytest_cache/
+messages.pot
